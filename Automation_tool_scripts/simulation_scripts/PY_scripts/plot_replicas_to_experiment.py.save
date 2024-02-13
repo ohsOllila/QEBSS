@@ -1,0 +1,97 @@
+#!/usr/bin/python3
+
+
+import matplotlib.pyplot as plt
+import os
+import glob
+
+
+R1_values_exp = []
+R2_values_exp = []
+NOE_values_exp = []
+
+snear_data='/scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/simulation_scripts/MD_scripts/snear_exp_data.txt'
+SIM_DIR='/scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/Unst_snear/'
+
+# Read data from the text file
+with open(snear_data, 'r') as file:
+	lines = file.readlines()
+	for line in lines[1:]:
+		# Split the line into T1, T2, and NOE values
+		parts = line.split()
+		R1_values_exp.append(parts[1]) if len(parts) > 1 else R1_values_exp.append('')
+		R2_values_exp.append(parts[3]) if len(parts) > 3 else R2_values_exp.append('')
+		NOE_values_exp.append(parts[5]) if len(parts) > 5 else NOE_values_exp.append('')
+
+#FORCEFIELDS=["AMBER03WS", "AMBER99SB-DISP", "AMBER99SBWS", "CHARMM36M", "DESAMBER"]
+FORCEFIELDS=["AMBER03WS"]
+colorlist = ['red', 'blue', 'green', 'purple', 'orange', 'black']
+
+for item in FORCEFIELDS:
+	relax_data=glob.glob(SIM_DIR+"/*/"+item+'/relaxation_data.txt')
+	R1_values_lists = []
+	R2_values_lists = []
+	NOE_values_lists = []
+	for data in sorted(relax_data):
+		T1_values = []
+		T2_values = []
+		NOE_values = []
+		with open(data, 'r') as file:
+			lines = file.readlines()
+			for line in lines:
+
+				parts = line.split()
+				T1_values.append(float(parts[1]))
+				T2_values.append(float(parts[3]))
+				NOE_values.append(float(parts[5]))
+
+		R1_values = [1 / value for value in T1_values]
+		R2_values = [1 / value for value in T2_values]
+		
+		list=[]
+		for i in range(len(R1_values)):
+			if len(R1_values) > i:
+				#list.append(R1_values[i] - R1_values_exp[i])
+				print((R1_values[int(i)] - R1_values_exp[int(i)]))
+				#print((R1_values[0:i] - R1_values_exp[0:i]))
+		#break
+		#print((R1_values[2] - R1_values_exp[2]))
+		R1_values_lists.append(R1_values)
+		R2_values_lists.append(R2_values)
+		NOE_values_lists.append(NOE_values)
+	R1_values_lists.append(R1_values_exp) 
+	R2_values_lists.append(R2_values_exp) 
+	NOE_values_lists.append(NOE_values_exp)
+	
+
+	fig, axs = plt.subplots(1, 3, figsize=(15, 6))
+
+'''
+	for i in range(6):
+
+		axs[0].plot(range(1, len(R1_values_lists[i]) + 1), R1_values_lists[i], label='R1 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color=colorlist[i])
+		axs[0].set_xlabel('Residue number')
+		axs[0].set_ylabel('R1_values')
+		axs[0].set_title('R1_data')
+		axs[0].legend()
+		
+		axs[1].plot(range(1, len(R2_values_lists[i]) + 1), R2_values_lists[i], label='R2 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color=colorlist[i])
+		axs[1].set_xlabel('Residue number')
+		axs[1].set_ylabel('R2_values')
+		axs[1].set_title('R2_data')
+		axs[1].legend()
+
+		axs[2].plot(range(1, len(NOE_values_lists[i]) + 1), NOE_values_lists[i], label='NOE Data', marker='o', linestyle='-', lw=1.0, markersize=2, color=colorlist[i])
+		axs[2].set_xlabel('Residue number')
+		axs[2].set_ylabel('NOE_values')
+		axs[2].set_title('NOE_data')
+		axs[2].legend()
+	
+	plt.tight_layout()
+	plt.savefig(SIM_DIR + 'rep_to_exp_data/relaxation_' + item + '_plot.png')	
+	plt.close()
+
+
+
+
+'''

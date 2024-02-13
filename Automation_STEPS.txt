@@ -1,0 +1,63 @@
+From Fasta file to Analysis 
+
+ 
+
+Download and extract Automation_tool_scripts recipitory 
+
+ 
+
+The first step is to generate the initial replicas. Go to https://idpconformergenerator.readthedocs.io/en/latest/installation.html or follow the installation steps below: 
+
+ 
+
+Go to Automation_tool_scripts /Idpconfgenerator_automation and install module here.  
+
+git clone https://github.com/julie-forman-kay-lab/IDPConformerGenerator 
+
+cd IDPConformerGenerator 
+
+conda env create -f requirements.yml 
+
+ 
+
+Copy your fasta file to this directory and generate replicas by running: 
+
+conda activate idpconfgen 
+
+./create_replicas.sh (Choose the number of your fasta file) 
+
+ 
+
+Copy the folders Unst_prot, MD_parameter_files, simulation_scripts and the environment file env.yml to your project scratch in Mahti.  Can also be run in Lumi but requires some modifications. 
+
+ 
+
+Mahti 
+
+To copy to Mahti, run command (using my paths as example): 
+
+ 
+
+scp -r Unst_prot MD_parameter_files simulation_scripts env.yml malmcajs@mahti.csc.fi:/scratch/project_***/cmcajsa/MD-stabilization/structures/forcefield_compare 
+
+Log into Mahti: 
+
+ssh malmcajs@mahti.csc.fi 
+
+Go to folder: 
+
+/scratch/project_***/cmcajsa/MD-stabilization/structures/forcefield_compare/simulation_scripts/run_dir 
+
+ 
+
+ 
+
+Run scripts in order: 
+
+sh run_prep.sh 
+
+sh run_batch_md.sh 
+
+sh run_analysis.sh 
+
+Before you run the next script, you must ensure the previous step was finished. E.g., you can check if the system preparation run was successful by going to /scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/Unst_prot and running ls -lh */*/md*tpr. Run ls -lh */*/md*tpr | wc –l to count the files. The last script collects the results, which can be found in /scratch/project_***/cmcajsa/MD-stabilization/structures/forcefield_compare/results. 
