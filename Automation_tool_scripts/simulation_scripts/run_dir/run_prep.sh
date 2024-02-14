@@ -27,8 +27,7 @@ for pdb_file in $BASE_DIR/Unst_prot/*.pdb; do
 	done
 done
 
-list=$BASE_DIR/Unst_prot/*/*/
-jobs=$(( $(ls -l $list | grep -c '^d') - 1 ))
+jobs=$(( $(find "$BASE_DIR/Unst_prot" -mindepth 2 -maxdepth 2 -type d | wc -l) - 1 ))
 
 
 sed -i "s/sim_time=sim_time/sim_time=${time_input}/" "${JOB_SCRIPT}"
@@ -37,7 +36,7 @@ sed -i "s/num_jobs/${jobs}/" "${JOB_SCRIPT}"
 for i in $BASE_DIR/Unst_prot
 do
   	cd $i
-	sh ${JOB_SCRIPT}
+	sbatch ${JOB_SCRIPT}
 done
 
 

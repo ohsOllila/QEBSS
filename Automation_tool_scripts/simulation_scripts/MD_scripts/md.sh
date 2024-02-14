@@ -2,7 +2,7 @@
 #SBATCH --time=36:00:00
 #SBATCH --partition=medium
 #SBATCH --ntasks-per-node=128
-#SBATCH --nodes=4
+#SBATCH --nodes=5
 #SBATCH --account=Project_2001058
 ##SBATCH --mail-type=END #uncomment to get mail
 

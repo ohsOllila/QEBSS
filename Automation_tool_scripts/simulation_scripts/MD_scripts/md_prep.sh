@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH --time=12:00:00
-#SBATCH --partition=small
+#SBATCH --partition=medium
 #SBATCH --ntasks-per-node=64
 #SBATCH --cpus-per-task=2
 #SBATCH --nodes=1
 #SBATCH --array=0-num_jobs
 #SBATCH --output=array_job_output_%A_%a.txt
-#SBATCH --account=Project_2003809
+#SBATCH --account=Project_2001058
 
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
