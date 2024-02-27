@@ -466,6 +466,7 @@ plt.tight_layout()
 plt.savefig(relax_folder + 'Timescale_plot_all.png')
 plt.close()
 
+'''
 ensemble_images=sorted(glob.glob(SIM_DIR+"model*/*"+'/*correlation*.png'))
 fig, axs = plt.subplots(5, 5, figsize=(15, 15))
 for i in range(5):
@@ -482,6 +483,7 @@ for i in range(5):
 			pass
 plt.tight_layout()
 plt.savefig(relax_folder + 'Correlation_combined.png')
+'''
 
 ensemble_images = sorted(glob.glob(SIM_DIR + "model*/*/*mdmat*.png"))
 fig, axs = plt.subplots(5, 5, figsize=(15, 15))

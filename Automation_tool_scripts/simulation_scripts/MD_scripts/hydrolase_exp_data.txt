@@ -1,4 +1,4 @@
- hydrolase R1 R2 NOE 
+hydrolase R1 R2 NOE Magn_field(MHz) 800  
 1	n	n	n
 2	n	n	n
 3	0.8347106058329576	3.3149903865278785	-0.568355258
