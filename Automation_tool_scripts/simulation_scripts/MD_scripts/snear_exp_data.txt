@@ -1,4 +1,4 @@
-	15N R1 / s-1 (600 MHz)	d(15N R1 )/ s-1 (600 MHz)		15N R2(R1r )/ s-1 (600 MHz)	d(15N R2(R1ρ ))/ s-1 (600 MHz)		NOE {1H}-15N values (I / I0) (600 MHz)	error  d(I / I0) (600 MHz)
+snear R1 R2 NOE Magn_field(MHz) 600
 1M	1.60	0.01		3.17	0.04		-0.05	0.02
 2A	1.63	0.01		3.67	0.03		0.04	0.02
 3E	1.63	0.01		3.52	0.04		0.10	0.02

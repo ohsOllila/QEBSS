@@ -19,15 +19,15 @@ NOE_values_exp = [[], []]
 #snear_data='/scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/simulation_scripts/MD_scripts/snear_exp_data.txt'
 #SIM_DIR='/scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/Unst_snear/'
 
-snear_data='/scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/simulation_scripts/MD_scripts/snear_exp_data.txt'
-SIM_DIR='/scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/Unst_snear/'
+exp_data='/scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/simulation_scripts/MD_scripts/hydrolase_exp_data.txt'
+SIM_DIR='/scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/Unst_hydrolase/'
 
-relax_folder=SIM_DIR.replace('Unst_snear/', '') + 'results/' + SIM_DIR.split("/")[-2] + '/rep_to_exp_data/'
+relax_folder=SIM_DIR.replace('Unst_hydrolase/', '') + 'results/' + SIM_DIR.split("/")[-2] + '/rep_to_exp_data/'
 if not os.path.exists(relax_folder):
     os.makedirs(relax_folder)
 
 # Read data from the text file
-with open(snear_data, 'r') as file:
+with open(exp_data, 'r') as file:
 	lines = file.readlines()
 	for line in range(1, len(lines)):
                 # Split the line into T1, T2, and NOE values
@@ -39,13 +39,13 @@ with open(snear_data, 'r') as file:
 			R1_values_exp[1].append("n")
 			R1_values_exp[0].append("n")
 		try:
-			R2_values_exp[1].append(float(parts[3]))
+			R2_values_exp[1].append(float(parts[2]))
 			R2_values_exp[0].append(line)
 		except ValueError:
                         R2_values_exp[1].append("n")
                         R2_values_exp[0].append("n")
 		try:
-			NOE_values_exp[1].append(float(parts[5]))
+			NOE_values_exp[1].append(float(parts[3]))
 			NOE_values_exp[0].append(line)
 		except ValueError:
 			NOE_values_exp[1].append("n")
@@ -367,6 +367,7 @@ plt.tight_layout()
 plt.savefig(relax_folder + 'Difference_to_experiment_plot.png')
 plt.close()
 
+'''
 pdb_data = sorted(glob.glob(SIM_DIR + "model*/*/"))
 cmd.set("ray_opaque_background", 1)
 
@@ -404,7 +405,7 @@ for i in range(5):
 plt.tight_layout()
 plt.savefig(relax_folder + 'Ensembles_combined.png')
 plt.close()
-
+'''
 
 def create_timescale_scatter_plot(data, axs=None):
 	lines = open(data, 'r').readlines()
@@ -465,6 +466,7 @@ plt.tight_layout()
 plt.savefig(relax_folder + 'Timescale_plot_all.png')
 plt.close()
 
+'''
 ensemble_images=sorted(glob.glob(SIM_DIR+"model*/*"+'/*correlation*.png'))
 fig, axs = plt.subplots(5, 5, figsize=(15, 15))
 for i in range(5):
@@ -481,6 +483,7 @@ for i in range(5):
 			pass
 plt.tight_layout()
 plt.savefig(relax_folder + 'Correlation_combined.png')
+'''
 
 ensemble_images = sorted(glob.glob(SIM_DIR + "model*/*/*mdmat*.png"))
 fig, axs = plt.subplots(5, 5, figsize=(15, 15))
