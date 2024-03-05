@@ -17,7 +17,6 @@ export GMX_MAXBACKUP=-1
 module purge
 module load gromacs-env
 
-
 sim_time=sim_time
 
 SIM_PATH=${PWD}
@@ -25,11 +24,13 @@ SIM_DIR=$(basename $SIM_PATH)
 
 BASE_DIR=$(cd .. && pwd)
 
+magn_field=$(awk 'NR==1 {print $6}' "${BASE_DIR}/simulation_scripts/MD_scripts/hydrolase_exp_data.txt" 2>/dev/null)
 make_index=${BASE_DIR}/simulation_scripts/MD_scripts/makeNHindex.awk
 py_script=${BASE_DIR}/simulation_scripts/PY_scripts/Old_Relaxations_for_Samuli.py
 mdmat_plot=${BASE_DIR}/simulation_scripts/PY_scripts/xpm_plot.py
 relax_plot=${BASE_DIR}/simulation_scripts/PY_scripts/plot_replicas_to_experiment.py
 corr_plot=${BASE_DIR}/simulation_scripts/PY_scripts/correlationCALC.py
+
 
 mkdir -p $BASE_DIR/results/${SIM_DIR}
 
@@ -48,6 +49,7 @@ ff=$(basename $path)
 
 cp $py_script ${path}
 sed -i "s|PATH_TO_CORR|${path}/correlation_functions|" ${path}/Old_Relaxations_for_Samuli.py
+sed -i "s|magn_field=magn_field|magn_field=$magn_field|" ${path}/Old_Relaxations_for_Samuli.py
 
 TEMP_NAME=(md_${sim_time}ns.tpr)
 name=${TEMP_NAME%.tpr}

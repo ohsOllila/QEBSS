@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH --time=12:00:00
-#SBATCH --partition=small
+#SBATCH --partition=medium
 #SBATCH --ntasks-per-node=64
 #SBATCH --cpus-per-task=2
 #SBATCH --nodes=1
 #SBATCH --array=0-num_jobs
 #SBATCH --output=array_job_output_%A_%a.txt
-#SBATCH --account=Project_2003809
+#SBATCH --account=Project_2001058
 
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
@@ -19,8 +19,9 @@ module load gromacs-env
 sim_time=sim_time
 water_model=tip4p
 
-PARAM_DIR=$(cd ../MD_parameter_files && pwd)
 SIM_DIR=${PWD}
+PARAM_DIR=$(cd ../MD_parameter_files && pwd)
+time_input=$((500000 * $sim_time))
 
 
 FORCEFIELD=("AMBER03WS" "AMBER99SB-DISP" "AMBER99SBWS" "CHARMM36M" "DESAMBER")
@@ -38,6 +39,8 @@ cd ${PROT_FOLDERS[${SLURM_ARRAY_TASK_ID}]}
 i=$(basename $PWD)
 export GMXLIB=$PARAM_DIR/$i
 
+sed "s/time_input/${time_input}/" "${PARAM_DIR}/${i}/md_diff_sim_time/md_any_ns.mdp" > "${PARAM_DIR}/${i}/md_diff_sim_time/md_${sim_time}ns.mdp"
+sed -i "s/sim_time/${sim_time}/" "${PARAM_DIR}/${i}/md_diff_sim_time/md_${sim_time}ns.mdp"
 
 
 if [[ $i == "CHARMM36M" ]]; then
@@ -52,9 +55,9 @@ fi
 temp_name=(*.pdb)
 PROTEIN=${temp_name%.pdb}
 
-#if [ -f md*tpr ]; then
-#       exit 0
-#fi
+if [ -f md*tpr ]; then
+       exit 0
+fi
 
 
 if [[ $i == "CHARMM36M" || $i == "AMBER99SB-DISP" ]]; then

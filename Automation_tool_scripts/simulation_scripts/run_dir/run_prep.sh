@@ -1,8 +1,7 @@
 #!/bin/bash
 
 
-echo "Input simulation time"
-read time_input
+time_input=1500
 
 
 cd ..
@@ -19,25 +18,26 @@ JOB_SCRIPT=${SCRIPTS}/batch_md.sh
 FORCEFIELD=(AMBER03WS AMBER99SB-DISP AMBER99SBWS CHARMM36M DESAMBER)
 
 
-for pdb_file in $BASE_DIR/Unst_prot/*.pdb; do
+for pdb_file in $BASE_DIR/Unst*/*.pdb; do
+	directory_path="${pdb_file%/*}"
 	replicas=$(basename ${pdb_file%.pdb})
 	for i in "${FORCEFIELD[@]}"; do
-        	mkdir -p $BASE_DIR/Unst_prot/$replicas/${i}
-        	cp -R -u -p $pdb_file $BASE_DIR/Unst_prot/$replicas/${i}
+        	mkdir -p $directory_path/$replicas/${i}
+        	cp -R -u -p $pdb_file $directory_path/$replicas/${i}
 	done
 done
 
-list=$BASE_DIR/Unst_prot/*/*/
-jobs=$(( $(ls -l $list | grep -c '^d') - 1 ))
 
 
-sed -i "s/sim_time=sim_time/sim_time=${time_input}/" "${JOB_SCRIPT}"
-sed -i "s/num_jobs/${jobs}/" "${JOB_SCRIPT}"
 
-for i in $BASE_DIR/Unst_prot
+for i in $BASE_DIR/Unst*
 do
   	cd $i
-	sh ${JOB_SCRIPT}
+	jobs=$(( $(find $i -mindepth 2 -maxdepth 2 -type d | wc -l) - 1 ))
+	sed -i "s/sim_time=sim_time/sim_time=${time_input}/" "${JOB_SCRIPT}"
+	sed -i "s/num_jobs/${jobs}/" "${JOB_SCRIPT}"
+	sbatch ${JOB_SCRIPT}
 done
+
 
 
