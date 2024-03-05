@@ -1,23 +1,23 @@
 Semi-automatic MD production and comparison to NMR relaxation times
-(Download and extract Automation_tool_scripts recipitory) 
+(Download and extract Automation_tool_scripts_* recipitory for either LUMI or MAHTI) 
 
 
 The first step is to generate the initial replicas. Go to https://idpconformergenerator.readthedocs.io/en/latest/installation.html or follow the installation steps below: 
  
-cd Automation_tool_scripts/Idpconfgenerator_automation
+cd Automation_tool_scripts_*/Idpconfgenerator_automation
 git clone https://github.com/julie-forman-kay-lab/IDPConformerGenerator 
 cd IDPConformerGenerator 
 conda env create -f requirements.yml 
 cd ..
 
 
-Copy your fasta file to Automation_tool_scripts directory and generate replicas by running: 
+Copy your fasta file to Automation_tool_scripts_* directory and generate replicas by running: 
 
 conda activate idpconfgen 
 ./create_replicas.sh (Choose the number of your fasta file) 
 
 
-Copy Unst_prot, MD_parameter_files, simulation_scripts and env.yml to your project scratch in Mahti. Using my paths as example:
+Copy Unst_prot, MD_parameter_files, simulation_scripts and env.yml to your project scratch in Mahti or LUMI. Using my  Mahti paths as example:
 
 scp -r Unst_prot MD_parameter_files simulation_scripts env.yml malmcajs@mahti.csc.fi:/scratch/project_***/cmcajsa/MD-stabilization/structures/forcefield_compare 
 
