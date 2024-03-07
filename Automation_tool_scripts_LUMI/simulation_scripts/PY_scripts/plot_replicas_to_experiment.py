@@ -16,13 +16,15 @@ R1_values_exp = [[], []]
 R2_values_exp = [[], []]
 NOE_values_exp = [[], []]
 
-#snear_data='/scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/simulation_scripts/MD_scripts/snear_exp_data.txt'
-#SIM_DIR='/scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/Unst_snear/'
 
-exp_data='/scratch/project_462000285/cmcajsa/systems/forcefield_compare/simulation_scripts/MD_scripts/alpha_exp_data.txt'
-SIM_DIR='/scratch/project_462000285/cmcajsa/systems/forcefield_compare/Unst_alphasynuclein/'
+exp_data='/scratch/project_462000285/cmcajsa/systems/forcefield_compare/simulation_scripts/MD_scripts/exp_data.txt'
+#SIM_DIR='/scratch/project_462000285/cmcajsa/systems/forcefield_compare/Unst_prot/'
+SIM_DIR = os.getcwd()
 
-relax_folder=SIM_DIR.replace('Unst_alphasynuclein/', '') + 'results/' + SIM_DIR.split("/")[-2] + '/rep_to_exp_data/'
+
+relax_folder=SIM_DIR.replace('Unst_prot', '') + 'results/' + SIM_DIR.split("/")[-1] + '/rep_to_exp_data/'
+
+
 if not os.path.exists(relax_folder):
     os.makedirs(relax_folder)
 
@@ -367,7 +369,7 @@ fig.suptitle("Comparison of difference to experimental data")
 plt.tight_layout()
 plt.savefig(relax_folder + 'Difference_to_experiment_plot.png')
 plt.close()
-'''
+
 pdb_data = sorted(glob.glob(SIM_DIR + "model*/*/"))
 cmd.set("ray_opaque_background", 1)
 
@@ -386,7 +388,7 @@ for i in pdb_data[:25]:
 		cmd.delete('all')
 
 cmd.quit()
-'''
+
 ensemble_images = sorted(glob.glob(SIM_DIR + "model*/*/Ensemble_model*.png"))
 fig, axs = plt.subplots(5, 5, figsize=(15, 15))
 for i in range(5):
@@ -529,4 +531,4 @@ for i in range(5):
 			axs[j, i].legend()
 plt.tight_layout()
 plt.savefig(relax_folder + 'Tau_effective_area.png')
-
+'''

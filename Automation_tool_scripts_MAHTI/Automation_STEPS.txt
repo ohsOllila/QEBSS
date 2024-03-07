@@ -1,0 +1,55 @@
+Semi-automatic MD production and comparison to NMR relaxation times
+(Download and extract Automation_tool_scripts_MAHTI recipitory) 
+
+
+The first step is to generate the initial replicas. Go to https://idpconformergenerator.readthedocs.io/en/latest/installation.html or follow the installation steps below: 
+ 
+cd Automation_tool_scripts_*/Idpconfgenerator_automation
+git clone https://github.com/julie-forman-kay-lab/IDPConformerGenerator 
+cd IDPConformerGenerator 
+conda env create -f requirements.yml 
+cd ..
+
+
+Copy your fasta file to Automation_tool_scripts_MAHTI directory and generate replicas by running: 
+
+conda activate idpconfgen 
+./create_replicas.sh (Choose the number of your fasta file) 
+
+
+Copy Unst_prot, MD_parameter_files, simulation_scripts and env.yml to your project scratch in Mahti. Using my Mahti paths as example:
+
+scp -r Unst_prot MD_parameter_files simulation_scripts env.yml malmcajs@mahti.csc.fi:/scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare 
+
+
+Log into Mahti: 
+ssh malmcajs@mahti.csc.fi 
+
+
+Go to folder where you added your simulation folders/scripts: 
+cd /scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare
+
+
+Set up the environment:
+ 
+module purge
+module load tykky
+mkdir env
+conda-containerize new --prefix env env.yml
+
+Go to simulation_scripts/MD_scripts:
+
+Add your experimental data to this folder. Make sure to add the first line with the magnetic field strength in MHz. Any missing data should type "n". Name the file exp_data.txt or go to simulation_scripts/PY_scripts/plot_replicas_to_experiment.py and change the line exp_data='/scratch/project_462000285/cmcajsa/systems/forcefield_compare/simulation_scripts/MD_scripts/exp_data.txt' to the name of your experimental data file.
+
+An example of what it should look like can be seen in the file hydrolase_exp_data.txt.
+
+Go to simulation_scripts/run_dir and run scripts in order:
+
+sh run_prep.sh 
+sh run_batch_md.sh 
+sh run_analysis.sh 
+
+Each of these scripts will ask which of your available project resources you want to use. Choose the number of the correct project.
+
+
+Before you run the next script, you must ensure the previous step was finished. E.g., you can check if the system preparation run was successful by going to /scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/Unst_prot and running ls -lh */*/md*tpr. Run ls -lh */*/md*tpr | wc –l to count the files. The last script collects the results, which can be found in /scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/results
