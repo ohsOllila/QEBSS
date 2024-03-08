@@ -17,14 +17,12 @@ R2_values_exp = [[], []]
 NOE_values_exp = [[], []]
 
 
-exp_data='/scratch/project_462000285/cmcajsa/systems/forcefield_compare/simulation_scripts/MD_scripts/exp_data.txt'
-#SIM_DIR='/scratch/project_462000285/cmcajsa/systems/forcefield_compare/Unst_prot/'
+#SIM_DIR='/scratch/project_462000285/cmcajsa/systems/forcefield_compare/Unst_alphasynuclein/'
 SIM_DIR = os.getcwd()
-
+BASE_DIR=os.path.dirname(SIM_DIR)
+exp_data = os.path.join(BASE_DIR, 'simulation_scripts', 'MD_scripts', f'{SIM_DIR}_exp_data.txt')
 
 relax_folder=SIM_DIR.replace('Unst_prot', '') + 'results/' + SIM_DIR.split("/")[-1] + '/rep_to_exp_data/'
-
-
 if not os.path.exists(relax_folder):
     os.makedirs(relax_folder)
 
@@ -531,4 +529,5 @@ for i in range(5):
 			axs[j, i].legend()
 plt.tight_layout()
 plt.savefig(relax_folder + 'Tau_effective_area.png')
+
 '''

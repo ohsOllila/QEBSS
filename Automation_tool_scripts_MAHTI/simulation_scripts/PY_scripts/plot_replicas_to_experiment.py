@@ -16,13 +16,17 @@ R1_values_exp = [[], []]
 R2_values_exp = [[], []]
 NOE_values_exp = [[], []]
 
+#snear_data='/scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/simulation_scripts/MD_scripts/snear_exp_data.txt'
+#SIM_DIR='/scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/Unst_snear/'
 
-
-exp_data='/scratch/project_462000285/cmcajsa/systems/forcefield_compare/simulation_scripts/MD_scripts/exp_data.txt'
+#exp_data='/scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/simulation_scripts/MD_scripts/hydrolase_exp_data.txt'
 #SIM_DIR='/scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/Unst_hydrolase/'
 SIM_DIR = os.getcwd()
+BASE_DIR=os.path.dirname(SIM_DIR)
+exp_data = os.path.join(BASE_DIR, 'simulation_scripts', 'MD_scripts', f'{SIM_DIR}_exp_data.txt')
 
-relax_folder=SIM_DIR.replace('Unst_prot/', '') + 'results/' + SIM_DIR.split("/")[-1] + '/rep_to_exp_data/'
+relax_folder=SIM_DIR.replace('Unst_prot', '') + 'results/' + SIM_DIR.split("/")[-1] + '/rep_to_exp_data/'
+
 if not os.path.exists(relax_folder):
     os.makedirs(relax_folder)
 
@@ -367,7 +371,7 @@ plt.tight_layout()
 plt.savefig(relax_folder + 'Difference_to_experiment_plot.png')
 plt.close()
 
-
+'''
 pdb_data = sorted(glob.glob(SIM_DIR + "model*/*/"))
 cmd.set("ray_opaque_background", 1)
 
@@ -405,7 +409,7 @@ for i in range(5):
 plt.tight_layout()
 plt.savefig(relax_folder + 'Ensembles_combined.png')
 plt.close()
-
+'''
 
 def create_timescale_scatter_plot(data, axs=None):
 	lines = open(data, 'r').readlines()
@@ -466,7 +470,7 @@ plt.tight_layout()
 plt.savefig(relax_folder + 'Timescale_plot_all.png')
 plt.close()
 
-
+'''
 ensemble_images=sorted(glob.glob(SIM_DIR+"model*/*"+'/*correlation*.png'))
 fig, axs = plt.subplots(5, 5, figsize=(15, 15))
 for i in range(5):
@@ -483,7 +487,7 @@ for i in range(5):
 			pass
 plt.tight_layout()
 plt.savefig(relax_folder + 'Correlation_combined.png')
-
+'''
 
 ensemble_images = sorted(glob.glob(SIM_DIR + "model*/*/*mdmat*.png"))
 fig, axs = plt.subplots(5, 5, figsize=(15, 15))

@@ -1,6 +1,7 @@
+
 #!/bin/bash
 
-time_input=2000
+time_input=1500
 
 
 cd ..
@@ -9,7 +10,7 @@ BASE_DIR=${PWD}
 SCRIPTS=${BASE_DIR}/simulation_scripts/MD_scripts
 analysis_script=${SCRIPTS}/analysis.sh
 
-your_projects=$(csc-projects | grep -o "project_.*" | awk '{print $1}')
+your_projects=$(csc-projects | grep -o "project_2.*" | awk '{print $1}')
 echo "Select the number of the project you want to use:"
 
 num=1
@@ -24,7 +25,7 @@ done
 read choice
 project=${list[choice-1]}
 
-for i in $BASE_DIR/Unst*
+for i in $BASE_DIR/Unst*/
 do
   	cd $i
 	jobs=$(( $(find "$i" -mindepth 2 -maxdepth 2 -type d | wc -l) - 1 ))

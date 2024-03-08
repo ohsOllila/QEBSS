@@ -5,7 +5,8 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --nodes=1
 #SBATCH --array=0-24
-#SBATCH --account=Project_462000285
+#SBATCH --account=project_462000404
+##SBATCH --account=project
 
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
@@ -21,7 +22,7 @@ SIM_DIR=$(basename $SIM_PATH)
 
 BASE_DIR=$(cd .. && pwd)
 
-magn_field=$(awk 'NR==1 {print $6}' "${BASE_DIR}/simulation_scripts/MD_scripts/hydrolase_exp_data.txt" 2>/dev/null)
+magn_field=$(awk 'NR==1 {print $6}' "${BASE_DIR}/${SIM_DIR}_exp_data.txt" 2>/dev/null)
 make_index=${BASE_DIR}/simulation_scripts/MD_scripts/makeNHindex.awk
 py_script=${BASE_DIR}/simulation_scripts/PY_scripts/Old_Relaxations_for_Samuli.py
 mdmat_plot=${BASE_DIR}/simulation_scripts/PY_scripts/xpm_plot.py

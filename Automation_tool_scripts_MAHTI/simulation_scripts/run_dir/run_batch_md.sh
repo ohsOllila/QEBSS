@@ -1,14 +1,14 @@
 #!/bin/bash
 
-time_input=2000
+time_input=1500
 
 cd ..
 cd ..
 BASE_DIR=$PWD
 
-SIM_DIR=$BASE_DIR/Unst*
+SIM_DIR=$BASE_DIR/Unst_hyd*
 
-your_projects=$(csc-projects | grep -o "project_.*" | awk '{print $1}')
+your_projects=$(csc-projects | grep -o "project_2.*" | awk '{print $1}')
 echo "Select the number of the project you want to use:"
 
 num=1

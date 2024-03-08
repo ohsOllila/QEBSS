@@ -1,6 +1,7 @@
 #!/bin/bash
 #SBATCH --partition=standard-g
-#SBATCH --account=Project_462000285
+##SBATCH --account=project
+#SBATCH --account=project_462000404
 #SBATCH --time=2-00:00:00
 #SBATCH --nodes=1
 #SBATCH --gpus-per-node=8
@@ -36,12 +37,12 @@ PARAM_DIR=/scratch/project_462000199/cmcajsa
 i=$(basename $PWD)
 
 
-sim_time=1500
+sim_time=2000
 FORCEFIELD=$(basename $PWD)
 export GMXLIB=/scratch/project_462000199/cmcajsa/$i
 
 #srun gmx_mpi grompp -f ${PARAM_DIR}/${i}/md_diff_sim_time/md_${sim_time}ns.mdp -c npt_${i}.gro -t npt_${i}.cpt -p topol.top -o md_${sim_time}ns.tpr
-#srun --cpu-bind=$CPU_BIND ./select_gpu gmx_mpi mdrun -deffnm md_${sim_time}ns -cpi md_${sim_time}ns.cpt -nb gpu -bonded gpu -pme gpu -npme 1 -noappend
+srun --cpu-bind=$CPU_BIND ./select_gpu gmx_mpi mdrun -deffnm md_${sim_time}ns -cpi md_${sim_time}ns.cpt -nb gpu -bonded gpu -pme gpu -npme 1 -noappend
 gmx_mpi trjcat -f md_1500ns*xtc -o md_2000ns.xtc
 
 #gmx_mpi convert-tpr -s md_${sim_time}ns.tpr -extend 1000000 -o md_1500ns.tpr

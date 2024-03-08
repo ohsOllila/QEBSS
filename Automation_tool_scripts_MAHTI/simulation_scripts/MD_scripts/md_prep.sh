@@ -106,8 +106,6 @@ srun gmx_mpi mdrun -deffnm nvt_${i}
 srun -n 1 gmx_mpi grompp -f ${PARAM_DIR}/${i}/npt.mdp -c nvt_${i}.gro -r nvt_${i}.gro -t nvt_${i}.cpt -p topol.top -o npt_${i}.tpr
 srun gmx_mpi mdrun -deffnm npt_${i}
 
-srun gmx_mpi grompp -f ${PARAM_DIR}/${i}/md_diff_sim_time/md_${sim_time}ns.mdp -c npt_${i}.gro -t npt_${i}.cpt -p topol.top -o md_${sim_time}ns.tpr
-
 
 
 srun gmx_mpi grompp -f ${PARAM_DIR}/${i}/md_diff_sim_time/md_${sim_time}ns.mdp -c npt_${i}.gro -t npt_${i}.cpt -p topol.top -o md_${sim_time}ns.tpr

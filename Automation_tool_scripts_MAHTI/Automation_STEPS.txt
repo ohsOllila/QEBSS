@@ -4,7 +4,7 @@ Semi-automatic MD production and comparison to NMR relaxation times
 
 The first step is to generate the initial replicas. Go to https://idpconformergenerator.readthedocs.io/en/latest/installation.html or follow the installation steps below: 
  
-cd Automation_tool_scripts_*/Idpconfgenerator_automation
+cd Automation_tool_scripts_MAHTI/Idpconfgenerator_automation
 git clone https://github.com/julie-forman-kay-lab/IDPConformerGenerator 
 cd IDPConformerGenerator 
 conda env create -f requirements.yml 
@@ -29,6 +29,9 @@ ssh malmcajs@mahti.csc.fi
 Go to folder where you added your simulation folders/scripts: 
 cd /scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare
 
+Add your experimental data to this folder. Make sure to add the first line with the magnetic field strength in MHz. Any missing data should type "n". Name the file Unst_prot_exp_data.txt 
+
+An example of what it should look like can be seen in the file Unst_hydrolase_exp_data.txt.
 
 Set up the environment:
  
@@ -37,11 +40,6 @@ module load tykky
 mkdir env
 conda-containerize new --prefix env env.yml
 
-Go to simulation_scripts/MD_scripts:
-
-Add your experimental data to this folder. Make sure to add the first line with the magnetic field strength in MHz. Any missing data should type "n". Name the file exp_data.txt or go to simulation_scripts/PY_scripts/plot_replicas_to_experiment.py and change the line exp_data='/scratch/project_462000285/cmcajsa/systems/forcefield_compare/simulation_scripts/MD_scripts/exp_data.txt' to the name of your experimental data file.
-
-An example of what it should look like can be seen in the file hydrolase_exp_data.txt.
 
 Go to simulation_scripts/run_dir and run scripts in order:
 
