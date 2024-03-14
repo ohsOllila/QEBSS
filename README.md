@@ -14,6 +14,7 @@ The first step is to generate the initial replicas. Go to https://idpconformerge
 
 
 
+
 Copy your fasta file to Automation_tool_scripts_*** directory and generate replicas by running: 
 
 `conda activate idpconfgen` 
@@ -21,9 +22,11 @@ Copy your fasta file to Automation_tool_scripts_*** directory and generate repli
 `./create_replicas.sh` (Choose the number of your fasta file) 
 
 
+
 Copy Unst_prot, MD_parameter_files, simulation_scripts and env.yml to your project scratch in Mahti or Lumi. Using my Mahti paths as example:
 
 `scp -r Unst_prot MD_parameter_files simulation_scripts env.yml malmcajs@mahti.csc.fi:/scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare` 
+
 
 
 Log into HPC: 
@@ -31,13 +34,13 @@ Log into HPC:
 `ssh malmcajs@mahti.csc.fi` 
 
 
+
 Go to folder where you added your simulation folders/scripts: 
 
 `cd /scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare`
 
-Add your experimental data file to this folder. Make sure to add the first line with the magnetic field strength in MHz. Any missing data should type "n". Name the file Unst_prot_exp_data.txt 
+Add your experimental data file to this folder. Make sure to add the first line with the magnetic field strength in MHz. Any missing data should type "n". Name the file **Unst_prot_exp_data.txt**. An example of what it should look like can be seen in the file Unst_hydrolase_exp_data.txt or Unst_alphasynuclein_exp_data.txt
 
-An example of what it should look like can be seen in the file Unst_hydrolase_exp_data.txt or Unst_alphasynuclein_exp_data.txt
 
 Set up the environment here too:
 
@@ -64,11 +67,13 @@ In Lumi:
 `conda-containerize new --prefix env env.yml`
 
 
+
 Go to simulation_scripts/run_dir. This is the folder from which you run everything.
 
 In Mahti nothing needs to be changed. The scripts will ask which one of your available project resources you want to use. Choose the number of the correct project. 
 
 ❗️In Lumi you need to change the project number in the slurm scripts manually. Go to simulation_scripts/MD_scripts and change the line `#SBATCH --account=project to #SBATCH --account=project_"your project number"` in files md_prep.sh, md.sh and analysis.sh.
+
 
 Run scripts in order:
 
@@ -77,6 +82,7 @@ Run scripts in order:
 `sh run_batch_md.sh` 
 
 `sh run_analysis.sh` 
+
 
 
 
