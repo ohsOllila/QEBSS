@@ -12,7 +12,6 @@ The first step is to generate the initial replicas. Go to https://idpconformerge
 
 `conda env create -f requirements.yml` 
 
-`cd ..`
 
 
 Copy your fasta file to Automation_tool_scripts_*** directory and generate replicas by running: 
