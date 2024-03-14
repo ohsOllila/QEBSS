@@ -7,14 +7,18 @@ The first step is to generate the initial replicas. Go to https://idpconformerge
 `cd Automation_tool_scripts_***/Idpconfgenerator_automation`
 
 `git clone https://github.com/julie-forman-kay-lab/IDPConformerGenerator`
+
 `cd IDPConformerGenerator` 
+
 `conda env create -f requirements.yml` 
+
 `cd ..`
 
 
 Copy your fasta file to Automation_tool_scripts_*** directory and generate replicas by running: 
 
 `conda activate idpconfgen` 
+
 `./create_replicas.sh` (Choose the number of your fasta file) 
 
 
@@ -24,10 +28,12 @@ Copy Unst_prot, MD_parameter_files, simulation_scripts and env.yml to your proje
 
 
 Log into HPC: 
+
 `ssh malmcajs@mahti.csc.fi` 
 
 
 Go to folder where you added your simulation folders/scripts: 
+
 `cd /scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare`
 
 Add your experimental data file to this folder. Make sure to add the first line with the magnetic field strength in MHz. Any missing data should type "n". Name the file Unst_prot_exp_data.txt 
@@ -39,16 +45,23 @@ Set up the environment here too:
 In Mahti:
  
 `module purge`
+
 `module load tykky`
+
 `mkdir env`
+
 `conda-containerize new --prefix env env.yml`
 
 In Lumi:
 
 `module purge`
+
 `module load LUMI`
+
 `module load lumi-container-wrapper`
+
 `mkdir env`
+
 `conda-containerize new --prefix env env.yml`
 
 
@@ -61,7 +74,9 @@ In Mahti nothing needs to be changed. The scripts will ask which one of your ava
 Run scripts in order:
 
 `sh run_prep.sh` 
+
 `sh run_batch_md.sh` 
+
 `sh run_analysis.sh` 
 
 
