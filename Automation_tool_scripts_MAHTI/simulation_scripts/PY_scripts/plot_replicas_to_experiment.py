@@ -23,9 +23,9 @@ NOE_values_exp = [[], []]
 #SIM_DIR='/scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/Unst_hydrolase/'
 SIM_DIR = os.getcwd()
 BASE_DIR=os.path.dirname(SIM_DIR)
-exp_data = os.path.join(BASE_DIR, 'simulation_scripts', 'MD_scripts', f'{SIM_DIR}_exp_data.txt')
+exp_data = BASE_DIR + '/' + SIM_DIR.split("/")[-1] + '_exp_data.txt'
 
-relax_folder=SIM_DIR.replace('Unst_prot', '') + 'results/' + SIM_DIR.split("/")[-1] + '/rep_to_exp_data/'
+relax_folder=SIM_DIR.replace(SIM_DIR.split("/")[-1], '') + "results/" + SIM_DIR.split("/")[-1] + '/rep_to_exp_data/'
 
 if not os.path.exists(relax_folder):
     os.makedirs(relax_folder)
@@ -250,7 +250,7 @@ for i in range(max(len(R1_RMSD_values), len(R2_RMSD_values), len(NOE_RMSD_values
 		#print(R1_diff[i][0], R1_diff[i][1])
 		Best_names.append((R1_diff[i][0], R1_diff[i][1]))
 
-		with open(SIM_DIR+ R1_diff[i][0] +'/md_1000ns_gyrate.xvg', 'r') as file:
+		with open(SIM_DIR + '/' + R1_diff[i][0] +'/md_2000ns_gyrate.xvg', 'r') as file:
 			lines = file.readlines()
 			for line in range(27, len(lines)):
 				parts = lines[line].split()
@@ -266,7 +266,7 @@ plt.savefig(relax_folder + 'best_rog_density_landscape_plot.png')
 plt.close()
 
 
-rog_data=sorted(glob.glob(SIM_DIR+"model*/*"+'/*gyrate*.xvg'))
+rog_data=sorted(glob.glob(SIM_DIR+"/model*/*"+'/*2000*gyrate*.xvg'))
 fig, axs = plt.subplots(5, 5, figsize=(15, 15))
 
 for i in range(5):
@@ -371,8 +371,8 @@ plt.tight_layout()
 plt.savefig(relax_folder + 'Difference_to_experiment_plot.png')
 plt.close()
 
-'''
-pdb_data = sorted(glob.glob(SIM_DIR + "model*/*/"))
+
+pdb_data = sorted(glob.glob(SIM_DIR + "/model*/*/"))
 cmd.set("ray_opaque_background", 1)
 
 for i in pdb_data[:25]:
@@ -391,7 +391,7 @@ for i in pdb_data[:25]:
 
 cmd.quit()
 
-ensemble_images = sorted(glob.glob(SIM_DIR + "model*/*/Ensemble_model*.png"))
+ensemble_images = sorted(glob.glob(SIM_DIR + "/model*/*/Ensemble_model*.png"))
 fig, axs = plt.subplots(5, 5, figsize=(15, 15))
 for i in range(5):
         for j in range(5):
@@ -409,7 +409,8 @@ for i in range(5):
 plt.tight_layout()
 plt.savefig(relax_folder + 'Ensembles_combined.png')
 plt.close()
-'''
+
+
 
 def create_timescale_scatter_plot(data, axs=None):
 	lines = open(data, 'r').readlines()
@@ -450,7 +451,7 @@ def create_timescale_scatter_plot(data, axs=None):
 		axs.set_title(rep_name + "/" + forcefield)
 
 
-coeff_data = sorted(glob.glob(SIM_DIR + "model*/*/Ctimes_Coeffs.txt"))
+coeff_data = sorted(glob.glob(SIM_DIR + "/model*/*/Ctimes_Coeffs.txt"))
 
 for data in coeff_data:
 	create_timescale_scatter_plot(data)
@@ -470,8 +471,8 @@ plt.tight_layout()
 plt.savefig(relax_folder + 'Timescale_plot_all.png')
 plt.close()
 
-'''
-ensemble_images=sorted(glob.glob(SIM_DIR+"model*/*"+'/*correlation*.png'))
+
+ensemble_images=sorted(glob.glob(SIM_DIR+"/model*/*"+'/*correlation*.png'))
 fig, axs = plt.subplots(5, 5, figsize=(15, 15))
 for i in range(5):
 	for j in range(5):
@@ -487,9 +488,9 @@ for i in range(5):
 			pass
 plt.tight_layout()
 plt.savefig(relax_folder + 'Correlation_combined.png')
-'''
 
-ensemble_images = sorted(glob.glob(SIM_DIR + "model*/*/*mdmat*.png"))
+
+ensemble_images = sorted(glob.glob(SIM_DIR + "/model*/*/*mdmat*.png"))
 fig, axs = plt.subplots(5, 5, figsize=(15, 15))
 for i in range(5):
 	for j in range(5):
@@ -535,5 +536,7 @@ for i in range(5):
 			axs[j, i].legend()
 plt.tight_layout()
 plt.savefig(relax_folder + 'Tau_effective_area.png')
+
+
 
 

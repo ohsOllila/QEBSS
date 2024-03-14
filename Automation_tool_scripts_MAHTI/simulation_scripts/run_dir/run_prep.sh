@@ -1,6 +1,6 @@
 #!/bin/bash
 
-time_input=1500
+time_input=2000
 
 
 cd ..

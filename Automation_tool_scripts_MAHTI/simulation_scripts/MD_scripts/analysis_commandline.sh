@@ -6,15 +6,17 @@ sim_time=1500
 
 SCRIPT_DIR=$(cd .. && pwd)
 SIM_DIR=$(cd ../.. && pwd)
+SIM_NAME=$(basename $SIM_DIR)
 PROT_DIR=$SIM_DIR/Unst_hydrolase
 
-magn_field=$(awk 'NR==1 {print $6}' "${SCRIPT_DIR}/MD_scripts/hydrolase_exp_data.txt" 2>/dev/null)
+magn_field=$(awk 'NR==1 {print $6}' "${SIM_DIR}/$(basename $PROT_DIR)_exp_data.txt" 2>/dev/null)
 make_index=${SCRIPT_DIR}/MD_scripts/makeNHindex.awk
 py_script=${SCRIPT_DIR}/PY_scripts/Old_Relaxations_for_Samuli.py
 mdmat_plot=${SCRIPT_DIR}/PY_scripts/xpm_plot.py
 relax_plot=${SCRIPT_DIR}/PY_scripts/plot_replicas_to_experiment.py
 
 mkdir -p $SIM_DIR/results/$(basename $PROT_DIR)
+
 
 list=${PROT_DIR}/model*/*/
 
@@ -24,7 +26,6 @@ for i in $list; do
 	cd ${i}
 
 	path=${PWD}
-	echo $path
 	base_dir=$(basename "$(dirname "$path")")
 	replicas=$(basename "$base_dir")
 	ff=$(basename $path)
@@ -43,7 +44,7 @@ for i in $list; do
 
 	module purge
 	module load gromacs-env
-
+: '
 	echo 1 1 | gmx_mpi trjconv -f ${name}.xtc -s ${name}.tpr -pbc mol -center -dump 0 -o temp_${name}.gro
 	echo 1 1 | gmx_mpi trjconv -f ${name}.xtc -s ${name}.tpr -pbc mol -center -o ${name}_noPBC.xtc
 	gmx_mpi filter -f ${name}_noPBC.xtc -s temp_${name}.gro -nf 20 -all -ol ${name}_smooth.xtc
@@ -63,7 +64,7 @@ for i in $list; do
 			echo $i | gmx_mpi rotacf -f ${name}_noPBC.xtc -s ${name}.tpr -n HN.ndx -o correlation_functions/NHrotaCF_$i.xvg -P 2 -d -xvg none  #-nice 20 &
 		fi
 	done
-	
+'	
 
 	module purge
 	export PATH="/scratch/project_2003809/cmcajsa/env/bin:$PATH"
@@ -82,6 +83,9 @@ for i in $list; do
 done
 
 export PATH="/scratch/project_2003809/cmcajsa/env/bin:$PATH"
+
+cd ${PROT_DIR}
+
 python3 $relax_plot
 
 module purge

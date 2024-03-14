@@ -1,7 +1,7 @@
 
 #!/bin/bash
 
-time_input=1500
+time_input=2000
 
 
 cd ..
@@ -30,6 +30,8 @@ do
   	cd $i
 	jobs=$(( $(find "$i" -mindepth 2 -maxdepth 2 -type d | wc -l) - 1 ))
 
+	echo $jobs
+
 	cp ${analysis_script} ${SCRIPTS}/batch_analysis.sh
 	JOB_SCRIPT=${SCRIPTS}/batch_analysis.sh
 	sed -i "s/sim_time=sim_time/sim_time=${time_input}/" "${JOB_SCRIPT}"
@@ -37,5 +39,6 @@ do
 	sed -i "s/project/${project}/" "${JOB_SCRIPT}"
 
 	sbatch ${JOB_SCRIPT}
+
 done
 

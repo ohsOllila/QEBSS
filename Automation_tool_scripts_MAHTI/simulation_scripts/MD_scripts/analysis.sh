@@ -76,22 +76,18 @@ awk -f ${make_index} $GRO_FILE > HN.ndx
 numberOFfuncs=$(grep "\[" HN.ndx | tail -n 1 | awk '{print $2}')
 for ((i = 0; i <= $numberOFfuncs; i++))
 do
-#	if [ ! -s correlation_functions/NHrotaCF_$i.xvg ]; then
-
-		echo $i | gmx_mpi rotacf -f ${name}_noPBC.xtc -s ${name}.tpr -n HN.ndx -o correlation_functions/NHrotaCF_$i.xvg -P 2 -d -xvg none  #-nice 20 &
-#	fi
+	echo $i | gmx_mpi rotacf -f ${name}_noPBC.xtc -s ${name}.tpr -n HN.ndx -o correlation_functions/NHrotaCF_$i.xvg -P 2 -d -xvg none  #-nice 20 &
 done
 	
 
 module purge
 export PATH="$(cd ../../../env/bin && pwd):$PATH"
+#export PATH="/scratch/project_2003809/cmcajsa/env/bin:$PATH"
 
 python3 $mdmat_plot
 python3 $corr_plot
 python3 ${path}/Old_Relaxations_for_Samuli.py > relaxation_data.txt
-python3 $relax_plot
 
-module purge
 
 mkdir -p $BASE_DIR/results/${SIM_DIR}/$replicas/$ff
 sim_results=$BASE_DIR/results/${SIM_DIR}/$replicas/$ff
@@ -104,3 +100,5 @@ cp -r $path/correlation_functions $sim_results
 
 
 
+cd $SIM_PATH
+python3 $relax_plot
