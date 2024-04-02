@@ -5,7 +5,7 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --nodes=1
 #SBATCH --array=0-24
-#SBATCH --account=project_462000404
+#SBATCH --account=project_462000285
 ##SBATCH --account=project
 
 
@@ -76,7 +76,6 @@ for ((i = 0; i <= $numberOFfuncs; i++))
 do
 	echo $i | gmx_mpi rotacf -f ${name}_noPBC.xtc -s ${name}.tpr -n HN.ndx -o correlation_functions/NHrotaCF_$i.xvg -P 2 -d -xvg none  #-nice 20 &
 done
-	
 
 module purge
 export PATH="$(cd ../../../env/bin && pwd):$PATH"

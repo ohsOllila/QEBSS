@@ -9,6 +9,7 @@ BASE_DIR=${PWD}
 SCRIPTS=${BASE_DIR}/simulation_scripts/MD_scripts
 md_script=${SCRIPTS}/md_prep.sh
 
+: '
 your_projects=$(csc-projects | grep -o "project_.*" | awk '{print $1}')
 echo "Select the number of the project you want to use:"
 
@@ -23,7 +24,7 @@ done
 
 read choice
 project=${list[choice-1]}
-
+'
 
 
 FORCEFIELD=(AMBER03WS AMBER99SB-DISP AMBER99SBWS CHARMM36M DESAMBER)
@@ -39,7 +40,7 @@ for pdb_file in $BASE_DIR/Unst*/*.pdb; do
 done
 
 
-for i in $BASE_DIR/Unst*/
+for i in $BASE_DIR/Unst*199*/
 do
   	cd $i
 	jobs=$(( $(find $i -mindepth 2 -maxdepth 2 -type d | wc -l) - 1 ))
@@ -48,7 +49,7 @@ do
 	JOB_SCRIPT=${SCRIPTS}/batch_md.sh
 	sed -i "s/sim_time=sim_time/sim_time=${time_input}/" "${JOB_SCRIPT}"
 	sed -i "s/num_jobs/${jobs}/" "${JOB_SCRIPT}"
-	sed -i "s/project/${project}/" "${JOB_SCRIPT}"
+	#sed -i "s/project/${project}/" "${JOB_SCRIPT}"
 
 	sbatch ${JOB_SCRIPT}
 done

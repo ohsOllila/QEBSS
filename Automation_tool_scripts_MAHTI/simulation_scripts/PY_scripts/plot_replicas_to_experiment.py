@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import os
 import glob
 import math
+import csv
 import numpy as np
 from collections import Counter
 from matplotlib.image import imread
@@ -12,23 +13,31 @@ import statistics
 from pymol import cmd
 import pymol
 
-R1_values_exp = [[], []]
-R2_values_exp = [[], []]
-NOE_values_exp = [[], []]
 
-#snear_data='/scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/simulation_scripts/MD_scripts/snear_exp_data.txt'
-#SIM_DIR='/scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/Unst_snear/'
+FORCEFIELDS=["AMBER03WS", "AMBER99SB-DISP", "AMBER99SBWS", "CHARMM36M", "DESAMBER"]
 
-#exp_data='/scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/simulation_scripts/MD_scripts/hydrolase_exp_data.txt'
-#SIM_DIR='/scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/Unst_hydrolase/'
+color_map = {
+    'model_01': 'red',
+    'model_02': 'blue',
+    'model_03': 'green',
+    'model_04': 'purple',
+    'model_05': 'orange'
+}
+
+
+#SIM_DIR='/scratch/project_462000285/cmcajsa/systems/forcefield_compare/Unst_alphasynuclein/'
 SIM_DIR = os.getcwd()
 BASE_DIR=os.path.dirname(SIM_DIR)
 exp_data = BASE_DIR + '/' + SIM_DIR.split("/")[-1] + '_exp_data.txt'
-
 relax_folder=SIM_DIR.replace(SIM_DIR.split("/")[-1], '') + "results/" + SIM_DIR.split("/")[-1] + '/rep_to_exp_data/'
 
 if not os.path.exists(relax_folder):
     os.makedirs(relax_folder)
+
+
+R1_values_exp = [[], []]
+R2_values_exp = [[], []]
+NOE_values_exp = [[], []]
 
 # Read data from the text file
 with open(exp_data, 'r') as file:
@@ -64,21 +73,13 @@ R2_values_exp_filtered = filter_list(R2_values_exp)
 NOE_values_exp_filtered = filter_list(NOE_values_exp)
 
 
-FORCEFIELDS=["AMBER03WS", "AMBER99SB-DISP", "AMBER99SBWS", "CHARMM36M", "DESAMBER"]
 
-color_map = {
-    'model_01': 'red',
-    'model_02': 'blue',
-    'model_03': 'green',
-    'model_04': 'purple',
-    'model_05': 'orange'
-}
-
-combined_list_of_lists=[]
+combined_list_of_relax_times=[]
 
 R1_diff=[]
 R2_diff=[]
 NOE_diff=[]
+
 
 for item in FORCEFIELDS:
 	fig, axs = plt.subplots(1, 3, figsize=(15, 6))
@@ -123,23 +124,51 @@ for item in FORCEFIELDS:
 			RMSD_NOE=f"NOE: {math.sqrt(sum(x**2 for x in NOE_values_diff) / len(NOE_values_diff))}"
 			NOE_diff.append((rep_name + "/" + item, RMSD_NOE, NOE_values_diff))
 		try:
-			combined_list_of_lists.append((rep_name + "/" + item, combined_list))
+			combined_list_of_relax_times.append((rep_name + "/" + item, combined_list))
 		except:
 			pass
-			
-		selected = color_map.get(rep_name, 'black')			
 
-		axs[0].plot(range(1, len(combined_list[0])), combined_list[0][1:], label='R1 Data_' + rep_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
+Names=[item[0] for item in combined_list_of_relax_times]
+Value_lists=[item[1] for item in combined_list_of_relax_times]
+
+Rog_data_list=[]
+
+R1_lists=[item[0] for item in Value_lists]
+R2_lists=[item[1] for item in Value_lists]
+NOE_lists=[item[2] for item in Value_lists]
+
+R1_max=max(max(sublist[1:]) for sublist in R1_lists)
+R2_max=max(max(sublist[1:]) for sublist in R2_lists)
+NOE_max=max(max(sublist[1:]) for sublist in NOE_lists)
+NOE_min=min(min(sublist[1:]) for sublist in NOE_lists)
+
+R1_RMSD_values = [item[1].replace('R1: ', '') for item in R1_diff]
+R2_RMSD_values = [item[1].replace('R2: ', '') for item in R2_diff]
+NOE_RMSD_values = [item[1].replace('NOE: ', '') for item in NOE_diff]
+
+R1_RMSD_min=min(R1_RMSD_values)
+R2_RMSD_min=min(R2_RMSD_values)
+NOE_RMSD_min=min(NOE_RMSD_values)
+
+for i in range(0, 25, 5):
+	fig, axs = plt.subplots(1, 3, figsize=(15, 6))
+	for j in range(i, i + 5):
+		name=Names[j]
+		rep_name=name.split("/")[0]
+		ff_name=name.split("/")[1]
+		selected = color_map.get(rep_name, 'black')
+		list=Value_lists[j]
+		axs[0].plot(range(1, len(list[0])), list[0][1:], label='R1 Data_' + rep_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
 		axs[0].set_xlabel('Residue number')
 		axs[0].set_ylabel('R1_values')
 		axs[0].set_title('R1_data')
 		axs[0].legend()
-		axs[1].plot(range(1, len(combined_list[1])), combined_list[1][1:], label='R2 Data_' + rep_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
+		axs[1].plot(range(1, len(list[1])), list[1][1:], label='R2 Data_' + rep_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
 		axs[1].set_xlabel('Residue number')
 		axs[1].set_ylabel('R2_values')
 		axs[1].set_title('R2_data')
 		axs[1].legend()
-		axs[2].plot(range(1, len(combined_list[2])), combined_list[2][1:], label='NOE Data_' + rep_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
+		axs[2].plot(range(1, len(list[2])), list[2][1:], label='NOE Data_' + rep_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
 		axs[2].set_xlabel('Residue number')				
 		axs[2].set_ylabel('NOE_values')
 		axs[2].set_title('NOE_data')
@@ -164,21 +193,8 @@ for item in FORCEFIELDS:
 	axs[2].legend()
 	
 	plt.tight_layout()
-	plt.savefig(relax_folder + 'relaxation_' + item + '_plot.png')
+	plt.savefig(relax_folder + ff_name + '_plot.png')
 plt.close('all')
-
-Names=[item[0] for item in combined_list_of_lists]
-Value_lists=[item[1] for item in combined_list_of_lists]
-
-R1_lists=[item[0] for item in Value_lists]
-R2_lists=[item[1] for item in Value_lists]
-NOE_lists=[item[2] for item in Value_lists]
-
-R1_max=max(max(sublist[1:]) for sublist in R1_lists)
-R2_max=max(max(sublist[1:]) for sublist in R2_lists)
-NOE_max=max(max(sublist[1:]) for sublist in NOE_lists)
-
-NOE_min=min(min(sublist[1:]) for sublist in NOE_lists)
 
 fig, axs = plt.subplots(5, 5, figsize=(30, 15))
 for i in range(5):
@@ -204,7 +220,7 @@ for i in range(5):
 		data=Names[i+5*j]
 		axs[j, i].plot(range(1, len(R2_lists[i+5*j])), R2_lists[i+5*j][1:], label='R2 Data_' + data, marker='o', linestyle='-', lw=1.0, markersize=2, color="green")
 		axs[j, i].plot(R2_values_exp_filtered[0], R2_values_exp_filtered[1], label='R2 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
-		axs[j, i].set_yticks(np.arange(0, int(R2_max)+2, 2))
+		axs[j, i].set_yticks(np.arange(0, int(R2_max)+2, 20))
 		axs[j, i].set_xticks(np.arange(1, len(R2_lists[i+5*j]), 20))
 		axs[j, i].set_xlim(1, len(R2_lists[i+5*j]))
 		axs[j, i].set_ylim(0, int(R2_max)+2)
@@ -222,10 +238,10 @@ for i in range(5):
 		data=Names[i+5*j]
 		axs[j, i].plot(range(1, len(NOE_lists[i+5*j])), NOE_lists[i+5*j][1:], label='NOE Data_' + data, marker='o', linestyle='-', lw=1.0, markersize=2, color="green")
 		axs[j, i].plot(NOE_values_exp_filtered[0], NOE_values_exp_filtered[1], label='NOE Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
-		axs[j, i].set_yticks(np.arange(int(NOE_min)-0.5, int(NOE_max)+1, 0.5))
+		#axs[j, i].set_yticks(np.arange(int(NOE_min)-0.5, int(NOE_max)+1, 0.5))
 		axs[j, i].set_xticks(np.arange(1, len(NOE_lists[i+5*j]), 20))
 		axs[j, i].set_xlim(1, len(NOE_lists[i+5*j]))
-		axs[j, i].set_ylim(int(NOE_min)-0.5, int(NOE_max)+1)
+		#axs[j, i].set_ylim(int(NOE_min)-0.5, int(NOE_max)+1)
 		axs[j, i].set_xlabel('Residue number')
 		axs[j, i].set_ylabel('NOE_values')
 		axs[j, i].set_title('NOE_data')
@@ -234,40 +250,53 @@ plt.tight_layout()
 plt.savefig(relax_folder + 'NOE_relaxation_combined_plot.png')
 plt.close()
 
-R1_RMSD_values = [item[1].replace('R1: ', '') for item in R1_diff]
-R2_RMSD_values = [item[1].replace('R2: ', '') for item in R2_diff]
-NOE_RMSD_values = [item[1].replace('NOE: ', '') for item in NOE_diff]
-
-
-R1_RMSD_min=min(R1_RMSD_values)
-R2_RMSD_min=min(R2_RMSD_values)
-NOE_RMSD_min=min(NOE_RMSD_values)
 
 rog_values_best=[]
-Best_names=[]
-for i in range(max(len(R1_RMSD_values), len(R2_RMSD_values), len(NOE_RMSD_values))):
-	if float(R1_RMSD_values[i])/float(R1_RMSD_min) < 1.5 and float(R2_RMSD_values[i])/float(R2_RMSD_min) < 1.5 and float(NOE_RMSD_values[i])/float(NOE_RMSD_min) < 1.5:
-		#print(R1_diff[i][0], R1_diff[i][1])
-		Best_names.append((R1_diff[i][0], R1_diff[i][1]))
+Best_cases=[]
 
-		with open(SIM_DIR + '/' + R1_diff[i][0] +'/md_2000ns_gyrate.xvg', 'r') as file:
-			lines = file.readlines()
-			for line in range(27, len(lines)):
-				parts = lines[line].split()
-				rog_values_best.append(round(float(parts[1]), 1))
+data=relax_folder + 'ranking_table.csv'
+with open(data, 'w', newline="") as csvfile:
+	csvwriter = csv.writer(csvfile)
+	csvwriter.writerow(["Force field", "Replica", "R1 RMSD", "R1 (%)", "R2 RMSD", "R2 (%)", "hetNOE RMSD", "hetNOE (%)", "Sum (%)"])
+	for i in range(max(len(R1_RMSD_values), len(R2_RMSD_values), len(NOE_RMSD_values))):
+		name=Names[i]
+		rep_name=name.split("/")[0]
+		ff_name=name.split("/")[1]
+		
+		R1_value=float(R1_RMSD_values[i])
+		R2_value=float(R2_RMSD_values[i])
+		NOE_value=float(NOE_RMSD_values[i])
+
+		R1_rank_value=float(R1_RMSD_values[i])/float(R1_RMSD_min)*100
+		R2_rank_value=float(R2_RMSD_values[i])/float(R2_RMSD_min)*100
+		NOE_rank_value=float(NOE_RMSD_values[i])/float(NOE_RMSD_min)*100
+		Ranking_sum=R1_rank_value+R2_rank_value+NOE_rank_value
+
+		csvwriter.writerow([ff_name, rep_name, R1_value, R1_rank_value, R2_value, R2_rank_value, NOE_value, NOE_rank_value, Ranking_sum])
+
+		if R1_rank_value/100 < 1.5 and R2_rank_value/100 < 1.5 and NOE_rank_value/100 < 1.5:
+			#print(R1_diff[i][0], R1_diff[i][1])
+			Best_cases.append((R1_diff[i][0], R1_diff[i][1]))
+			with open(SIM_DIR+"/"+ R1_diff[i][0] +'/md_1500ns_gyrate.xvg', 'r') as file:
+				lines = file.readlines()
+				for line in range(27, len(lines)):
+					parts = lines[line].split()
+					rog_values_best.append(round(float(parts[1]), 1))
 value_counts = Counter(rog_values_best)
 values, counts = zip(*sorted(value_counts.items(), key=lambda x: x[0]))
 plt.plot(values, counts)
 plt.xlabel('Radius of gyration')
 plt.ylabel('Count')
 plt.title('Count of Radius of gyration values from best simulation data')
-plt.tight_layout()
+plt.tight_layout()	
 plt.savefig(relax_folder + 'best_rog_density_landscape_plot.png')
 plt.close()
 
 
-rog_data=sorted(glob.glob(SIM_DIR+"/model*/*"+'/*2000*gyrate*.xvg'))
+
+rog_data=sorted(glob.glob(SIM_DIR+"/model*/*"+'/*gyrate*.xvg'))
 fig, axs = plt.subplots(5, 5, figsize=(15, 15))
+
 
 for i in range(5):
 	for j in range(5):
@@ -296,7 +325,8 @@ for i in range(5):
 		axs[i, j].plot(values, counts)
 		axs[i, j].axvline(x=statistics.mean(rog_values), color='black', linestyle='--', label='Mean Rog value')
 		axs[i, j].set_title(rep_name + "/" + forcefield)
-
+		
+		Rog_data_list.append((rep_name + "/" + forcefield, rog_values))
 
 plt.tight_layout()
 plt.savefig(relax_folder + 'density_landscape_plot.png')
@@ -378,6 +408,8 @@ cmd.set("ray_opaque_background", 1)
 for i in pdb_data[:25]:
 	rep_name = i.split('/')[-3]
 	forcefield = i.split('/')[-2]
+	selected = color_map.get(rep_name, 'black')
+
 	md = glob.glob(i + 'md*smooth*xtc')
 	temp = glob.glob(i + 'temp*gro')
 
@@ -385,6 +417,7 @@ for i in pdb_data[:25]:
 		cmd.load(temp[0], 'structure')
 		cmd.load_traj(md[0], 'structure', state=1, interval=1000)
 		cmd.set('all_states', 'on')
+		cmd.color(selected, 'structure')
 		cmd.ray(300, 300)
 		cmd.png(i + 'Ensemble_' + rep_name + '_' + forcefield + '.png')
 		cmd.delete('all')
@@ -471,7 +504,6 @@ plt.tight_layout()
 plt.savefig(relax_folder + 'Timescale_plot_all.png')
 plt.close()
 
-
 ensemble_images=sorted(glob.glob(SIM_DIR+"/model*/*"+'/*correlation*.png'))
 fig, axs = plt.subplots(5, 5, figsize=(15, 15))
 for i in range(5):
@@ -488,7 +520,6 @@ for i in range(5):
 			pass
 plt.tight_layout()
 plt.savefig(relax_folder + 'Correlation_combined.png')
-
 
 ensemble_images = sorted(glob.glob(SIM_DIR + "/model*/*/*mdmat*.png"))
 fig, axs = plt.subplots(5, 5, figsize=(15, 15))
@@ -536,6 +567,146 @@ for i in range(5):
 			axs[j, i].legend()
 plt.tight_layout()
 plt.savefig(relax_folder + 'Tau_effective_area.png')
+
+
+def plot_ensembles_images(input, output):
+	fig, axs = plt.subplots(5, 5, figsize=(15, 15))
+	for i in range(5):
+		for j in range(5):
+			data=ensemble_images[5*i+j]
+			rep_name = data.split("/")[-3]
+			forcefield = data.split("/")[-2]
+			try:
+				img = imread(data)
+				axs[j, i].imshow(img)
+				axs[j, i].set_title(rep_name + '/' + forcefield)
+				axs[j, i].axis('off')
+			except:
+				pass
+
+	plt.tight_layout()
+	plt.savefig(relax_folder + output + '.png')
+
+
+
+
+
+
+ensemble_images = sorted(glob.glob(SIM_DIR + "/model*/*/*mdmat*.png"))
+plot_ensembles_images(ensemble_images, "Contact_map_combined_TESTING")
+
+ensemble_images=sorted(glob.glob(SIM_DIR+"/model*/*"+'/*correlation*.png'))
+plot_ensembles_images(ensemble_images, "Correlation_combined_TESTING")
+
+
+fig, axs = plt.subplots(1, 3, figsize=(15, 6))
+for j in [item[0] for item in Best_cases]:
+	rep_name=j.split("/")[0]
+	ff_name=j.split("/")[1]
+	index = Names.index(j)
+	list=Value_lists[index]
+
+	selected = color_map.get(rep_name, 'black')
+	axs[0].plot(range(1, len(list[0])), list[0][1:], label='R1 Data_' + rep_name + ff_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
+	axs[0].set_xlabel('Residue number')
+	axs[0].set_ylabel('R1_values')
+	axs[0].set_title('R1_data')
+	axs[0].legend()
+	axs[1].plot(range(1, len(list[1])), list[1][1:], label='R2 Data_' + rep_name + ff_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
+	axs[1].set_xlabel('Residue number')
+	axs[1].set_ylabel('R2_values')
+	axs[1].set_title('R2_data')
+	axs[1].legend()
+	axs[2].plot(range(1, len(list[2])), list[2][1:], label='NOE Data_' + rep_name + ff_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
+	axs[2].set_xlabel('Residue number')				
+	axs[2].set_ylabel('NOE_values')
+	axs[2].set_title('NOE_data')
+	axs[2].legend()
+		
+axs[0].plot(R1_values_exp_filtered[0], R1_values_exp_filtered[1], label='R1 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
+axs[0].set_xlabel('Residue number')
+axs[0].set_ylabel('R1_values')
+axs[0].set_title('R1_data')
+axs[0].legend()
+
+axs[1].plot(R2_values_exp_filtered[0], R2_values_exp_filtered[1], label='R2 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
+axs[1].set_xlabel('Residue number')
+axs[1].set_ylabel('R2_values')
+axs[1].set_title('R2_data')
+axs[1].legend()
+
+axs[2].plot(NOE_values_exp_filtered[0], NOE_values_exp_filtered[1], label='NOE Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
+axs[2].set_xlabel('Residue number')
+axs[2].set_ylabel('NOE_values')
+axs[2].set_title('NOE_data')
+axs[2].legend()
+	
+plt.tight_layout()
+plt.savefig(relax_folder + 'Best_cases_plot.png')
+plt.close('all')
+
+
+used_labels = []
+for i, ff in enumerate(FORCEFIELDS):
+	list=[]
+	for item in Rog_data_list:
+		if ff in item[0]:
+			model=item[0].replace("/" + ff, "")
+			try:
+				if model in used_labels:
+					plt.scatter(i, statistics.mean(item[1]), zorder=5, color=color_map.get(model, 'black'))
+				else:
+					plt.scatter(i, statistics.mean(item[1]), zorder=5, label=model, color=color_map.get(model, 'black'))
+					used_labels.append(model)
+			except:
+				pass
+			list.extend(item[1])
+	try:
+		Rog_avg=statistics.mean(list)
+		plt.bar(i, Rog_avg, label=ff)
+	except:
+		pass
+
+plt.title(SIM_DIR.split("/")[-1] )
+plt.ylabel('Gyration radius (nm)')
+plt.savefig(relax_folder + 'Average_rog_plot.png')
+plt.close()
+
+fig, axs = plt.subplots(1, 5, figsize=(15, 6))
+
+# Counter variable to keep track of the current axis index
+current_ax = 0
+
+for item in FORCEFIELDS:
+	relax_data = glob.glob(SIM_DIR + "/model*/" + item)
+	cmd.set("ray_opaque_background", 1)
+	for data in sorted(relax_data):
+		rep_name = data.split("/")[-2]
+        
+		md = glob.glob(data + '/md*smooth*xtc')
+		temp = glob.glob(data + '/temp*gro')
+
+		if len(md) > 0 and len(temp) > 0:
+			cmd.load(temp[0], rep_name)
+			cmd.load_traj(md[0], rep_name, state=1, interval=1000)
+			cmd.color("green", rep_name)
+			cmd.set('all_states', 'on')
+			cmd.ray(300, 300)
+
+	cmd.png(relax_folder + item + '_ENS_TEST_rog_plot.png')
+	axs[current_ax].imshow(plt.imread(relax_folder + item + '_ENS_TEST_rog_plot.png'), aspect='auto')
+	axs[current_ax].set_title(item)	
+	current_ax += 1
+	cmd.delete('all')
+                
+cmd.quit()
+
+plt.tight_layout()
+plt.savefig(relax_folder + 'ENS_TEST_rog_plot.png')
+
+
+
+
 
 
 

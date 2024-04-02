@@ -6,8 +6,8 @@
 #SBATCH --nodes=1
 #SBATCH --array=0-num_jobs
 #SBATCH --output=array_job_output_%A_%a.txt
-#SBATCH --account=project
-
+##SBATCH --account=project
+#SBATCH --account=project_462000285
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export GMX_MAXBACKUP=-1

@@ -53,7 +53,7 @@ for i in $list; do
 
 	echo -e "Alpha\nAlpha" | gmx_mpi mdmat -f ${name}.xtc -s ${name}.tpr -mean ${name}_mdmat.xpm
 	gmx_mpi xpm2ps -f ${name}_mdmat.xpm -o ${name}_mdmat.eps
-
+: '
 	GRO_FILE=(temp_md_1000ns.gro)
 	sed -i.bak 's/ H /HN /g' $GRO_FILE
 	sed -i.bak 's/H1/HN/g' $GRO_FILE
@@ -66,7 +66,7 @@ for i in $list; do
 		fi
 	done
 	
-
+'
 	export PATH="/scratch/project_462000199/cmcajsa/modules/env/bin:$PATH"
 
 	python3 $mdmat_plot

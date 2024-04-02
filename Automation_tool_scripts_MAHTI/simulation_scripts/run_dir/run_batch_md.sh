@@ -6,7 +6,7 @@ cd ..
 cd ..
 BASE_DIR=$PWD
 
-SIM_DIR=$BASE_DIR/Unst*
+SIM_DIR=$BASE_DIR/Unst_snear*
 
 your_projects=$(csc-projects | grep -o "project_2.*" | awk '{print $1}')
 echo "Select the number of the project you want to use:"
@@ -35,7 +35,7 @@ sed -i "s/project/${project}/" "${JOB_SCRIPT}"
 for i in $SIM_DIR/model*/*; do
 	cd $i
 	id="${i/$BASE_DIR"/"}"
-
+	echo $id
 	if ! squeue -u $USER -n $id -h -o %T | grep -q "R"; then 
 		sbatch --job-name=$id ${JOB_SCRIPT}
 	fi
