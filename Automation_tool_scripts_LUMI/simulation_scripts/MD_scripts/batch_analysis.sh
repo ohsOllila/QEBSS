@@ -5,7 +5,8 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --nodes=1
 #SBATCH --array=0-24
-#SBATCH --account=Project_462000285
+#SBATCH --account=project_462000285
+##SBATCH --account=project
 
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
@@ -14,14 +15,14 @@ export GMX_MAXBACKUP=-1
 module use /appl/local/csc/modulefiles
 module load gromacs/2023.3-gpu
 
-sim_time=1500
+sim_time=2000
 
 SIM_PATH=${PWD}
 SIM_DIR=$(basename $SIM_PATH)
 
 BASE_DIR=$(cd .. && pwd)
 
-magn_field=$(awk 'NR==1 {print $6}' "${BASE_DIR}/simulation_scripts/MD_scripts/hydrolase_exp_data.txt" 2>/dev/null)
+magn_field=$(awk 'NR==1 {print $6}' "${BASE_DIR}/${SIM_DIR}_exp_data.txt" 2>/dev/null)
 make_index=${BASE_DIR}/simulation_scripts/MD_scripts/makeNHindex.awk
 py_script=${BASE_DIR}/simulation_scripts/PY_scripts/Old_Relaxations_for_Samuli.py
 mdmat_plot=${BASE_DIR}/simulation_scripts/PY_scripts/xpm_plot.py
@@ -73,22 +74,17 @@ awk -f ${make_index} $GRO_FILE > HN.ndx
 numberOFfuncs=$(grep "\[" HN.ndx | tail -n 1 | awk '{print $2}')
 for ((i = 0; i <= $numberOFfuncs; i++))
 do
-	if [ ! -s correlation_functions/NHrotaCF_$i.xvg ]; then
-
-		echo $i | gmx_mpi rotacf -f ${name}_noPBC.xtc -s ${name}.tpr -n HN.ndx -o correlation_functions/NHrotaCF_$i.xvg -P 2 -d -xvg none  #-nice 20 &
-	fi
+	echo $i | gmx_mpi rotacf -f ${name}_noPBC.xtc -s ${name}.tpr -n HN.ndx -o correlation_functions/NHrotaCF_$i.xvg -P 2 -d -xvg none  #-nice 20 &
 done
-	
 
 module purge
 export PATH="$(cd ../../../env/bin && pwd):$PATH"
+#export PATH="/scratch/project_462000285/cmcajsa/systems/forcefield_compare/env/bin:$PATH"
 
 python3 $mdmat_plot
 python3 $corr_plot
 python3 ${path}/Old_Relaxations_for_Samuli.py > relaxation_data.txt
-python3 $relax_plot
 
-module purge
 
 mkdir -p $BASE_DIR/results/${SIM_DIR}/$replicas/$ff
 sim_results=$BASE_DIR/results/${SIM_DIR}/$replicas/$ff
@@ -97,4 +93,7 @@ cp $path/*mdmat* $sim_results
 cp $path/*png $sim_results
 cp $path/*eps  $sim_results
 cp -r $path/correlation_functions $sim_results
+
+cd $SIM_PATH
+python3 $relax_plot
 

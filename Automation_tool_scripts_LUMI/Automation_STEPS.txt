@@ -1,5 +1,5 @@
 Semi-automatic MD production and comparison to NMR relaxation times
-(Download and extract Automation_tool_scripts_* recipitory for either LUMI or MAHTI) 
+(Download and extract Automation_tool_scripts_LUMI recipitory) 
 
 
 The first step is to generate the initial replicas. Go to https://idpconformergenerator.readthedocs.io/en/latest/installation.html or follow the installation steps below: 
@@ -11,30 +11,42 @@ conda env create -f requirements.yml
 cd ..
 
 
-Copy your fasta file to Automation_tool_scripts_* directory and generate replicas by running: 
+Copy your fasta file to Automation_tool_scripts_LUMI directory and generate replicas by running: 
 
 conda activate idpconfgen 
 ./create_replicas.sh (Choose the number of your fasta file) 
 
 
-Copy Unst_prot, MD_parameter_files, simulation_scripts and env.yml to your project scratch in Mahti or LUMI. Using my  Mahti paths as example:
+Copy Unst_prot, MD_parameter_files, simulation_scripts and env.yml to your project scratch in LUMI. Using my LUMI paths as example:
 
-scp -r Unst_prot MD_parameter_files simulation_scripts env.yml malmcajs@mahti.csc.fi:/scratch/project_***/cmcajsa/MD-stabilization/structures/forcefield_compare 
+scp -r Unst_prot MD_parameter_files simulation_scripts env.yml malmcajs@lumi.csc.fi:/scratch/project_462000285/cmcajsa/systems/forcefield_compare 
 
 
-Log into Mahti: 
-ssh malmcajs@mahti.csc.fi 
+Log into Lumi: 
+ssh malmcajs@lumi.csc.fi 
 
 
 Go to folder: 
-cd /scratch/project_***/cmcajsa/MD-stabilization/structures/forcefield_compare/
+cd /scratch/project_462000285/cmcajsa/systems/forcefield_compare
+
+Add your experimental data to this folder. Make sure to add the first line with the magnetic field strength in MHz. Any missing data should type "n". 
+Name the file Unst_prot_exp_data.txt
+
+An example of what it should look like can be seen in the file Unst_alphasynuclein_exp_data.txt
 
 
-Set up the environment in Mahti:
+
+Set up the environment:
  
 module purge
-module load tykky
-conda-containerize new --prefix . env.yml
+module load LUMI
+module load lumi-container-wrapper
+mkdir env
+conda-containerize new --prefix env env.yml
+
+You need to manually add your project number to the scripts. Go to simulation_scripts/MD_scripts:
+
+Change line #SBATCH --account=project in files md_prep.sh, md.sh and analysis.sh
 
 
 Go to simulation_scripts/run_dir and run scripts in order:
@@ -44,4 +56,4 @@ sh run_batch_md.sh
 sh run_analysis.sh 
 
 
-Before you run the next script, you must ensure the previous step was finished. E.g., you can check if the system preparation run was successful by going to /scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/Unst_prot and running ls -lh */*/md*tpr. Run ls -lh */*/md*tpr | wc –l to count the files. The last script collects the results, which can be found in /scratch/project_***/cmcajsa/MD-stabilization/structures/forcefield_compare/results
+Before you run the next script, you must ensure the previous step was finished. E.g., you can check if the system preparation run was successful by going to /scratch/project_462000285/cmcajsa/systems/forcefield_compare/Unst_prot and running ls -lh */*/md*tpr. Run ls -lh */*/md*tpr | wc –l to count the files. The last script collects the results, which can be found in /scratch/project_462000285/cmcajsa/systems/forcefield_compare/results

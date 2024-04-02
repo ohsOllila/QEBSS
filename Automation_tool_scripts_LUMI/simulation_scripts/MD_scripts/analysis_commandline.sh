@@ -1,14 +1,14 @@
 #!/bin/bash
 
 
-sim_time=1500
+sim_time=2000
 
 
 SCRIPT_DIR=$(cd .. && pwd)
 SIM_DIR=$(cd ../.. && pwd)
-PROT_DIR=$SIM_DIR/U*
+PROT_DIR=$SIM_DIR/Unst_alphasynuclein
 
-magn_field=$(awk 'NR==1 {print $6}' "${SCRIPT_DIR}/MD_scripts/alpha_exp_data.txt" 2>/dev/null)
+magn_field=$(awk 'NR==1 {print $6}' "${SIM_DIR}/${PROT_DIR}_exp_data.txt" 2>/dev/null)
 make_index=${SCRIPT_DIR}/MD_scripts/makeNHindex.awk
 py_script=${SCRIPT_DIR}/PY_scripts/Old_Relaxations_for_Samuli.py
 mdmat_plot=${SCRIPT_DIR}/PY_scripts/xpm_plot.py
@@ -53,7 +53,7 @@ for i in $list; do
 
 	echo -e "Alpha\nAlpha" | gmx_mpi mdmat -f ${name}.xtc -s ${name}.tpr -mean ${name}_mdmat.xpm
 	gmx_mpi xpm2ps -f ${name}_mdmat.xpm -o ${name}_mdmat.eps
-
+: '
 	GRO_FILE=(temp_md_1000ns.gro)
 	sed -i.bak 's/ H /HN /g' $GRO_FILE
 	sed -i.bak 's/H1/HN/g' $GRO_FILE
@@ -66,7 +66,7 @@ for i in $list; do
 		fi
 	done
 	
-
+'
 	export PATH="/scratch/project_462000199/cmcajsa/modules/env/bin:$PATH"
 
 	python3 $mdmat_plot

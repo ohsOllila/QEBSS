@@ -42,7 +42,7 @@ biggest_corr_time=5 # same as above
 N_exp_to_fit=100 # number of exponential functions to be fitted between the samlles and biggest corr time
 analyze=1/50 # the proportin of correlation data to be used for fitting, ex. 1/2 uses first half of the data
 magnetic_field=2.35 # 5.99 # 8.49 T (values used in SDS paper, J.Chem. Soc.,, Faraday Trans. 1, 1988, 84(12), 4475-4486)
-magn_field=600
+magn_field=magn_field
 magnetic_field=magn_field*2*np.pi/gammaH*10**6
 nuclei="15N" #nuclei to calculate: 2H-deutherium; 13C - carbon; 15N - nitrogen 
 

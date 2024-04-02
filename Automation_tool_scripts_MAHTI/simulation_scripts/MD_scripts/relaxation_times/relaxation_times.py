@@ -482,20 +482,15 @@ class GetRelaxationData():
         self.analyze_until = round(len(self.org_corrF)*analyze)
         self.org_corrF=self.org_corrF[0:self.analyze_until]
         self.times_out=self.times_out[0:self.analyze_until]
-        
-        Teff, tau_eff_area, self.T1, self.T2, self.NOE, self.Coeffs, self.Ctimes_ns = self.calc_relax_time()
-        
-        print("T1: {} T2: {} NOE: {}".format(self.T1, self.T2, self.NOE))
-
+        Teff, self.tau_eff_area, self.T1, self.T2, self.NOE, self.Coeffs, self.Ctimes_ns = self.calc_relax_time()
+        print("T1: {} T2: {} NOE: {} Tau_eff_area: {}".format(self.T1, self.T2, self.NOE, self.tau_eff_area))
         with open('Ctimes_Coeffs.txt', 'a') as file:  
-        	for i, j in zip(self.Ctimes_ns, self.Coeffs):
-        		if j != 0:
-        			file.write("Ctimes_ns, Coeffs: {}, {} \n".format(i, j))
-
-
-        
-    
-
+        	data_to_write = '\n'.join(
+        		f"C_times_ns, Coeffs: {i}, {j}"
+        		for i, j in zip(self.Ctimes_ns, self.Coeffs)
+        		if j != 0
+        	)
+        	file.write(data_to_write + '\n')
 
 
     def read_data(self):

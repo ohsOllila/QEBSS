@@ -44,6 +44,7 @@ for i in {0..4}; do
     wait
     
     mv conformer_1.pdb ${models[i]}
+    rm pdbs.tar
     rm conformer*pdb
 done
 
