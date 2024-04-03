@@ -72,12 +72,11 @@ sed -i.bak 's/H1/HN/g' $GRO_FILE
 sed -i.bak 's/CD/HN/g' $GRO_FILE
 awk -f ${make_index} $GRO_FILE > HN.ndx
 numberOFfuncs=$(grep "\[" HN.ndx | tail -n 1 | awk '{print $2}')
-: '
 for ((i = 0; i <= $numberOFfuncs; i++))
 do
 	echo $i | gmx_mpi rotacf -f ${name}_noPBC.xtc -s ${name}.tpr -n HN.ndx -o correlation_functions/NHrotaCF_$i.xvg -P 2 -d -xvg none  #-nice 20 &
 done
-'
+
 module purge
 export PATH="$(cd ../../../env/bin && pwd):$PATH"
 #export PATH="/scratch/project_462000285/cmcajsa/systems/forcefield_compare/env/bin:$PATH"

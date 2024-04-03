@@ -6,7 +6,7 @@ cd ..
 cd ..
 BASE_DIR=$PWD
 
-SIM_DIR=$BASE_DIR/Unst*19*
+SIM_DIR=$BASE_DIR/Unst*alpha*
 
 : '
 your_projects=$(csc-projects | grep -o "project_.*" | awk '{print $1}')
