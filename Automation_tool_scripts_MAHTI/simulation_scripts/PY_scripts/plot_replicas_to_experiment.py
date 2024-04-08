@@ -240,8 +240,8 @@ def R1_relaxation_combined(input, output):
 			if data in input:
 				axs[j, i].plot(range(1, len(R1_lists[i+5*j])), R1_lists[i+5*j][1:], label='R1 Data_' + data, marker='o', linestyle='-', lw=1.0, markersize=2, color="green")
 				axs[j, i].plot(R1_values_exp_filtered[0], R1_values_exp_filtered[1], label='R1 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
-				#axs[j, i].set_yticks(np.arange(0, int(max(max(sublist[1:]) for sublist in R1_lists))+0.5, 0.5))
-				#axs[j, i].set_xticks(np.arange(1, len(R1_lists[i+5*j]), 20))
+				axs[j, i].set_yticks(np.arange(0, int(max(max(sublist[1:]) for sublist in R1_lists))+0.5, 0.5))
+				axs[j, i].set_xticks(np.arange(1, len(R1_lists[i+5*j]), 20))
 				axs[j, i].set_xlim(1, len(R1_lists[i+5*j]))
 				axs[j, i].set_ylim(0, int(max(max(sublist[1:]) for sublist in R1_lists))+0.5)
 				axs[j, i].set_xlabel('Residue number')
@@ -263,8 +263,8 @@ def R2_relaxation_combined(input, output):
 			if data in input:
 				axs[j, i].plot(range(1, len(R2_lists[i+5*j])), R2_lists[i+5*j][1:], label='R2 Data_' + data, marker='o', linestyle='-', lw=1.0, markersize=2, color="green")
 				axs[j, i].plot(R2_values_exp_filtered[0], R2_values_exp_filtered[1], label='R2 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
-				#axs[j, i].set_yticks(np.arange(0, int(max(max(sublist[1:]) for sublist in R2_lists))+2, 20))
-				#axs[j, i].set_xticks(np.arange(1, len(R2_lists[i+5*j]), 20))
+				axs[j, i].set_yticks(np.arange(0, int(max(max(sublist[1:]) for sublist in R2_lists))+2, 20))
+				axs[j, i].set_xticks(np.arange(1, len(R2_lists[i+5*j]), 20))
 				axs[j, i].set_xlim(1, len(R2_lists[i+5*j]))
 				axs[j, i].set_ylim(0, int(max(max(sublist[1:]) for sublist in R2_lists))+2)
 				axs[j, i].set_xlabel('Residue number')
@@ -286,10 +286,10 @@ def NOE_relaxation_combined(input, output):
 			if data in input:
 				axs[j, i].plot(range(1, len(NOE_lists[i+5*j])), NOE_lists[i+5*j][1:], label='NOE Data_' + data, marker='o', linestyle='-', lw=1.0, markersize=2, color="green")
 				axs[j, i].plot(NOE_values_exp_filtered[0], NOE_values_exp_filtered[1], label='NOE Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
-				#axs[j, i].set_yticks(np.arange(int(min(min(sublist[1:]) for sublist in NOE_lists))-0.5, int(max(max(sublist[1:]) for sublist in NOE_lists))+1, 0.5))
-				#axs[j, i].set_xticks(np.arange(1, len(NOE_lists[i+5*j]), 20))
+				axs[j, i].set_yticks(np.arange(int(min(min(sublist[1:]) for sublist in NOE_lists))-0.5, int(max(max(sublist[1:]) for sublist in NOE_lists))+1, 0.5))
+				axs[j, i].set_xticks(np.arange(1, len(NOE_lists[i+5*j]), 20))
 				axs[j, i].set_xlim(1, len(NOE_lists[i+5*j]))
-				#axs[j, i].set_ylim(int(min(min(sublist[1:]) for sublist in NOE_lists))-0.5, int(max(max(sublist[1:]) for sublist in NOE_lists))+1)
+				axs[j, i].set_ylim(int(min(min(sublist[1:]) for sublist in NOE_lists))-0.5, int(max(max(sublist[1:]) for sublist in NOE_lists))+1)
 				axs[j, i].set_xlabel('Residue number')
 				axs[j, i].set_ylabel('NOE_values')
 				axs[j, i].set_title('NOE_data')
@@ -681,6 +681,7 @@ cmd.quit()
 
 plt.tight_layout()
 plt.savefig(relax_folder + 'ENS_TEST_rog_plot.png')
+
 '''
 
 def plot_ensembles_images(input, output):
@@ -729,7 +730,7 @@ plot_ensembles_images(ensemble_png, "Ensembles_combined")
 contact_png_best=[]
 for j in Best_cases_names:
         contact_search=glob.glob(SIM_DIR + "/" + j + "/Ensemble_model*.png")
-        contact_png_best.append(casa_search[0])
+        contact_png_best.append(case_search[0])
 plot_ensembles_images(contact_png_best, "Accepted_cases/Ensembles_combined_best")
 
 

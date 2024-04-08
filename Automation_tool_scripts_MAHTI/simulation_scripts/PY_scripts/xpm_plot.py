@@ -66,7 +66,7 @@ np.savetxt(csv_file_name, mdmat[::-1,:], delimiter = ",")
 
 fig, ax = plt.subplots()
 cmap = plt.cm.viridis
-plot = ax.imshow(mdmat[::-1,:], cmap = cmap, origin = "lower")
+plot = ax.imshow(mdmat[::-1,:], cmap = cmap, origin = "lower", vmin=1, vmax=1.4)
 num_residues = np.shape(mdmat)[0]
 ax.set_xlabel("Residue")
 ax.set_ylabel("Residue")

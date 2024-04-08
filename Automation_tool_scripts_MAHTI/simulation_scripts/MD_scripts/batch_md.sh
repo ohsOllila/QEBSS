@@ -3,7 +3,7 @@
 #SBATCH --partition=medium
 #SBATCH --ntasks-per-node=128
 #SBATCH --nodes=4
-#SBATCH --account=project_2005339
+#SBATCH --account=project_2003809
 ##SBATCH --mail-type=END #uncomment to get mail
 
 # this script runs a 256 core (2 full nodes, no hyperthreading) gromacs job, requesting 15 minutes time
