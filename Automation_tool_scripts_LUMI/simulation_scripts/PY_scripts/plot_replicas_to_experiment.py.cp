@@ -3,9 +3,13 @@
 
 import matplotlib.pyplot as plt
 import os
+import shutil
+import fileinput
 import glob
 import math
 import csv
+import subprocess
+import re
 import numpy as np
 from collections import Counter
 from matplotlib.image import imread
@@ -30,6 +34,8 @@ SIM_DIR = os.getcwd()
 BASE_DIR=os.path.dirname(SIM_DIR)
 exp_data = BASE_DIR + '/' + SIM_DIR.split("/")[-1] + '_exp_data.txt'
 relax_folder=SIM_DIR.replace(SIM_DIR.split("/")[-1], '') + "results/" + SIM_DIR.split("/")[-1] + '/rep_to_exp_data/'
+py_script=BASE_DIR + "/simulation_scripts/PY_scripts/Old_Relaxations_for_Samuli.py"
+
 
 best_cases_folder = os.path.join(relax_folder, "Accepted_cases/")
 
@@ -88,6 +94,7 @@ for item in FORCEFIELDS:
 	for data in sorted(relax_data):
 		rep_name = data.split("/")[-3]
 		combined_list=[["R1"], ["R2"], ["NOE"]]
+		existing_res=[]
 		R1_values_diff=[]
 		R2_values_diff=[]
 		NOE_values_diff=[]
@@ -97,6 +104,7 @@ for item in FORCEFIELDS:
 				parts = lines[line].split()
 				try:
 					combined_list[0].append(1 / float(parts[1]))
+					existing_res.append(line+1)
 					if R1_values_exp[1][line] != "n":
 						R1_values_diff.append((1 / float(parts[1])-R1_values_exp[1][line]))
 				except:
@@ -125,12 +133,18 @@ for item in FORCEFIELDS:
 			RMSD_NOE=f"NOE: {math.sqrt(sum(x**2 for x in NOE_values_diff) / len(NOE_values_diff))}"
 			NOE_diff.append((rep_name + "/" + item, RMSD_NOE, NOE_values_diff))
 		try:
-			combined_list_of_relax_times.append((rep_name + "/" + item, combined_list))
+			combined_list_of_relax_times.append((rep_name + "/" + item, combined_list, existing_res))
 		except:
 			pass
 
+
+
+
+
 Names=[item[0] for item in combined_list_of_relax_times]
 Value_lists=[item[1] for item in combined_list_of_relax_times]
+Existing_res=[item[2] for item in combined_list_of_relax_times]
+
 
 R1_lists=[item[0] for item in Value_lists]
 R2_lists=[item[1] for item in Value_lists]
@@ -186,6 +200,77 @@ plt.close()
 
 Best_cases_names=[item[0] for item in Best_cases]
 
+test_cases=["model_01/AMBER03WS", "model_02/AMBER03WS", "model_03/AMBER03WS"]
+
+os.makedirs(relax_folder + "correlation_functions/", exist_ok=True)
+
+'''
+i = 0
+while True:
+	list_of_lists=[]
+	try:
+		for j in test_cases:
+			list=[]
+			file_name = SIM_DIR + "/" + j + "/correlation_functions/NHrotaCF_"+ str(i) + ".xvg"
+			print(file_name)
+			with open(file_name, 'r') as file:
+				lines = file.readlines()
+				for line in range(0, len(lines)-1):
+					parts = lines[line].split()
+					list.append(float(parts[1]))
+			list_of_lists.append(list)
+	except:
+		break
+	average_list=[sum(x) / len(x) for x in zip(*list_of_lists)]
+	times = [i * 10.000 for i in range(0, len(list_of_lists[0]))]
+	new_file=relax_folder + 'correlation_functions/NHrotaCF_' + str(i) + '.xvg'
+	with open(new_file, 'w') as f:
+		for x, y in zip(times, average_list):
+			f.write(f"{x:.3f}\t{y:.5f}\n")
+	
+	list_of_lists=[]			
+	i += 1
+'''
+shutil.copy(py_script, SIM_DIR)
+with open(exp_data, 'r') as file:
+	lines = file.readlines()
+	first_row = lines[0].split()
+	magn_field=first_row[5]
+
+with fileinput.FileInput(SIM_DIR + "/Old_Relaxations_for_Samuli.py", inplace=True) as file:
+	for line in file:
+		line = line.replace("/PATH_TO_CORR/", relax_folder + 'correlation_functions/')
+		line = line.replace('magn_field=magn_field', 'magn_field=' + str(magn_field))
+		print(line, end="")
+
+subprocess.run(["python3", SIM_DIR + "/Old_Relaxations_for_Samuli.py"])
+
+
+'''
+combined_list_average=[[], [], []]
+existing_res_avg=[]
+with open(relax_folder + 'average_relaxation_data.png', 'r') as file:
+        lines = file.readlines()
+        for line in range(0, len(lines)):
+                parts = lines[line].split()
+                try:
+                        combined_list_average[0].append(1 / float(parts[1]))
+                        existing_res_avg.append(line+1)
+                except:
+                        pass
+                try:
+                        combined_list_average[1].append(1 / float(parts[2]))
+                except:
+                        pass
+                try:
+                        combined_list_average[2].append(1 / float(parts[3]))
+                except:
+                        pass
+
+R1_avg_lists=[item[0] for item in combined_list_average]
+R2_avg_lists=[item[1] for item in combined_list_average]
+NOE_avg_lists=[item[2] for item in combined_list_average]
+
 for i in range(0, 25, 5):
 	fig, axs = plt.subplots(1, 3, figsize=(15, 6))
 	for j in range(i, i + 5):
@@ -194,17 +279,17 @@ for i in range(0, 25, 5):
 		ff_name=name.split("/")[1]
 		selected = color_map.get(rep_name, 'black')
 		list=Value_lists[j]
-		axs[0].plot(range(1, len(list[0])), list[0][1:], label='R1 Data_' + rep_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
+		axs[0].plot(Existing_res[j], list[0][1:], label='R1 Data_' + rep_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
 		axs[0].set_xlabel('Residue number')
 		axs[0].set_ylabel('R1_values')
 		axs[0].set_title('R1_data')
 		axs[0].legend()
-		axs[1].plot(range(1, len(list[1])), list[1][1:], label='R2 Data_' + rep_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
+		axs[1].plot(Existing_res[j], list[1][1:], label='R2 Data_' + rep_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
 		axs[1].set_xlabel('Residue number')
 		axs[1].set_ylabel('R2_values')
 		axs[1].set_title('R2_data')
 		axs[1].legend()
-		axs[2].plot(range(1, len(list[2])), list[2][1:], label='NOE Data_' + rep_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
+		axs[2].plot(Existing_res[j], list[2][1:], label='NOE Data_' + rep_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
 		axs[2].set_xlabel('Residue number')				
 		axs[2].set_ylabel('NOE_values')
 		axs[2].set_title('NOE_data')
@@ -232,13 +317,55 @@ for i in range(0, 25, 5):
 	plt.savefig(relax_folder + ff_name + '_plot.png')
 plt.close('all')
 
+fig, axs = plt.subplots(1, 3, figsize=(15, 6)) for j in range(i, i + 5):
+for j in Best_cases_names:
+	index = Names.index(j)
+	list=Value_lists[j]
+                axs[0].plot(Existing_res[j], list[0][1:], label='R1 Data_' + rep_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
+                axs[0].set_xlabel('Residue number')
+                axs[0].set_ylabel('R1_values')
+                axs[0].set_title('R1_data')
+                axs[0].legend()
+                axs[1].plot(Existing_res[j], list[1][1:], label='R2 Data_' + rep_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
+                axs[1].set_xlabel('Residue number')
+                axs[1].set_ylabel('R2_values')
+                axs[1].set_title('R2_data')
+                axs[1].legend()
+                axs[2].plot(Existing_res[j], list[2][1:], label='NOE Data_' + rep_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
+                axs[2].set_xlabel('Residue number')
+                axs[2].set_ylabel('NOE_values')
+                axs[2].set_title('NOE_data')
+                axs[2].legend()
+
+        axs[0].plot(R1_values_exp_filtered[0], R1_values_exp_filtered[1], label='R1 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
+        axs[0].set_xlabel('Residue number')
+        axs[0].set_ylabel('R1_values')
+        axs[0].set_title('R1_data')
+        axs[0].legend()
+
+        axs[1].plot(R2_values_exp_filtered[0], R2_values_exp_filtered[1], label='R2 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
+        axs[1].set_xlabel('Residue number')
+        axs[1].set_ylabel('R2_values')
+        axs[1].set_title('R2_data')
+        axs[1].legend()
+
+        axs[2].plot(NOE_values_exp_filtered[0], NOE_values_exp_filtered[1], label='NOE Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
+        axs[2].set_xlabel('Residue number')
+        axs[2].set_ylabel('NOE_values')
+        axs[2].set_title('NOE_data')
+        axs[2].legend()
+
+        plt.tight_layout()
+        plt.savefig(relax_folder + ff_name + '_plot.png')
+plt.close('all')
+
 def R1_relaxation_combined(input, output):
 	fig, axs = plt.subplots(5, 5, figsize=(30, 15))
 	for i in range(5):
 		for j in range(5):
 			data=Names[i+5*j]
 			if data in input:
-				axs[j, i].plot(range(1, len(R1_lists[i+5*j])), R1_lists[i+5*j][1:], label='R1 Data_' + data, marker='o', linestyle='-', lw=1.0, markersize=2, color="green")
+				axs[j, i].plot(Existing_res[i+5*j], R1_lists[i+5*j][1:], label='R1 Data_' + data, marker='o', linestyle='-', lw=1.0, markersize=2, color="green")
 				axs[j, i].plot(R1_values_exp_filtered[0], R1_values_exp_filtered[1], label='R1 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
 				axs[j, i].set_yticks(np.arange(0, int(max(max(sublist[1:]) for sublist in R1_lists))+0.5, 0.5))
 				axs[j, i].set_xticks(np.arange(1, len(R1_lists[i+5*j]), 20))
@@ -261,7 +388,7 @@ def R2_relaxation_combined(input, output):
 		for j in range(5):
 			data=Names[i+5*j]
 			if data in input:
-				axs[j, i].plot(range(1, len(R2_lists[i+5*j])), R2_lists[i+5*j][1:], label='R2 Data_' + data, marker='o', linestyle='-', lw=1.0, markersize=2, color="green")
+				axs[j, i].plot(Existing_res[i+5*j], R2_lists[i+5*j][1:], label='R2 Data_' + data, marker='o', linestyle='-', lw=1.0, markersize=2, color="green")
 				axs[j, i].plot(R2_values_exp_filtered[0], R2_values_exp_filtered[1], label='R2 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
 				axs[j, i].set_yticks(np.arange(0, int(max(max(sublist[1:]) for sublist in R2_lists))+2, 20))
 				axs[j, i].set_xticks(np.arange(1, len(R2_lists[i+5*j]), 20))
@@ -284,7 +411,7 @@ def NOE_relaxation_combined(input, output):
 		for j in range(5):
 			data=Names[i+5*j]
 			if data in input:
-				axs[j, i].plot(range(1, len(NOE_lists[i+5*j])), NOE_lists[i+5*j][1:], label='NOE Data_' + data, marker='o', linestyle='-', lw=1.0, markersize=2, color="green")
+				axs[j, i].plot(Existing_res[i+5*j], NOE_lists[i+5*j][1:], label='NOE Data_' + data, marker='o', linestyle='-', lw=1.0, markersize=2, color="green")
 				axs[j, i].plot(NOE_values_exp_filtered[0], NOE_values_exp_filtered[1], label='NOE Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
 				axs[j, i].set_yticks(np.arange(int(min(min(sublist[1:]) for sublist in NOE_lists))-0.5, int(max(max(sublist[1:]) for sublist in NOE_lists))+1, 0.5))
 				axs[j, i].set_xticks(np.arange(1, len(NOE_lists[i+5*j]), 20))
@@ -420,7 +547,6 @@ def dif_to_exp(input, output):
 dif_to_exp(Names, 'Difference_to_experiment_plot')
 dif_to_exp(Best_cases_names, 'Accepted_cases/Difference_to_experiment_plot_best')
 
-'''
 pdb_data = sorted(glob.glob(SIM_DIR + "/model*/*/"))
 cmd.set("ray_opaque_background", 1)
 
@@ -442,7 +568,6 @@ for i in pdb_data[:25]:
 		cmd.delete('all')
 
 cmd.quit()
-'''
 
 def create_timescale_scatter_plot(data, axs=None):
 	lines = open(data, 'r').readlines()
@@ -649,7 +774,6 @@ for j in [item[0] for item in Rog_data_list]:
 plot_avg_rog_bar(rog_data_best_values, "Accepted_cases/Average_rog_plot_best")
 
 
-'''
 fig, axs = plt.subplots(1, 5, figsize=(15, 6))
 
 # Counter variable to keep track of the current axis index
@@ -671,8 +795,11 @@ for item in FORCEFIELDS:
 			cmd.color('green', rep_name)
 			cmd.set('all_states', 'on')
 			cmd.ray(300, 300)
-	cmd.png(relax_folder + item + '_ENS_TEST_plot.png')
-	axs[current_ax].imshow(plt.imread(relax_folder + item + '_ENS_TEST_plot.png'), aspect='auto')
+	obj = cmd.get_object_list('all')
+	for i in obj[1:]:
+		cmd.align(obj[0], i, object='aln', transform=0)
+	cmd.png(relax_folder + item + '_aligned_fig.png')
+	axs[current_ax].imshow(plt.imread(relax_folder + item + '_aligned_fig.png'), aspect='auto')
 	axs[current_ax].set_title(item)	
 	current_ax += 1
 	cmd.delete('all')
@@ -680,9 +807,34 @@ for item in FORCEFIELDS:
 cmd.quit()
 
 plt.tight_layout()
-plt.savefig(relax_folder + 'ENS_TEST_rog_plot.png')
+plt.savefig(relax_folder + 'aligned_fig.png')
 
-'''
+
+pdb_data = sorted(glob.glob(SIM_DIR + "/model*/*/"))
+cmd.set("ray_opaque_background", 1)
+
+for i in pdb_data[:25]:
+	rep_name = i.split('/')[-3]
+	forcefield = i.split('/')[-2]
+	selected = color_map.get(rep_name, 'black')
+
+	md = glob.glob(i + 'md*smooth*xtc')
+	temp = glob.glob(i + 'temp*gro')
+
+	if len(md) > 0 and len(temp) > 0:
+		cmd.load(temp[0], rep_name)
+		cmd.load_traj(md[0], rep_name, state=1, interval=2000)
+		cmd.color('green', rep_name)
+		cmd.set('all_states', 'on')
+		cmd.ray(300, 300)
+	obj = cmd.get_object_list('all')
+	for i in obj[1:]:
+		cmd.align(obj[0], i, object='aln', transform=0)
+	cmd.png(i + 'Ensemble_' + rep_name + '_' +  forcefield + '_aligned_fig.png')	
+	cmd.delete('all')
+
+cmd.quit()
+
 
 def plot_ensembles_images(input, output):
 	ensemble_images = input
@@ -703,7 +855,6 @@ def plot_ensembles_images(input, output):
 	plt.tight_layout()
 	plt.savefig(relax_folder + output + '.png')
 	plt.close()
-
 
 contact_png = sorted(glob.glob(SIM_DIR + "/model*/*/*mdmat*.png"))
 plot_ensembles_images(contact_png, "Contact_map_combined")
@@ -727,6 +878,9 @@ plot_ensembles_images(mdmat_png_best, "Accepted_cases/Correlation_combined_best"
 ensemble_png = sorted(glob.glob(SIM_DIR + "/model*/*/Ensemble_model*.png"))
 plot_ensembles_images(ensemble_png, "Ensembles_combined")
 
+ensemble_png = sorted(glob.glob(SIM_DIR + "/model*/*/Ensemble*model*aligned_fig.png"))
+plot_ensembles_images(ensemble_png, "Ensembles_aligned_combined")
+
 contact_png_best=[]
 for j in Best_cases_names:
         contact_search=glob.glob(SIM_DIR + "/" + j + "/Ensemble_model*.png")
@@ -734,9 +888,10 @@ for j in Best_cases_names:
 plot_ensembles_images(contact_png_best, "Accepted_cases/Ensembles_combined_best")
 
 
+ensemble_png = sorted(glob.glob(SIM_DIR + "/model*/*/*_aligned_fig.png"))
+plot_ensembles_images(ensemble_png, "Ensembles_aligned_combined")
 
-
-
+'''
 
 
 

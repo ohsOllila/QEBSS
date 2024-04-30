@@ -46,7 +46,6 @@ replicas=$(basename "$base_dir")
 ff=$(basename $path)
 
 cp $py_script ${path}
-sed -i "s|PATH_TO_CORR|${path}/correlation_functions|" ${path}/Old_Relaxations_for_Samuli.py
 sed -i "s|magn_field=magn_field|magn_field=$magn_field|" ${path}/Old_Relaxations_for_Samuli.py
 
 TEMP_NAME=(md_${sim_time}ns.tpr)
@@ -67,10 +66,9 @@ echo 1 | gmx_mpi gyrate -s ${name}.tpr -f ${name}_noPBC.xtc -o ${name}_gyrate.xv
 echo -e "Alpha\nAlpha" | gmx_mpi mdmat -f ${name}.xtc -s ${name}.tpr -mean ${name}_mdmat.xpm
 gmx_mpi xpm2ps -f ${name}_mdmat.xpm -o ${name}_mdmat.eps
 
-GRO_FILE=(temp_md_2000ns.gro)
+GRO_FILE=(temp_md_${sim_time}ns.gro)
 sed -i.bak 's/ H /HN /g' $GRO_FILE
 sed -i.bak 's/H1/HN/g' $GRO_FILE
-sed -i.bak 's/CD/HN/g' $GRO_FILE
 awk -f ${make_index} $GRO_FILE > HN.ndx
 numberOFfuncs=$(grep "\[" HN.ndx | tail -n 1 | awk '{print $2}')
 for ((i = 0; i <= $numberOFfuncs; i++))

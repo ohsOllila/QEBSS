@@ -10,6 +10,7 @@
 # Last modified by R. Nencini, 19.10.2021
 import yaml
 import sys
+import glob
 import numpy as np
 from scipy import optimize
 sys.path.insert(1, '/scratch/project_462000199/cmcajsa/systems/forcefield_compare/simulation_scripts/MD_scripts/relaxation_times/')
@@ -51,7 +52,7 @@ nuclei="15N" #nuclei to calculate: 2H-deutherium; 13C - carbon; 15N - nitrogen
 ##############3
 ## CHANGE IN THE CODE 6.4.2022, not going throught the whole content of the folder anymore
 ###############
-take_all_in_folder="yes" #"yes"/"no"/"number" analyze all in folder? useful for proteins, if no, fill the following line, if yes fill the folder path
+take_all_in_folder="number" #"yes"/"no"/"number" analyze all in folder? useful for proteins, if no, fill the following line, if yes fill the folder path
 input_corr_file="alphaCF.xvg"
 
 input_prefix="NHrotaCF_" # mostly for peptides, works with take_all_in_folder="no"
@@ -59,11 +60,25 @@ input_prefix="NHrotaCF_" # mostly for peptides, works with take_all_in_folder="n
 
 
 ## eElab 31.5.22
-folder_path="PATH_TO_CORR/"
+folder_path= os.getcwd()
+folder_path=folder_path + "/correlation_functions/"
+directories = folder_path.split("/")
 output_name="tst.out"
-residues=98
+
+if "results" in folder_path:
+	base  = "/".join(directories[:-3])
+	base = base.replace("/results", "")
+	print(base)
+else:
+	base  = "/".join(directories[:-4])
+	print(base)
 
 
+with open(base + '/model_01.pdb', 'r') as file:
+	lines = file.readlines()
+	words = lines[-2].split()	
+	res_nr=words[4]
+	
 author_name="Samuli Ollila"
 
 
@@ -77,29 +92,29 @@ os.remove('Ctimes_Coeffs.txt') if os.path.exists('Ctimes_Coeffs.txt') else None
 """Execute the code - this part needs not be modified"""
 #rt.initilize_output(OP,smallest_corr_time, biggest_corr_time, N_exp_to_fit,analyze,magnetic_field,input_corr_file,nuclei,output_name,author_name)
 if take_all_in_folder=="yes":
-    for file in os.listdir(folder_path):
+    for file in os.listdir(sorted(folder_path)):
         with open('Ctimes_Coeffs.txt', 'a') as f:  # Use 'a' (append) mode to add content to the file
             f.write('Res_nr_' + str(res_count) + '\n')
             res_count += 1
         input_corr_file = folder_path+os.fsdecode(file)
         rt.GetRelaxationData(OP,smallest_corr_time, biggest_corr_time, N_exp_to_fit,analyze,magnetic_field,input_corr_file,nuclei,output_name)
 elif take_all_in_folder=="number":
-    step_exp=(biggest_corr_time-smallest_corr_time)/N_exp_to_fit
-    Ctimes = 10 ** np.arange(smallest_corr_time, biggest_corr_time, step_exp)
-    Ctimes = Ctimes * 0.001 * 10 ** (-9);
-    Ctimes_to_save=np.zeros([len(Ctimes),residues+1])
-    Ctimes_to_save[:,0]=Ctimes
-    for i in range(0,residues):
-        input_corr_file = folder_path+input_prefix+str(i)+".xvg"
-        AA=rt.GetRelaxationData(OP,smallest_corr_time, biggest_corr_time, N_exp_to_fit,analyze,magnetic_field,input_corr_file,nuclei,output_name)
-        Ctimes_to_save[:,i+1]=AA.Coeffs
-        print('this is the correlation', AA)
+#	step_exp=(biggest_corr_time-smallest_corr_time)/N_exp_to_fit
+#	Ctimes = 10 ** np.arange(smallest_corr_time, biggest_corr_time, step_exp)
+#	Ctimes = Ctimes * 0.001 * 10 ** (-9);
+#	Ctimes_to_save=np.zeros([len(Ctimes),residues+1])
+#	Ctimes_to_save[:,0]=Ctimes
+	for i in range(0, int(res_nr)):
+		if folder_path+input_prefix+str(i)+".xvg" in glob.glob(folder_path + "*.xvg"):
+			with open('Ctimes_Coeffs.txt', 'a') as f:
+				f.write('Res_nr_' + str(res_count) + '\n')
+				res_count += 1
+			input_corr_file = folder_path+input_prefix+str(i)+".xvg"
+			rt.GetRelaxationData(OP,smallest_corr_time, biggest_corr_time, N_exp_to_fit,analyze,magnetic_field,input_corr_file,nuclei,output_name)
+		else:
+			print("T1: {} T2: {} NOE: {} Tau_eff_area: {}".format('n', 'n', 'n', 'n'))
 else:
     rt.GetRelaxationData(OP,smallest_corr_time, biggest_corr_time, N_exp_to_fit,analyze,magnetic_field,input_corr_file,nuclei,output_name)
 
 
 # In[ ]:
-
-
-
-

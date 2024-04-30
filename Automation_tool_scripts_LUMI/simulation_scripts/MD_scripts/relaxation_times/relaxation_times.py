@@ -483,7 +483,9 @@ class GetRelaxationData():
         self.org_corrF=self.org_corrF[0:self.analyze_until]
         self.times_out=self.times_out[0:self.analyze_until]
         Teff, self.tau_eff_area, self.T1, self.T2, self.NOE, self.Coeffs, self.Ctimes_ns = self.calc_relax_time()
-        print("T1: {} T2: {} NOE: {} Tau_eff_area: {}".format(self.T1, self.T2, self.NOE, self.tau_eff_area))
+        with open('relaxation_times.txt', 'a') as file:
+        	file.write("T1: {} T2: {} NOE: {} Tau_eff_area: {}".format(self.T1, self.T2, self.NOE, self.tau_eff_area) + '\n')
+
         with open('Ctimes_Coeffs.txt', 'a') as file:  
         	data_to_write = '\n'.join(
         		f"C_times_ns, Coeffs: {i}, {j}"
