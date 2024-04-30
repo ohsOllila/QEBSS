@@ -68,10 +68,8 @@ output_name="tst.out"
 if "results" in folder_path:
 	base  = "/".join(directories[:-3])
 	base = base.replace("/results", "")
-	print(base)
 else:
 	base  = "/".join(directories[:-4])
-	print(base)
 
 
 with open(base + '/model_01.pdb', 'r') as file:

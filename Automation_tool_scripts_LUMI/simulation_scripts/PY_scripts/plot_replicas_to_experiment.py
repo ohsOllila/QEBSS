@@ -231,7 +231,7 @@ while True:
 	list_of_lists=[]			
 	i += 1
 '''
-
+'''
 shutil.copy(py_script, relax_folder)
 with open(exp_data, 'r') as file:
 	lines = file.readlines()
@@ -246,26 +246,28 @@ with fileinput.FileInput(relax_folder + "Old_Relaxations_for_Samuli.py", inplace
 os.chdir(relax_folder)
 subprocess.run(["python3", relax_folder + "Old_Relaxations_for_Samuli.py"], stdout=open(relax_folder + "relaxation_data.txt", 'w'))
 os.chdir(SIM_DIR)
+'''
 
 combined_list_average=[[], [], []]
 existing_res_avg=[]
 with open(relax_folder + "relaxation_data.txt", "r") as file:
-        lines = file.readlines()
-        for line in range(0, len(lines)):
-                parts = lines[line].split()
-                try:
-                        combined_list_average[0].append(1 / float(parts[1]))
-                        existing_res_avg.append(line+1)
-                except:
-                        pass
-                try:
-                        combined_list_average[1].append(1 / float(parts[3]))
-                except:
-                        pass
-                try:
-                        combined_list_average[2].append(1 / float(parts[5]))
-                except:
-                        pass
+	lines = file.readlines()
+	for line in range(0, len(lines)):
+		parts = lines[line].split()
+		try:
+			combined_list_average[0].append(1 / float(parts[1]))
+			existing_res_avg.append(line+1)
+		except:
+			pass
+		try:
+			combined_list_average[1].append(1 / float(parts[3]))
+		except:
+			pass
+		try:
+			combined_list_average[2].append(float(parts[5]))
+		except:
+			pass
+
 
 for i in range(0, 25, 5):
 	fig, axs = plt.subplots(1, 3, figsize=(15, 6))
