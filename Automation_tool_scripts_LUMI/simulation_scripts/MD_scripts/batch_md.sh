@@ -37,7 +37,7 @@ PARAM_DIR=/scratch/project_462000199/cmcajsa
 i=$(basename $PWD)
 
 
-sim_time=1500
+sim_time=2000
 FORCEFIELD=$(basename $PWD)
 export GMXLIB=/scratch/project_462000199/cmcajsa/$i
 

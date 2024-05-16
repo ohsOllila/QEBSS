@@ -14,7 +14,6 @@ export GMX_MAXBACKUP=-1
 
 module use /appl/local/csc/modulefiles
 module load gromacs/2023.3-gpu
-
 sim_time=sim_time
 
 SIM_PATH=${PWD}
@@ -70,19 +69,23 @@ GRO_FILE=(temp_md_${sim_time}ns.gro)
 sed -i.bak 's/ H /HN /g' $GRO_FILE
 sed -i.bak 's/H1/HN/g' $GRO_FILE
 awk -f ${make_index} $GRO_FILE > HN.ndx
-numberOFfuncs=$(grep "\[" HN.ndx | tail -n 1 | awk '{print $2}')
-for ((i = 0; i <= $numberOFfuncs; i++))
-do
-	echo $i | gmx_mpi rotacf -f ${name}_noPBC.xtc -s ${name}.tpr -n HN.ndx -o correlation_functions/NHrotaCF_$i.xvg -P 2 -d -xvg none  #-nice 20 &
-done
 
+line_number=1  # Initialize the line number
+'''
+numberOFfuncs=$(grep "\[" HN.ndx | tail -n 1 | awk '{print $2}')
+for ((i = 0; i <= $numberOFfuncs; i++)); do
+	num=$(awk -v line="$line_number" 'NR==line {print $2}' HN.ndx)
+	echo $i | gmx_mpi rotacf -f ${name}_noPBC.xtc -s ${name}.tpr -n HN.ndx -o correlation_functions/NHrotaCF_$num.xvg -P 2 -d -xvg none  #-nice 20 
+	((line_number += 2)) 
+done
+'''
 module purge
 export PATH="$(cd ../../../env/bin && pwd):$PATH"
 #export PATH="/scratch/project_462000285/cmcajsa/systems/forcefield_compare/env/bin:$PATH"
 
 python3 $mdmat_plot
 python3 $corr_plot
-python3 ${path}/Old_Relaxations_for_Samuli.py > relaxation_data.txt
+python3 ${path}/Old_Relaxations_for_Samuli.py > relaxation_times.txt
 
 
 mkdir -p $BASE_DIR/results/${SIM_DIR}/$replicas/$ff

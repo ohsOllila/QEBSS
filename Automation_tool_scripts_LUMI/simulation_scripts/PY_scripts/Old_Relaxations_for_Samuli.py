@@ -13,10 +13,7 @@ import sys
 import glob
 import numpy as np
 from scipy import optimize
-sys.path.insert(1, '/scratch/project_462000199/cmcajsa/systems/forcefield_compare/simulation_scripts/MD_scripts/relaxation_times/')
-#sys.path.insert(1, '/home/nenciric/Documents/git/NMR_FF_tools/relaxation_times/')
 
-import relaxation_times as rt
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 import os
@@ -66,7 +63,7 @@ directories = folder_path.split("/")
 output_name="tst.out"
 
 if "results" in folder_path:
-	base  = "/".join(directories[:-3])
+	base  = "/".join(directories[:-2])
 	base = base.replace("/results", "")
 else:
 	base  = "/".join(directories[:-4])
@@ -74,9 +71,12 @@ else:
 
 with open(base + '/model_01.pdb', 'r') as file:
 	lines = file.readlines()
-	words = lines[-2].split()	
-	res_nr=words[4]
+	words = lines[-3].split()	
+	res_nr=words[5]
 	
+sys.path.insert(1, os.path.dirname(base) + '/simulation_scripts/MD_scripts/relaxation_times')
+import relaxation_times as rt
+
 author_name="Samuli Ollila"
 
 
@@ -102,15 +102,16 @@ elif take_all_in_folder=="number":
 #	Ctimes = Ctimes * 0.001 * 10 ** (-9);
 #	Ctimes_to_save=np.zeros([len(Ctimes),residues+1])
 #	Ctimes_to_save[:,0]=Ctimes
-	for i in range(0, int(res_nr)):
-		if folder_path+input_prefix+str(i)+".xvg" in glob.glob(folder_path + "*.xvg"):
+	for i in range(1, int(res_nr)+1):
+		try:
 			with open('Ctimes_Coeffs.txt', 'a') as f:
 				f.write('Res_nr_' + str(res_count) + '\n')
-				res_count += 1
 			input_corr_file = folder_path+input_prefix+str(i)+".xvg"
 			rt.GetRelaxationData(OP,smallest_corr_time, biggest_corr_time, N_exp_to_fit,analyze,magnetic_field,input_corr_file,nuclei,output_name)
-		else:
-			print("T1: {} T2: {} NOE: {} Tau_eff_area: {}".format('n', 'n', 'n', 'n'))
+		except:
+			with open('relaxation_times.txt', 'a') as file:
+				file.write("T1: {} T2: {} NOE: {} Tau_eff_area: {}".format('n', 'n', 'n', 'n') + '\n')
+		res_count += 1
 else:
     rt.GetRelaxationData(OP,smallest_corr_time, biggest_corr_time, N_exp_to_fit,analyze,magnetic_field,input_corr_file,nuclei,output_name)
 

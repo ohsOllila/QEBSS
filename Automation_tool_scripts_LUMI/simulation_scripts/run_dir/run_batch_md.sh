@@ -1,12 +1,12 @@
 #!/bin/bash
 
-time_input=1500
+time_input=2000
 
 cd ..
 cd ..
 BASE_DIR=$PWD
 
-SIM_DIR=$BASE_DIR/Unst*hyd*
+SIM_DIR=$BASE_DIR/Unst*1*
 
 : '
 your_projects=$(csc-projects | grep -o "project_.*" | awk '{print $1}')

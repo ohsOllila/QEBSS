@@ -20,8 +20,8 @@ sim_time=2000
 #gmx_mpi convert-tpr -s md_${sim_time}ns.tpr -extend 1000000 -o md_2000ns.tpr
 #srun gmx_mpi mdrun -deffnm md_2000ns -cpi md_1000ns.cpt -noappend
 
-#srun gmx_mpi mdrun -deffnm md_${sim_time}ns -cpi md_${sim_time}ns.cpt -dlb yes -nsteps -1 -v 
-srun gmx_mpi mdrun -deffnm md_${sim_time}ns -cpi md_${sim_time}ns.cpt -dlb yes -v -noappend
+srun gmx_mpi mdrun -deffnm md_${sim_time}ns -cpi md_${sim_time}ns.cpt -dlb yes -nsteps -1 
+#srun gmx_mpi mdrun -deffnm md_${sim_time}ns -cpi md_${sim_time}ns.cpt -dlb yes -v -noappend
 
 #gmx_mpi mdrun -v -deffnm md_1500ns -cpi md_1500ns.cpt -noappend
 #gmx_mpi trjcat -f *ns.xtc -o md_2000ns.xtc
