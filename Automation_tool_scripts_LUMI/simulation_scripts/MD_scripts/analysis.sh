@@ -71,14 +71,14 @@ sed -i.bak 's/H1/HN/g' $GRO_FILE
 awk -f ${make_index} $GRO_FILE > HN.ndx
 
 line_number=1  # Initialize the line number
-
+'''
 numberOFfuncs=$(grep "\[" HN.ndx | tail -n 1 | awk '{print $2}')
 for ((i = 0; i <= $numberOFfuncs; i++)); do
 	num=$(awk -v line="$line_number" 'NR==line {print $2}' HN.ndx)
 	echo $i | gmx_mpi rotacf -f ${name}_noPBC.xtc -s ${name}.tpr -n HN.ndx -o correlation_functions/NHrotaCF_$num.xvg -P 2 -d -xvg none  #-nice 20 
 	((line_number += 2)) 
 done
-
+'''
 module purge
 export PATH="$(cd ../../../env/bin && pwd):$PATH"
 #export PATH="/scratch/project_462000285/cmcajsa/systems/forcefield_compare/env/bin:$PATH"
