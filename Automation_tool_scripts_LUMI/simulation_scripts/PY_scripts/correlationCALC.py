@@ -5,10 +5,10 @@ import MDAnalysis as mda
 import numpy as np
 import matplotlib.pyplot as plt
 
-groFILE = 'temp_md_1000ns.gro'
-trjFILE = 'md_1000ns_noPBC.xtc'
-outfile = 'LRAEcorrelationHELICALstart.png'
-
+groFILE = 'temp_md_2000ns.gro'
+trjFILE = 'md_2000ns_noPBC.xtc'
+outfile_png = 'LRAEcorrelationHELICALstart.png'
+outfile_csv = 'LRAEcorrelationHELICALstart.csv'
 
 u = mda.Universe(groFILE, trjFILE)
 CAatoms = u.select_atoms("name CA")
@@ -39,7 +39,14 @@ d = 600
 plt.figure(figsize=(w, h), dpi=d)
 #myFile=np.genfromtxt('result.csv', delimiter=',')
 
-color_map = plt.imshow(matrix,vmin=-1, vmax=1)
+
+#mirror_matrix=np.flipud(matrix)
+
+np.savetxt(outfile_csv, matrix, delimiter=',')
+color_map = plt.imshow(matrix,vmin=-1, vmax=1, origin='lower')
 color_map.set_cmap("seismic")
 plt.colorbar()
-plt.savefig(outfile)
+plt.savefig(outfile_png)
+plt.close("all")
+
+

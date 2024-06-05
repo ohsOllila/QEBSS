@@ -1,17 +1,16 @@
-#!/bin/bash
+#!/usr/bin/bash
 #SBATCH --time=48:00:00
 #SBATCH --partition=small
 #SBATCH --ntasks-per-node=64
 #SBATCH --cpus-per-task=2
 #SBATCH --nodes=1
 #SBATCH --account=project_462000285
-##SBATCH --account=project
 
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
-export GMX_MAXBACKUP=-1#!/usr/bin/python3
-
+export GMX_MAXBACKUP=-1
 export PATH="/scratch/project_462000285/cmcajsa/systems/forcefield_compare/env/bin:$PATH"
+
 
 import matplotlib.pyplot as plt
 import os
@@ -64,7 +63,7 @@ Best_cases_names=["model_01/AMBER03WS", "model_02/AMBER03WS"]
 mdmat_best=[[], []]
 for i in Best_cases_names:
 	gro_files = sorted(glob.glob(SIM_DIR + '/' + i + "/temp*2000ns.gro"))
-	xtc_files= sorted(glob.glob(SIM_DIR + '/' + i + "/md*2000ns.xtc"))
+	xtc_files= sorted(glob.glob(SIM_DIR + '/' + i + "/md*2000*smooth*xtc"))
 	mdmat_best[0].append(gro_files[0])
 	mdmat_best[1].append(xtc_files[0])
 
@@ -106,10 +105,11 @@ plt.figure(figsize=(w, h), dpi=d)
 color_map = plt.imshow(average_matrix,vmin=-1, vmax=1)
 color_map.set_cmap("seismic")
 cbar = plt.colorbar()
-cbar.ax.tick_params(labelsize=22)
-plt.xticks(range(average_matrix.shape[1]), [str(i + 1) for i in range(average_matrix.shape[1])], fontsize=22)
-
-plt.yticks(range(average_matrix.shape[0]), [str(i + 1) for i in range(average_matrix.shape[0])], fontsize=22)
+#cbar.ax.tick_params(labelsize=22)
+plt.xticks(range(average_matrix.shape[1]), [str(i + 1) for i in range(average_matrix.shape[1])], 25)
+plt.yticks(range(average_matrix.shape[0]), [str(i + 1) for i in range(average_matrix.shape[0])], 25)
 
 plt.savefig(best_cases_folder + 'Avg_correlation.png', dpi=600) 
 plt.close()
+
+print("finished")

@@ -11,6 +11,8 @@
 import yaml
 import sys
 import glob
+import csv
+import subprocess
 import numpy as np
 from scipy import optimize
 
@@ -82,10 +84,10 @@ author_name="Samuli Ollila"
 
 # In[3]:
 
-res_count = 1
+
 import os
 
-os.remove('Ctimes_Coeffs.txt') if os.path.exists('Ctimes_Coeffs.txt') else None
+os.remove('Ctimes_Coeffs.csv') if os.path.exists('Ctimes_Coeffs.csv') else None
 
 """Execute the code - this part needs not be modified"""
 #rt.initilize_output(OP,smallest_corr_time, biggest_corr_time, N_exp_to_fit,analyze,magnetic_field,input_corr_file,nuclei,output_name,author_name)
@@ -102,16 +104,21 @@ elif take_all_in_folder=="number":
 #	Ctimes = Ctimes * 0.001 * 10 ** (-9);
 #	Ctimes_to_save=np.zeros([len(Ctimes),residues+1])
 #	Ctimes_to_save[:,0]=Ctimes
+	with open('relaxation_times.csv', 'w', newline='') as file:
+		writer = csv.writer(file)
+		writer.writerow(["Residue_nr", "R1_exp", "R1_sim", "R1_diff", "R2_exp", "R2_sim", "R2_diff", "NOE_exp", "NOE_sim", "NOE_diff", "Tau_eff_area"])
 	for i in range(1, int(res_nr)+1):
 		try:
-			with open('Ctimes_Coeffs.txt', 'a') as f:
-				f.write('Res_nr_' + str(res_count) + '\n')
-			input_corr_file = folder_path+input_prefix+str(i)+".xvg"
-			rt.GetRelaxationData(OP,smallest_corr_time, biggest_corr_time, N_exp_to_fit,analyze,magnetic_field,input_corr_file,nuclei,output_name)
+			if os.path.exists(folder_path+input_prefix+str(i)+".xvg"):
+				with open('Ctimes_Coeffs.csv', 'a', newline='') as file:
+					writer = csv.writer(file)
+					writer.writerow(["Res_nr" + str(i) + "_Ctimes_ns", "Res_nr" + str(i) + "_Coeffs"])
+				input_corr_file = folder_path+input_prefix+str(i)+".xvg"
+				rt.GetRelaxationData(OP,smallest_corr_time, biggest_corr_time, N_exp_to_fit,analyze,magnetic_field,input_corr_file,nuclei,output_name, i)
 		except:
-			with open('relaxation_times.txt', 'a') as file:
-				file.write("T1: {} T2: {} NOE: {} Tau_eff_area: {}".format('n', 'n', 'n', 'n') + '\n')
-		res_count += 1
+			with open('relaxation_times.csv', 'a', newline='') as file:
+				writer = csv.writer(file)
+				writer.writerow([i, "n", "n", "n", "n", "n", "n", "n", "n", "n", "n"])
 else:
     rt.GetRelaxationData(OP,smallest_corr_time, biggest_corr_time, N_exp_to_fit,analyze,magnetic_field,input_corr_file,nuclei,output_name)
 

@@ -85,7 +85,7 @@ export PATH="$(cd ../../../env/bin && pwd):$PATH"
 
 python3 $mdmat_plot
 python3 $corr_plot
-python3 ${path}/Old_Relaxations_for_Samuli.py > relaxation_times.txt
+python3 ${path}/Old_Relaxations_for_Samuli.py
 
 
 mkdir -p $BASE_DIR/results/${SIM_DIR}/$replicas/$ff

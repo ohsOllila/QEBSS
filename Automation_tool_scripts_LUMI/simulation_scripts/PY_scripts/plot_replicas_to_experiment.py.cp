@@ -15,11 +15,14 @@ from collections import Counter
 from matplotlib.image import imread
 import pandas as pd
 import statistics
+import random
+import MDAnalysis as mda
 from pymol import cmd
 import pymol
 
 
 FORCEFIELDS=["AMBER03WS", "AMBER99SB-DISP", "AMBER99SBWS", "CHARMM36M", "DESAMBER"]
+color_list=['red', 'blue', 'green', 'purple', 'orange']
 
 color_map = {
     'model_01': 'red',
@@ -36,7 +39,9 @@ BASE_DIR=os.path.dirname(SIM_DIR)
 exp_data = BASE_DIR + '/' + SIM_DIR.split("/")[-1] + '_exp_data.txt'
 Unst_folder = SIM_DIR.replace(SIM_DIR.split("/")[-1], '') + "results/" + SIM_DIR.split("/")[-1] + '/'
 relax_folder=SIM_DIR.replace(SIM_DIR.split("/")[-1], '') + "results/" + SIM_DIR.split("/")[-1] + '/rep_to_exp_data/'
-py_script=BASE_DIR + "/simulation_scripts/PY_scripts/Old_Relaxations_for_Samuli.py"
+avg_script = BASE_DIR + "/simulation_scripts/PY_scripts/average_contact.py"
+py_script = BASE_DIR + "/simulation_scripts/PY_scripts/Old_Relaxations_for_Samuli.py"
+pymol_analysis = BASE_DIR + "/simulation_scripts/PY_scripts/pymol_structure_analysis.py"
 
 
 best_cases_folder = os.path.join(relax_folder, "Accepted_cases/")
@@ -216,10 +221,9 @@ plt.close()
 
 Best_cases_names=[item[0] for item in Best_cases]
 
-print(Best_cases_names)
-
 os.makedirs(Unst_folder + "correlation_functions/", exist_ok=True)
 
+'''
 i = 1
 while i <= res_nr :
 	list_of_lists=[]
@@ -259,6 +263,7 @@ with fileinput.FileInput(Unst_folder + "Old_Relaxations_for_Samuli.py", inplace=
 os.chdir(Unst_folder)
 subprocess.run(["python3", Unst_folder + "Old_Relaxations_for_Samuli.py"], stdout=open(Unst_folder + "relaxation_times.txt", 'w'))
 os.chdir(SIM_DIR)
+'''
 
 combined_list_average=[[], [], []]
 existing_res_avg=[[], [], []]
@@ -294,7 +299,6 @@ with open(Unst_folder + "relaxation_times.txt", "r") as file:
 
 i=0
 
-
 for item in FORCEFIELDS:
 	fig, axs = plt.subplots(1, 3, figsize=(15, 6))
 	for i, name in enumerate(Names):
@@ -304,35 +308,35 @@ for item in FORCEFIELDS:
 			list=Value_lists[i]
 			axs[0].plot(R1_existing[i], list[0][1:], label='R1 Data_' + rep_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
 			axs[0].set_xlabel('Residue number')
-			axs[0].set_ylabel('R1_values')
+			axs[0].set_ylabel('R1_values (1/s)')
 			axs[0].set_title('R1_data')
 			axs[0].legend()
 			axs[1].plot(R2_existing[i], list[1][1:], label='R2 Data_' + rep_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
 			axs[1].set_xlabel('Residue number')
-			axs[1].set_ylabel('R2_values')
+			axs[1].set_ylabel('R2_values (1/s)')
 			axs[1].set_title('R2_data')
 			axs[1].legend()
 			axs[2].plot(NOE_existing[i], list[2][1:], label='NOE Data_' + rep_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
 			axs[2].set_xlabel('Residue number')				
-			axs[2].set_ylabel('NOE_values')
+			axs[2].set_ylabel('NOE_values 1/s')
 			axs[2].set_title('NOE_data')
 			axs[2].legend()
 	else:
 		axs[0].plot(R1_values_exp_filtered[0], R1_values_exp_filtered[1], label='R1 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
 		axs[0].set_xlabel('Residue number')
-		axs[0].set_ylabel('R1_values')
+		axs[0].set_ylabel('R1_values (1/s)')
 		axs[0].set_title('R1_data')
 		axs[0].legend()
 		
 		axs[1].plot(R2_values_exp_filtered[0], R2_values_exp_filtered[1], label='R2 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
 		axs[1].set_xlabel('Residue number')
-		axs[1].set_ylabel('R2_values')
+		axs[1].set_ylabel('R2_values (1/s)')
 		axs[1].set_title('R2_data')
 		axs[1].legend()
 	
 		axs[2].plot(NOE_values_exp_filtered[0], NOE_values_exp_filtered[1], label='NOE Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
 		axs[2].set_xlabel('Residue number')
-		axs[2].set_ylabel('NOE_values')
+		axs[2].set_ylabel('NOE_values (1/s)')
 		axs[2].set_title('NOE_data')
 		axs[2].legend()
 	
@@ -344,33 +348,33 @@ for item in FORCEFIELDS:
 fig, axs = plt.subplots(1, 3, figsize=(15, 6))
 axs[0].plot(existing_res_avg[0], combined_list_average[0], label='R1 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color="blue")
 axs[0].set_xlabel('Residue number')
-axs[0].set_ylabel('R1_values')
+axs[0].set_ylabel('R1_values (1/s)')
 axs[0].set_title('R1_data')
 axs[0].legend()
 axs[1].plot(existing_res_avg[1], combined_list_average[1], label='R2 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color="blue")
 axs[1].set_xlabel('Residue number')
-axs[1].set_ylabel('R2_values')
+axs[1].set_ylabel('R2_values (1/s)')
 axs[1].set_title('R2_data')
 axs[1].legend()
 axs[2].plot(existing_res_avg[2], combined_list_average[2], label='NOE Data', marker='o', linestyle='-', lw=1.0, markersize=2, color="blue")
 axs[2].set_xlabel('Residue number')
-axs[2].set_ylabel('NOE_values')
+axs[2].set_ylabel('NOE_values (1/s)')
 axs[2].set_title('NOE_data')
 axs[2].legend()
 
 axs[0].plot(R1_values_exp_filtered[0], R1_values_exp_filtered[1], label='R1 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
 axs[0].set_xlabel('Residue number')
-axs[0].set_ylabel('R1_values')
+axs[0].set_ylabel('R1_values (1/s)')
 axs[0].set_title('R1_data')
 axs[0].legend()
 axs[1].plot(R2_values_exp_filtered[0], R2_values_exp_filtered[1], label='R2 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
 axs[1].set_xlabel('Residue number')
-axs[1].set_ylabel('R2_values')
+axs[1].set_ylabel('R2_values (1/s)')
 axs[1].set_title('R2_data')
 axs[1].legend()
 axs[2].plot(NOE_values_exp_filtered[0], NOE_values_exp_filtered[1], label='NOE Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
 axs[2].set_xlabel('Residue number')
-axs[2].set_ylabel('NOE_values')
+axs[2].set_ylabel('NOE_values (1/s)')
 axs[2].set_title('NOE_data')
 axs[2].legend()
 
@@ -397,7 +401,7 @@ def R1_relaxation_combined(input, output):
 					#axs[j, i].set_ylim(0, int(max(max(sublist[1:]) for sublist in R1_lists))+0.5)
 					axs[j, i].set_ylim(0, 2.5)
 					axs[j, i].set_xlabel('Residue number')
-					axs[j, i].set_ylabel('R1_values')
+					axs[j, i].set_ylabel('R1_values (1/s)')
 					axs[j, i].set_title('R1_data')
 					axs[j, i].legend()
 	elif len(input) != 1:	
@@ -413,7 +417,7 @@ def R1_relaxation_combined(input, output):
 			axs[i].set_xlim(1, len(R1_lists[data]))
 			axs[i].set_ylim(0, int(max(max(sublist[1:]) for sublist in R1_lists))+0.5)
 			axs[i].set_xlabel('Residue number')
-			axs[i].set_ylabel('R1_values')
+			axs[i].set_ylabel('R1_values (1/s)')
 			axs[i].set_title('R1_data')
 			axs[i].legend()
 	else:
@@ -421,7 +425,7 @@ def R1_relaxation_combined(input, output):
 		plt.plot(R1_existing[data], R1_lists[data][1:], label='R1 Data_' + Names[data], marker='o', linestyle='-', lw=1.0, markersize=2, color="green")
 		plt.plot(R1_values_exp_filtered[0], R1_values_exp_filtered[1], label='R1 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
 		plt.xlabel('Residue number')
-		plt.ylabel('R1_values')
+		plt.ylabel('R1_values (1/s)')
 		plt.title('R1_data')
 		plt.legend()
 
@@ -450,7 +454,7 @@ def R2_relaxation_combined(input, output):
 					#axs[j, i].set_ylim(0, int(max(max(sublist[1:]) for sublist in R2_lists))+0.5)
 					axs[j, i].set_ylim(0, 15)
 					axs[j, i].set_xlabel('Residue number')
-					axs[j, i].set_ylabel('R2_values')
+					axs[j, i].set_ylabel('R2_values (1/s)')
 					axs[j, i].set_title('R2_data')
 					axs[j, i].legend()
 	elif len(input) != 1:	
@@ -465,7 +469,7 @@ def R2_relaxation_combined(input, output):
 			axs[i].set_xlim(1, len(R2_lists[data]))
 			axs[i].set_ylim(0, int(max(max(sublist[1:]) for sublist in R2_lists))+0.5)
 			axs[i].set_xlabel('Residue number')
-			axs[i].set_ylabel('R2_values')
+			axs[i].set_ylabel('R2_values (1/s)')
 			axs[i].set_title('R2_data')
 			axs[i].legend()
 		
@@ -474,7 +478,7 @@ def R2_relaxation_combined(input, output):
 		plt.plot(R1_existing[data], R1_lists[data][1:], label='R1 Data_' + Names[data], marker='o', linestyle='-', lw=1.0, markersize=2, color="green")
 		plt.plot(R1_values_exp_filtered[0], R1_values_exp_filtered[1], label='R1 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
 		plt.xlabel('Residue number')
-		plt.ylabel('R1_values')
+		plt.ylabel('R1_values (1/s)')
 		plt.title('R1_data')
 		plt.legend()
 
@@ -503,7 +507,7 @@ def NOE_relaxation_combined(input, output):
 					axs[j, i].set_ylim(0, 1)
 					#axs[j, i].set_ylim(0, int(max(max(sublist[1:]) for sublist in NOE_lists))+1)
 					axs[j, i].set_xlabel('Residue number')
-					axs[j, i].set_ylabel('NOE_values')
+					axs[j, i].set_ylabel('NOE_values (1/s)')
 					axs[j, i].set_title('NOE_data')
 					axs[j, i].legend()
 	elif len(input) != 1:
@@ -518,7 +522,7 @@ def NOE_relaxation_combined(input, output):
 			axs[i].set_xlim(1, len(NOE_lists[data]))
 			axs[i].set_ylim(0, int(max(max(sublist[1:]) for sublist in NOE_lists))+0.5)
 			axs[i].set_xlabel('Residue number')
-			axs[i].set_ylabel('NOE_values')
+			axs[i].set_ylabel('NOE_values (1/s)')
 			axs[i].set_title('NOE_data')
 			axs[i].legend()
 		
@@ -527,7 +531,7 @@ def NOE_relaxation_combined(input, output):
 		plt.plot(R1_existing[data], R1_lists[data][1:], label='R1 Data_' + Names[data], marker='o', linestyle='-', lw=1.0, markersize=2, color="green")
 		plt.plot(R1_values_exp_filtered[0], R1_values_exp_filtered[1], label='R1 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
 		plt.xlabel('Residue number')
-		plt.ylabel('R1_values')
+		plt.ylabel('R1_values (1/s)')
 		plt.title('R1_data')
 		plt.legend()
 
@@ -537,6 +541,10 @@ def NOE_relaxation_combined(input, output):
 
 NOE_relaxation_combined(Names, 'NOE_relaxation_combined_plot')
 NOE_relaxation_combined(Best_cases_names, 'Accepted_cases/NOE_relaxation_combined_plot_best')
+
+
+rog_values_best_all=[]
+
 
 def plot_rog_density_landscape_all(input, output):
 	if len(input) > 10:
@@ -571,15 +579,16 @@ def plot_rog_density_landscape_all(input, output):
 	
 					axs[j, i].plot(values, counts)
 					axs[j, i].axvline(x=statistics.mean(rog_values), color='black', linestyle='--', label='Mean Rog value')
+					axs[j, i].set_xlabel('Count')
+					axs[j, i].set_ylabel('RoG (nm)')
 					axs[j, i].set_title(rep_name + "/" + ff)
-	elif len(input) != 1:
+	else:
 		col=len(input)
-		fig, axs = plt.subplots(1, col, figsize=(15, 6))
 		for i in range(col):
 			rog_values=[]
 			name=input[i]
-			ff = item.split("/")[1]
-			rep_name = item.split("/")[0]
+			ff = name.split("/")[1]
+			rep_name = name.split("/")[0]
 			data=SIM_DIR+"/" + name + "/md_2000ns_gyrate.xvg"
 			with open(data, 'r') as file:
 				lines = file.readlines()
@@ -587,6 +596,7 @@ def plot_rog_density_landscape_all(input, output):
 					parts = lines[line].split()
 					try:
 						rog_values.append(float(parts[1]))
+						rog_values_best_all.append(float(parts[1]))
 					except IndexError:
 						pass
 			rounded_values = [round(value, 1) for value in rog_values]
@@ -597,44 +607,17 @@ def plot_rog_density_landscape_all(input, output):
 
 			Rog_data_list.append((rep_name + "/" + ff, rog_values))
 	
-			i=int(rep_name[-1])-1
 #			axs[i].set_yticks(np.arange(0, 70000, 10000))
-			axs[i].set_xticks(np.arange(0.5, 7, 1))
-			axs[i].set_xlim(0.5, 7)
-#			axs[j, i].set_ylim(0, 70000)
-	
-			axs[i].plot(values, counts)
-			axs[i].axvline(x=statistics.mean(rog_values), color='black', linestyle='--', label='Mean Rog value')
-			axs[i].set_title(rep_name + "/" + ff)
-	else:
-		rog_values=[]
-		data=SIM_DIR+"/" + Best_cases_names[0] + "/md_2000ns_gyrate.xvg"
-		ff = Best_cases_names[0].split("/")[1]
-		rep_name = Best_cases_names[0].split("/")[0]
-		with open(data, 'r') as file:
-			lines = file.readlines()
-			for line in range(27, len(lines)):
-				parts = lines[line].split()
-				try:
-					rog_values.append(float(parts[1]))
-				except IndexError:
-					pass
-		rounded_values = [round(value, 1) for value in rog_values]
-		rounded_counts = {value: rounded_values.count(value) for value in set(rounded_values)}
-		sorted_items = sorted(rounded_counts.items())
-		values = [value[0] for value in sorted_items]
-		counts = [value[1] for value in sorted_items]
-
-		Rog_data_list.append((rep_name + "/" + ff, rog_values))
-	
-#		plt.set_yticks(np.arange(0, 70000, 10000))
-#		plt.set_xticks(np.arange(0.5, 7, 1))
-#		axs[i].set_xlim(0.5, 7)
-#		axs[j, i].set_ylim(0, 70000)
-	
-		plt.plot(values, counts)
-		plt.axvline(x=statistics.mean(rog_values), color='black', linestyle='--', label='Mean Rog value')
-		plt.title(rep_name + "/" + ff)
+#			axs[i].set_xticks(np.arange(0.5, 7, 1))
+#			axs[i].set_xlim(0.5, 7)
+#			axs[i].set_ylim(0, 70000)
+			
+			plt.plot(values, counts, color=color_list[i], label=rep_name + '_' + ff)
+			plt.xlabel('Count')
+			plt.ylabel('RoG (nm)')
+			plt.axvline(x=statistics.mean(rog_values), color=color_list[i], linestyle='--', label='Mean Rog value')
+			plt.legend()
+		plt.title("Rog landscape best cases")
 	
 
 	plt.tight_layout()
@@ -643,7 +626,6 @@ def plot_rog_density_landscape_all(input, output):
 
 plot_rog_density_landscape_all(Names, 'density_landscape_plot')
 plot_rog_density_landscape_all(Best_cases_names, 'Accepted_cases/density_landscape_plot_best')
-
 
 def dif_to_exp(input, output):
 
@@ -737,27 +719,7 @@ plt.tight_layout()
 plt.savefig(relax_folder + 'Accepted_cases/Difference_to_experiment_plot_avg.png')
 plt.close()
 
-pdb_data = sorted(glob.glob(SIM_DIR + "/model*/*/"))
-cmd.set("ray_opaque_background", 1)
 
-for i in pdb_data[:25]:
-	rep_name = i.split('/')[-3]
-	forcefield = i.split('/')[-2]
-	selected = color_map.get(rep_name, 'black')
-
-	md = glob.glob(i + 'md*smooth*xtc')
-	temp = glob.glob(i + 'temp*gro')
-
-	if len(md) > 0 and len(temp) > 0:
-		cmd.load(temp[0], 'structure')
-		cmd.load_traj(md[0], 'structure', state=1, interval=1000)
-		cmd.set('all_states', 'on')
-		cmd.color(selected, 'structure')
-		cmd.ray(300, 300)
-		cmd.png(i + 'Ensemble_' + rep_name + '_' + forcefield + '.png')
-		cmd.delete('all')
-
-cmd.quit()
 
 def create_timescale_scatter_plot(data, axs=None):
 	lines = open(data, 'r').readlines()
@@ -831,12 +793,11 @@ plt.tight_layout()
 plt.savefig(relax_folder + 'Timescale_plot_all.png')
 plt.close()
 
-fig, axs = plt.subplots(5, 5, figsize=(15, 15))
-for i in range(5):
-	for j in range(5):
-		if 5*i+j < len(timescale_data_best):
-			data = timescale_data_best[5*i+j]
-			create_timescale_scatter_plot(data, axs[j, i])
+print(timescale_data_best)
+fig, axs = plt.subplots(1, len(timescale_data_best), figsize=(15, 6))
+for i in range(len(timescale_data_best)):
+	data = timescale_data_best[i]
+	create_timescale_scatter_plot(data, axs[i])
 
 plt.tight_layout()
 plt.savefig(best_cases_folder + 'Timescale_plot_all_best.png')
@@ -867,7 +828,7 @@ def tau_eff_area(input, output):
 						#axs[j, i].set_xlim(1, len(y_values)+1)
 						#axs[j, i].set_ylim(0, int(max(max(sublist[1:]) for sublist in R2_lists))+10)
 						axs[j, i].set_xlabel('Residue number')
-						axs[j, i].set_ylabel('Tau_area_value (Å)')
+						axs[j, i].set_ylabel('Tau_area_value (10**10 s)')
 						axs[j, i].set_title('Tau_effective_area')
 						axs[j, i].legend()
 	plt.tight_layout()
@@ -955,67 +916,6 @@ def plot_avg_rog_bar(input, output):
 
 plot_avg_rog_bar(Rog_data_list, "Average_rog_plot")
 
-
-fig, axs = plt.subplots(1, 5, figsize=(15, 6))
-
-# Counter variable to keep track of the current axis index
-
-current_ax = 0
-
-for item in FORCEFIELDS:
-	relax_data = glob.glob(SIM_DIR + "/model*/" + item)
-	cmd.set("ray_opaque_background", 1)
-	for data in sorted(relax_data):
-		rep_name = data.split("/")[-2]
-
-		md = glob.glob(data + '/md*smooth*xtc')
-		temp = glob.glob(data + '/temp*gro')
-
-		if len(md) > 0 and len(temp) > 0:
-			cmd.load(temp[0], rep_name)
-			cmd.load_traj(md[0], rep_name, state=1, interval=2000)
-			cmd.color('green', rep_name)
-			cmd.set('all_states', 'on')
-			cmd.ray(300, 300)
-	obj = cmd.get_object_list('all')
-	for i in obj[1:]:
-		cmd.align(obj[0], i, object='aln', transform=0)
-	cmd.png(relax_folder + item + '_aligned_fig.png')
-	axs[current_ax].imshow(plt.imread(relax_folder + item + '_aligned_fig.png'), aspect='auto')
-	axs[current_ax].set_title(item)	
-	current_ax += 1
-	cmd.delete('all')
-                
-cmd.quit()
-
-plt.tight_layout()
-plt.savefig(relax_folder + 'aligned_fig.png')
-
-pdb_data = sorted(glob.glob(SIM_DIR + "/model*/*/"))
-cmd.set("ray_opaque_background", 1)
-
-for i in pdb_data[:25]:
-	rep_name = i.split('/')[-3]
-	forcefield = i.split('/')[-2]
-	selected = color_map.get(rep_name, 'black')
-
-	md = glob.glob(i + 'md*smooth*xtc')
-	temp = glob.glob(i + 'temp*gro')
-
-	if len(md) > 0 and len(temp) > 0:
-		cmd.load(temp[0], rep_name)
-		cmd.load_traj(md[0], rep_name, state=1, interval=2000)
-		cmd.color('green', rep_name)
-		cmd.set('all_states', 'on')
-		cmd.ray(300, 300)
-	obj = cmd.get_object_list('all')
-	for i in obj[1:]:
-		cmd.align(obj[0], i, object='aln', transform=0)
-	cmd.png(i + 'Ensemble_' + rep_name + '_' +  forcefield + '_aligned_fig.png')	
-	cmd.delete('all')
-
-cmd.quit()
-
 def plot_ensembles_images(input, output):
 	if len(input) > 10:
 		fig, axs = plt.subplots(5, 5, figsize=(15, 15))
@@ -1068,6 +968,7 @@ plot_ensembles_images(contact_png_best, "Accepted_cases/Contact_map_combined_bes
 correlation_png=sorted(glob.glob(SIM_DIR + "/model*/*/*correlation*.png"))
 plot_ensembles_images(correlation_png, "Correlation_combined")
 
+
 mdmat_png_best=[]
 for j in Best_cases_names:
         case_search=sorted(glob.glob(SIM_DIR + "/" + j + "/*correlation*.png"))
@@ -1085,11 +986,11 @@ for j in Best_cases_names:
         contact_search=sorted(glob.glob(SIM_DIR + "/" + j + "/Ensemble*model*aligned_fig.png"))
         aligned_best.append(case_search[0])
 plot_ensembles_images(aligned_best, "Accepted_cases/Ensembles_aligned_best")
-
+'''
 mdmat_best=[[], []]
 for i in Best_cases_names:
 	gro_files = sorted(glob.glob(SIM_DIR + '/' + i + "/temp*2000ns.gro"))
-	xtc_files= sorted(glob.glob(SIM_DIR + '/' + i + "/md*2000ns.xtc"))
+	xtc_files= sorted(glob.glob(SIM_DIR + '/' + i + "/md*2000*smooth*xtc"))
 	mdmat_best[0].append(gro_files[0])
 	mdmat_best[1].append(xtc_files[0])
 
@@ -1131,10 +1032,9 @@ plt.figure(figsize=(w, h), dpi=d)
 color_map = plt.imshow(average_matrix,vmin=-1, vmax=1)
 color_map.set_cmap("seismic")
 cbar = plt.colorbar()
-cbar.ax.tick_params(labelsize=22)
-plt.xticks(range(average_matrix.shape[1]), [str(i + 1) for i in range(average_matrix.shape[1])], fontsize=22)
-
-plt.yticks(range(average_matrix.shape[0]), [str(i + 1) for i in range(average_matrix.shape[0])], fontsize=22)
+#cbar.ax.tick_params(labelsize=22)
+plt.xticks(range(average_matrix.shape[1]), [str(i + 1) for i in range(average_matrix.shape[1])], 25)
+plt.yticks(range(average_matrix.shape[0]), [str(i + 1) for i in range(average_matrix.shape[0])], 25)
 
 plt.savefig(best_cases_folder + 'Avg_correlation.png', dpi=600) 
 plt.close()
@@ -1166,8 +1066,116 @@ plt.savefig(best_cases_folder + "Avg_contact.png", dpi=600)
 plt.close()
 
 
+relax_avg_all=[]
+for j in Best_cases_names:
+	relax_avg=sorted(glob.glob(SIM_DIR + "/" + j + "/Ensemble*model*aligned_fig.png"))
+	relax_avg_all.append(case_search[0])
+
+# Define legend labels and colors for each file
+legend_labels = {
+    "relaxation_average_GGS.txt": "GGS",
+    "relaxation_average_GPS.txt": "GPS",
+    "relaxation_average_KAPK.txt": "KAPK",
+    # Add more legend labels for other files as needed
+}
+
+colors = {
+    "relaxation_average_GGS.txt": "orange",
+    "relaxation_average_GPS.txt": "tab:blue",
+    "relaxation_average_KAPK.txt": "green",
+    # Add more colors for other files as needed
+}
+
+# Initialize a dictionary to store Tau_eff_area values for each file
+tau_values_dict = {}
+
+# Loop through all relaxation files in the folder
+for file_name in os.listdir(relax_folder):
+    if file_name.startswith("relaxation_average_"):
+        file_path = os.path.join(relax_folder, file_name)
+        with open(file_path, 'r') as file:
+            tau_values = []
+            x_values = []  # List to store x-axis values
+            lines = file.readlines()
+            line_number = 0  # Variable to track line numbers
+            for line in lines:
+                line_number += 1  # Increment line number
+                if 'n' in line:
+                    continue
+                parts = line.split()
+                if len(parts) >= 8:
+                    try:
+                        tau_value = float(parts[7])
+                        tau_values.append(tau_value)
+                        x_values.append(line_number)  # Append line number as x value
+                    except ValueError:
+                        pass  # Skip lines where Tau_eff_area cannot be converted to float
+            # Store Tau_eff_area values in the dictionary with the file name as key
+            tau_values_dict[file_name] = (x_values, tau_values)
+
+# Plot the Tau_eff_area values
+for file_name, (x_values, tau_values) in tau_values_dict.items():
+    label = legend_labels.get(file_name, file_name)  # Get legend label or use file name if not defined
+    color = colors.get(file_name, None)  # Get color or use None
+    plt.plot(x_values, tau_values, marker='o', linestyle='-', lw=1.0, markersize=2, label=label, color=color)
+
+plt.xticks(fontsize=16)
+plt.yticks(fontsize=16)
+plt.xlabel('Residue', fontsize=16)
+plt.ylabel('Effective correlation time (ns)', fontsize=16)
+
+# Customize the y-axis scalar formatter
+plt.gca().yaxis.set_major_formatter(ticker.ScalarFormatter(useMathText=True))
+plt.gca().yaxis.offsetText.set_fontsize(16)  # Set font size of the 1e-10 label
+
+plt.legend(fontsize=12)
+plt.tight_layout()
+
+# Display the plot
+plt.show()
+
+
+rounded_values = [round(value, 1) for value in rog_values_best_all]
+rounded_counts = {value: rounded_values.count(value) for value in set(rounded_values)}
+sorted_items = sorted(rounded_counts.items())
+values = [value[0] for value in sorted_items]
+counts = [value[1] for value in sorted_items]
+
+
+with open(Unst_folder + "Best_rog_landscape.txt", 'w') as f:
+	f.write(f"Rog_avg:\t{statistics.mean(rog_values_best_all):.5f}\n")
+	#f.write(f"{statistics.mean(rog_values_best_all):.3f}\n")
+	for x, y in zip(values, counts):
+		f.write(f"{x:.3f}\t{y:.5f}\n")
+
+
+pdb_data = sorted(glob.glob(SIM_DIR + "/model*/*/"))
+cmd.set("ray_opaque_background", 1)
+
+for i in pdb_data:
+	if i.split('/')[-3]+ "/" + i.split('/')[-2] in Best_cases_names:
+		name = i.split('/')[-4]
+
+		md = glob.glob(i + 'md*smooth*xtc')
+		temp = glob.glob(i + 'temp*gro')
+
+		if len(md) > 0 and len(temp) > 0:
+			cmd.load(temp[0], name)
+			cmd.load_traj(md[0], name, state=1, interval=2000)
+			cmd.color('green', name)
+			cmd.set('all_states', 'on')
+			cmd.ray(300, 300)
+obj = cmd.get_object_list('all')
+for i in obj[1:]:
+	cmd.align(obj[0], i, object='aln', transform=0)
+
+cmd.png(best_cases_folder + 'Ensemble_' + SIM_DIR.split('/')[-1] + '_aligned_fig.png')	
+cmd.delete('all')
+cmd.quit()
+
+subprocess.run(["python3", avg_script])
+subprocess.run(["python3", pymol_analysis])
 
 
 
-
-
+'''

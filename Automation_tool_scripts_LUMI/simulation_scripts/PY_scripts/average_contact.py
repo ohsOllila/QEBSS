@@ -69,53 +69,6 @@ plt.tight_layout()
 plt.savefig(RESULTS + 'best_rog_landscape.png')
 plt.close()
 
-fig, axs = plt.subplots(3, 1, figsize=(11, 8))
-for i, data in enumerate(sorted(Best_relax_files)):
-	PROTEIN = data.split("/")[-2]
-	print(PROTEIN)
-	existing_res=[[], [], []]
-	R1_values=[]
-	R2_values=[]
-	NOE_values=[]
-	with open(data, 'r') as file:
-		lines = file.readlines()
-		for line in range(0, len(lines)):
-			parts = lines[line].split()
-			try:
-				R1_values.append(1 / float(parts[1]))
-				existing_res[0].append(line+1)
-			except:
-				pass
-			try:
-				R2_values.append(1 / float(parts[3]))
-				existing_res[1].append(line+1)
-			except:	
-				pass
-			try:
-				NOE_values.append(float(parts[5]))
-				existing_res[2].append(line+1)
-			except:
-				pass
-
-	axs[0].plot(existing_res[0], R1_values, label=PROTEIN, marker='o', linestyle='-', lw=1.0, markersize=2, color=color_list[i])
-	axs[0].set_xlabel('Residue number')
-	axs[0].set_ylabel('R1_values (1/s)')
-	axs[0].set_title('R1_data')
-	axs[0].legend()
-	axs[1].plot(existing_res[1], R2_values, label=PROTEIN, marker='o', linestyle='-', lw=1.0, markersize=2, color=color_list[i])
-	axs[1].set_xlabel('Residue number')
-	axs[1].set_ylabel('R2_values (1/s)')
-	axs[1].set_title('R2_data')
-	axs[1].legend()
-	axs[2].plot(existing_res[2], NOE_values, label=PROTEIN, marker='o', linestyle='-', lw=1.0, markersize=2, color=color_list[i])
-	axs[2].set_xlabel('Residue number')				
-	axs[2].set_ylabel('NOE_values (1/s)')
-	axs[2].set_title('NOE_data')
-	axs[2].legend()
-	
-plt.tight_layout()
-plt.savefig(RESULTS + 'Avg_relax_compair.png')
-plt.close('all')
 
 
 for i, data in enumerate(sorted(Best_relax_files)):
@@ -138,37 +91,39 @@ plt.tight_layout()
 plt.savefig(RESULTS + 'Avg_tau_effective_area.png')
 plt.close()
 
-for i, data in enumerate(sorted(Ctimes_files)):
-	PROTEIN = data.split("/")[-2]    
-	x_vals, y_vals, weights = [], [], []
-	with open(data, 'r') as file:
-		lines = file.readlines()
-		for line_idx in range(len(lines)):
-			parts = lines[line_idx].split()
-			if "Res" in str(parts[0]):
-				x = float(parts[0].replace('Res_nr_', '')) 
-				y_num = 1
-				while line_idx + y_num < len(lines):
-					next_parts = lines[line_idx + y_num].split()
-					if "Res" not in next_parts[0]:
-						try:
-							y = float(next_parts[2].rstrip(','))
-							weight = float(next_parts[3])
-							if y < 89.125:
-								x_vals.append(x)
-								y_vals.append(y)
-								weights.append(weight * 100)
-							y_num += 1
-						except (IndexError, ValueError):
-							break
-					else:
-						break
 
-	plt.scatter(x_vals, y_vals, s=weights, label=PROTEIN, zorder=5, color=color_list[i])
-	plt.xlabel('Residue number')
-	plt.ylabel('Timescales (ns)')
-	plt.title('Timescale Scatter Plot')
-	plt.legend()
-plt.tight_layout()
-plt.savefig(RESULTS + 'Avg_timescales.png')
-plt.close()
+def plot_images(input, output):
+	col=len(input)
+	if 'relaxation_compaired' in input[0]:
+		fig, axs = plt.subplots(col, 1, figsize=(8.27, 11.69))
+	else:
+		fig, axs = plt.subplots(1, col, figsize=(12, 4))
+	for i, data in enumerate(input):
+		data=input[i]
+		PROTEIN = data.split("/")[-4]
+		img = imread(data)
+		if col == 1:
+			plt.imshow(img)
+			plt.title(PROTEIN)
+			plt.axis('off')
+		else:
+			axs[i].imshow(img)
+			axs[i].set_title(PROTEIN)
+			axs[i].axis('off')
+	plt.tight_layout()
+	plt.savefig(RESULTS + output + '.png')
+	plt.close()
+
+
+contact_png = sorted(glob.glob(RESULTS + 'U*/rep_to_exp_data/Accepted_cases/Avg_correlation.png'))
+plot_images(contact_png, "Avg_contact_map")
+
+contact_png = sorted(glob.glob(RESULTS + 'U*/rep_to_exp_data/Accepted_cases/Ensemble_*.png'))
+plot_images(contact_png, "Avg_structure")
+
+
+relaxation_png = sorted(glob.glob(RESULTS + 'U*/rep_to_exp_data/Accepted_cases/average_relaxation_compaired_plot.png'))
+plot_images(relaxation_png, "Avg_relaxation_times")
+
+contact_png = sorted(glob.glob(RESULTS + 'U*/rep_to_exp_data/Accepted_cases/Timescale_plot_best.png'))
+plot_images(contact_png, "Avg_timescales_times")
