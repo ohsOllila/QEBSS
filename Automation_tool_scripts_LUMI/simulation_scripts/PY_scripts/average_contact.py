@@ -29,7 +29,6 @@ BASE_DIR=os.path.dirname(SIM_DIR)
 RESULTS=BASE_DIR + '/results/'
 
 
-
 Best_rog_files=glob.glob(RESULTS + 'U*/Best_rog_landscape.txt')
 Best_relax_files=glob.glob(RESULTS + 'U*/relaxation_times.csv')
 Ctimes_files=glob.glob(RESULTS + 'U*/Ctimes_Coeffs.csv')
@@ -50,7 +49,7 @@ def extract_values_pandas(file_path, nr, column_number, include_header=False):
 
 rog_data=[[], [], []]
 
-for i in Best_rog_files:
+for i in sorted(Best_rog_files):
 	values=[]
 	counts=[]
 	with open(i, 'r') as file:
@@ -82,8 +81,8 @@ plt.savefig(RESULTS + 'best_rog_landscape.png')
 plt.close()
 
 
-
-for i, data in enumerate(sorted(Best_relax_files)):
+fig, ax = plt.subplots()
+for i, data in enumerate(Best_relax_files):
 	tau, tau_values=extract_values_pandas(Best_relax_files, i, 10, include_header=True)
 	res, res_values=extract_values_pandas(Best_relax_files, i, 0, include_header=True)
 
@@ -92,14 +91,17 @@ for i, data in enumerate(sorted(Best_relax_files)):
 
 	PROTEIN = data.split("/")[-2]
 
-	
-	df.plot(x=res, y=tau, label=PROTEIN, marker='o', linestyle='-', lw=1.0, markersize=2, color=color_list[i])
-	plt.xlabel('Residue number')
-	plt.ylabel('Effective correlation time (ns)')
-	plt.title('Effective correlation')
-	plt.legend()
+	df.plot(x=res, y=tau, label=PROTEIN, marker='o', linestyle='-', lw=1.0, markersize=2, color=color_list[i], ax=ax)
+
+# Customize the plot
+plt.xlabel('Residue number')
+plt.ylabel('Effective correlation time (ns)')
+plt.title('Effective correlation')
+plt.legend()
 plt.tight_layout()
-plt.savefig(RESULTS + 'Avg_tau_effective_area.png')
+
+# Save the figure
+plt.savefig(RESULTS + 'Avg_tau_effective_area.png', dpi=2000)
 plt.close()
 
 def plot_images(input, output):
@@ -138,5 +140,5 @@ plot_images(contact_png, "Avg_structure")
 relaxation_png = sorted(glob.glob(RESULTS + 'U*/rep_to_exp_data/Accepted_cases/average_relaxation_compaired_plot.png'))
 plot_images(relaxation_png, "Avg_relaxation_times")
 
-contact_png = sorted(glob.glob(RESULTS + 'U*/rep_to_exp_data/Accepted_cases/Timescale_plot_best.png'))
+contact_png = sorted(glob.glob(RESULTS + 'U*/rep_to_exp_data/Accepted_cases/Timescale_plot_avg.png'))
 plot_images(contact_png, "Avg_timescales_times")

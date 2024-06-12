@@ -396,9 +396,8 @@ axs_plot(avg_path, 0, 8, include_header=True, axs=axs[2])
 axs_plot(avg_path, 0, 1, include_header=True, axs=axs[0])
 axs_plot(avg_path, 0, 4, include_header=True, axs=axs[1])
 axs_plot(avg_path, 0, 7, include_header=True, axs=axs[2])
-fig.suptitle(protein_sequence, fontsize=7)
 plt.tight_layout()
-plt.savefig(relax_folder + 'Accepted_cases/average_relaxation_compaired_plot.png')
+plt.savefig(relax_folder + 'Accepted_cases/average_relaxation_compaired_plot.png', dpi=300)
 plt.close('all')
 
 
@@ -493,7 +492,7 @@ def plot_rog_density_landscape_all(data_path, output, same=False, axs=None):
 
 
 plot_rog_density_landscape_all(glob.glob(SIM_DIR + "*/*/md*gyrate.xvg"), "density_landscape_plot", same=False)
-#plot_rog_density_landscape_all([glob.glob(SIM_DIR + i + "/md*gyrate.xvg")[0] for i in Best_cases], "Accepted_cases/best_rog_density_landscape_plot", same=True)
+plot_rog_density_landscape_all([glob.glob(SIM_DIR + i + "/md*gyrate.xvg")[0] for i in Best_cases], "Accepted_cases/best_rog_density_landscape_plot", same=True)
 
 
 def dif_to_exp(input, output):
@@ -616,7 +615,7 @@ def create_timescale_scatter_plot(path, idx, axs=None):
 			axs.add_patch(rect)
 		axs.set_yticks(np.arange(0, 81, 20)) 
 		axs.set_ylim(0, 80)
-		axs.set_xticks(xticks) 
+		#axs.set_xticks(xticks) 
 		axs.set_xlim(0, res_nr)
 		axs.set_title('/'.join(path[idx].split("/")[-3:-1]))
 
@@ -681,6 +680,8 @@ with open(Unst_folder + "Best_rog_landscape.txt", 'w') as f:
 	f.write(f"Rog_avg:\t{statistics.mean(rog_values_best_all):.5f}\n")
 	for x, y in zip(rog_values_best_round, rog_counts_best):
 		f.write(f"{x:.3f}\t{y:.5f}\n")
+
+
 def plot_ensembles_images(input, output):
 	fig, axs = plt.subplots(5, 5, figsize=(15, 15))
 	for j, ff in enumerate(FORCEFIELDS): # Use '*.csv' for CSV
@@ -730,6 +731,7 @@ cmd.delete('all')
 cmd.quit()
 
 
+pdb_data = sorted(glob.glob(SIM_DIR + "model*/*/"))
 
 for path in pdb_data:
 	cmd.set("ray_opaque_background", 1)
@@ -757,6 +759,7 @@ cmd.quit()
 plot_ensembles_images(sorted(glob.glob(SIM_DIR + "model*/*/*mdmat*.png")), "Contact_map_combined")
 plot_ensembles_images(sorted(glob.glob(SIM_DIR + "model*/*/*correlation*.png")), "Correlation_combined")
 plot_ensembles_images(sorted(glob.glob(SIM_DIR + "model*/*/Ensemble*model*aligned_fig.png")), "Ensembles_aligned_combined")
+
 
 def contact_map_avg(input, output):
 	matrix = avg_csv(input)
@@ -792,7 +795,6 @@ corr_map_avg([glob.glob(SIM_DIR + i + "/*correlation*.csv")[0] for i in Best_cas
 
 subprocess.run(["python3", avg_script])
 #subprocess.run(["python3", pymol_analysis])
-
 
 
 

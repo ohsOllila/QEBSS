@@ -62,6 +62,7 @@ echo 1 1 | gmx_mpi trjconv -f ${name}.xtc -s ${name}.tpr -pbc mol -center -o ${n
 gmx_mpi filter -f ${name}_noPBC.xtc -s temp_${name}.gro -nf 20 -all -ol ${name}_smooth.xtc
 echo 1 | gmx_mpi gyrate -s ${name}.tpr -f ${name}_noPBC.xtc -o ${name}_gyrate.xvg
 
+: '
 echo -e "Alpha\nAlpha" | gmx_mpi mdmat -f ${name}.xtc -s ${name}.tpr -mean ${name}_mdmat.xpm
 gmx_mpi xpm2ps -f ${name}_mdmat.xpm -o ${name}_mdmat.eps
 
@@ -71,14 +72,14 @@ sed -i.bak 's/H1/HN/g' $GRO_FILE
 awk -f ${make_index} $GRO_FILE > HN.ndx
 
 line_number=1  # Initialize the line number
-'''
+
 numberOFfuncs=$(grep "\[" HN.ndx | tail -n 1 | awk '{print $2}')
 for ((i = 0; i <= $numberOFfuncs; i++)); do
 	num=$(awk -v line="$line_number" 'NR==line {print $2}' HN.ndx)
 	echo $i | gmx_mpi rotacf -f ${name}_noPBC.xtc -s ${name}.tpr -n HN.ndx -o correlation_functions/NHrotaCF_$num.xvg -P 2 -d -xvg none  #-nice 20 
 	((line_number += 2)) 
 done
-'''
+
 module purge
 export PATH="$(cd ../../../env/bin && pwd):$PATH"
 #export PATH="/scratch/project_462000285/cmcajsa/systems/forcefield_compare/env/bin:$PATH"
@@ -99,3 +100,4 @@ cp -r $path/correlation_functions $sim_results
 cd $SIM_PATH
 python3 $relax_plot
 
+'
