@@ -75,7 +75,7 @@ with open(base + '/model_01.pdb', 'r') as file:
 	lines = file.readlines()
 	words = lines[-3].split()	
 	res_nr=words[5]
-	
+	print(res_nr)	
 sys.path.insert(1, os.path.dirname(base) + '/simulation_scripts/MD_scripts/relaxation_times')
 import relaxation_times as rt
 
@@ -106,15 +106,14 @@ elif take_all_in_folder=="number":
 #	Ctimes_to_save[:,0]=Ctimes
 	with open('relaxation_times.csv', 'w', newline='') as file:
 		writer = csv.writer(file)
-		writer.writerow(["Residue_nr", "R1_exp", "R1_sim", "R1_diff", "R2_exp", "R2_sim", "R2_diff", "NOE_exp", "NOE_sim", "NOE_diff", "Tau_eff_area"])
+		writer.writerow(["Residue_nr", "R1_exp", "R1_sim", "R1_diff", "R2_exp", "R2_sim", "R2_diff", "hetNOE_exp", "hetNOE_sim", "hetNOE_diff", "Tau_eff_area"])
 	for i in range(1, int(res_nr)+1):
-		try:
-			if os.path.exists(folder_path+input_prefix+str(i)+".xvg"):
-				with open('Ctimes_Coeffs.csv', 'a', newline='') as file:
-					writer = csv.writer(file)
-					writer.writerow(["Res_nr" + str(i) + "_Ctimes_ns", "Res_nr" + str(i) + "_Coeffs"])
-				input_corr_file = folder_path+input_prefix+str(i)+".xvg"
-				rt.GetRelaxationData(OP,smallest_corr_time, biggest_corr_time, N_exp_to_fit,analyze,magnetic_field,input_corr_file,nuclei,output_name, i)
+		try:	
+			with open('Ctimes_Coeffs.csv', 'a', newline='') as file:
+				writer = csv.writer(file)
+				writer.writerow(["Res_nr" + str(i) + "_Ctimes_ns", "Res_nr" + str(i) + "_Coeffs"])
+			input_corr_file = folder_path+input_prefix+str(i)+".xvg"
+			rt.GetRelaxationData(OP,smallest_corr_time, biggest_corr_time, N_exp_to_fit,analyze,magnetic_field,input_corr_file,nuclei,output_name, i)
 		except:
 			with open('relaxation_times.csv', 'a', newline='') as file:
 				writer = csv.writer(file)

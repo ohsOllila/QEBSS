@@ -6,6 +6,7 @@ import mdtraj as md
 import matplotlib.pyplot as plt
 import glob
 import shutil
+from matplotlib.ticker import FixedLocator, FixedFormatter
 
 def unquote(s):
 	return s[1+s.find('"'):s.rfind('"')]
@@ -66,11 +67,14 @@ np.savetxt(csv_file_name, mdmat[::-1,:], delimiter = ",")
 
 fig, ax = plt.subplots()
 cmap = plt.cm.viridis
-plot = ax.imshow(mdmat[::-1,:], cmap = cmap, origin = "lower", vmin=1, vmax=1.4)
+plot = ax.imshow(mdmat[::-1,:], cmap = cmap, origin = "lower", vmin=0, vmax=1.4)
 num_residues = np.shape(mdmat)[0]
+
 ax.set_xlabel("Residue")
 ax.set_ylabel("Residue")
+
 cbar = plt.colorbar(plot, ax = ax)
 cbar.set_label("Distance (nm)")
 plt.savefig(png_file_name)
 plt.close()
+

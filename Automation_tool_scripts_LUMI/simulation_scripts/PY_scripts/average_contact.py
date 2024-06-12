@@ -31,10 +31,22 @@ RESULTS=BASE_DIR + '/results/'
 
 
 Best_rog_files=glob.glob(RESULTS + 'U*/Best_rog_landscape.txt')
-Best_relax_files=glob.glob(RESULTS + 'U*/relaxation_times.txt')
-Ctimes_files=glob.glob(RESULTS + 'U*/Ctimes_Coeffs.txt')
+Best_relax_files=glob.glob(RESULTS + 'U*/relaxation_times.csv')
+Ctimes_files=glob.glob(RESULTS + 'U*/Ctimes_Coeffs.csv')
 
 color_list=['red', 'blue', 'green', 'purple', 'orange']
+
+def extract_values_pandas(file_path, nr, column_number, include_header=False):
+        df = pd.read_csv(file_path[nr])
+        if include_header:
+                header = df.columns[column_number]
+                column = df.iloc[:, column_number]
+                column = pd.to_numeric(column, errors='coerce')
+                return header, column
+        else:
+                column = df.iloc[:, column_number]
+                column = pd.to_numeric(column, errors='coerce')
+                return column
 
 rog_data=[[], [], []]
 
@@ -72,25 +84,23 @@ plt.close()
 
 
 for i, data in enumerate(sorted(Best_relax_files)):
+	tau, tau_values=extract_values_pandas(Best_relax_files, i, 10, include_header=True)
+	res, res_values=extract_values_pandas(Best_relax_files, i, 0, include_header=True)
+
+	df = pd.DataFrame({tau: tau_values, res: res_values})
+	df.dropna(inplace=True)
+
 	PROTEIN = data.split("/")[-2]
-	with open(data, 'r') as file:
-		lines = file.readlines()
-		y_values=[]
-		for line in range(0, len(lines)):
-			parts = lines[line].split()
-			try:
-				y_values.append(float(parts[7])*10**10)
-			except:
-				pass
-		plt.plot(range(1, len(y_values)+1), y_values, label='R2 Data_' + PROTEIN, marker='o', linestyle='-', lw=1.0, markersize=2, color=color_list[i])
-		plt.xlabel('Residue number')
-		plt.ylabel('Effective correlation time (10^(-10) s)')
-		plt.title('Effective correlation')
-		plt.legend()
+
+	
+	df.plot(x=res, y=tau, label=PROTEIN, marker='o', linestyle='-', lw=1.0, markersize=2, color=color_list[i])
+	plt.xlabel('Residue number')
+	plt.ylabel('Effective correlation time (ns)')
+	plt.title('Effective correlation')
+	plt.legend()
 plt.tight_layout()
 plt.savefig(RESULTS + 'Avg_tau_effective_area.png')
 plt.close()
-
 
 def plot_images(input, output):
 	col=len(input)
@@ -115,7 +125,10 @@ def plot_images(input, output):
 	plt.close()
 
 
-contact_png = sorted(glob.glob(RESULTS + 'U*/rep_to_exp_data/Accepted_cases/Avg_correlation.png'))
+contact_png = sorted(glob.glob(RESULTS + 'U*/rep_to_exp_data/Accepted_cases/Avg_corr.png'))
+plot_images(contact_png, "Avg_correlation_map")
+
+contact_png = sorted(glob.glob(RESULTS + 'U*/rep_to_exp_data/Accepted_cases/Avg_contact.png'))
 plot_images(contact_png, "Avg_contact_map")
 
 contact_png = sorted(glob.glob(RESULTS + 'U*/rep_to_exp_data/Accepted_cases/Ensemble_*.png'))

@@ -5,7 +5,7 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --nodes=1
 #SBATCH --array=0-24
-#SBATCH --account=project_462000285
+#SBATCH --account=project_462000540
 ##SBATCH --account=project
 
 

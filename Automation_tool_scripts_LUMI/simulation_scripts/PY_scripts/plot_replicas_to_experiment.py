@@ -18,7 +18,16 @@ import statistics
 import random
 import MDAnalysis as mda
 from pymol import cmd
+from matplotlib.patches import Rectangle
 import pymol
+
+three_to_one = {
+    'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D', 'CYS': 'C',
+    'GLN': 'Q', 'GLU': 'E', 'GLY': 'G', 'HIS': 'H', 'ILE': 'I',
+    'LEU': 'L', 'LYS': 'K', 'MET': 'M', 'PHE': 'F', 'PRO': 'P',
+    'SER': 'S', 'THR': 'T', 'TRP': 'W', 'TYR': 'Y', 'VAL': 'V'
+}
+
 
 
 FORCEFIELDS=["AMBER03WS", "AMBER99SB-DISP", "AMBER99SBWS", "CHARMM36M", "DESAMBER"]
@@ -32,7 +41,7 @@ color_map = {
     'model_05': 'orange'
 }
 
-	
+
 
 SIM_DIR = os.getcwd() + '/'
 BASE_DIR = os.path.dirname(os.path.dirname(SIM_DIR)) + '/'
@@ -53,6 +62,31 @@ with open(exp_data, 'r') as file:
 	first_row =lines[0].split()
 	magn_field=first_row[5]
 	res_nr=len(lines)-1
+
+def convert_to_one_letter(three_letter_code):
+	return three_to_one.get(three_letter_code, 'X')
+
+seq_string=[]
+with open("model_01.pdb", 'r') as file:
+	lines = file.readlines()
+	for i in range(len(lines)):
+		parts = lines[i].split()
+		if len(parts) > 3 and parts[0] == "ATOM" and parts[2] == "CA": 
+			one_letter_sequence = convert_to_one_letter(parts[3])
+			seq_string.append(one_letter_sequence)
+
+protein_sequence = ''.join(seq_string)
+
+
+
+xticks=[1]
+for i in range(10, res_nr, 20):
+	xticks.append(i)
+
+
+Names=['/'.join(i.split("/")[-3:-1]) for i in relax_data]
+
+
 
 
 def extract_columns(csv_folder):
@@ -75,25 +109,38 @@ def extract_columns(csv_folder):
     
 	return result
 
-def extract_values_pandas(file_path, nr, column_number):
-	df = pd.read_csv(file_path[nr])    
+def extract_values_pandas(file_path, nr, column_number, include_header=False):
+	df = pd.read_csv(file_path[nr])
+	if include_header:
+		header = df.columns[column_number]
+		column = df.iloc[:, column_number]
+		column = pd.to_numeric(column, errors='coerce')
+		return header, column
+	else:
+		column = df.iloc[:, column_number]
+		column = pd.to_numeric(column, errors='coerce')
+		return column
+
+def extract_values_pandas_list(file_path, nr, column_number):
+	df = pd.read_csv(file_path[nr])
 	column = df.iloc[:, column_number]
-	return column
+	column_list = column.tolist()
+	
+	return column_list
 
-
-def filter_list(unfiltered_list):
-        return [float(x) for x in unfiltered_list if x != 'n']
-
-def use_list(files, sim_case_nr, parameter):
+def extract_data(files, sim_case_nr, parameter):
 	spec_key=list(files.keys())[sim_case_nr]
 	parameter = files.get(spec_key, {}).get(parameter, [])
-	cleaned_list = filter_list(parameter)
+
+	return parameter
+
+
+
+def use_list(files, sim_case_nr, parameter):
+	parameter=extract_data(files, sim_case_nr, parameter)
+	cleaned_list = [float(x) for x in parameter if x != 'n']
 	
 	return cleaned_list
-
-
-def adjust_existing_res(files, i, j):
-    return [x for x, y in zip(files.get(list(files.keys())[i], {}).get("Residue_nr", []), files.get(list(files.keys())[i], {}).get(j, [])) if y != 'n']
 
 
 def ranking_value(files, parameter):
@@ -104,14 +151,21 @@ def ranking_value(files, parameter):
 
 	return rank
 
-def extreme_value(files, extreme, sim, exp):
-	lists=[]
-	for i in range(len(list(files.keys()))):
-		lists.append(use_list(files, i, sim))
-		lists.append(use_list(files, i, exp))
-	ref=extreme(extreme(sublist) for sublist in lists)
-	return ref
-	
+
+def find_largest_value(data_path, column_number, include_header=False):
+	ymax_list=[]
+	ymin_list=[]
+	for i in range(len(Names)):
+		ymax_list.append(np.nanmax(extract_values_pandas(data_path, i, column_number, include_header=False)))
+		ymax_list.append(np.nanmax(extract_values_pandas(data_path, i, column_number+1, include_header=False)))
+		ymin_list.append(np.nanmin(extract_values_pandas(data_path, i, column_number, include_header=False)))
+		ymin_list.append(np.nanmin(extract_values_pandas(data_path, i, column_number+1, include_header=False)))
+	ymax=max(ymax_list)
+	ymin=min(ymin_list)
+
+	return ymin, ymax
+
+
 
 
 def calculate_rmsd(values_diff):
@@ -132,6 +186,7 @@ def plot_all(file_path, output_file_name, execution):
 	plt.savefig(relax_folder + output_file_name)
 	plt.close()
 
+
 def avg_csv(input):
 	dataframes = [pd.read_csv(file) for file in input]
 	stacked_array = np.array([df.values for df in dataframes])
@@ -140,23 +195,100 @@ def avg_csv(input):
 
 	return matrix
 
+def read_rog_values(data_path):
+	rog_values = []
+	with open(data_path, 'r') as file:
+		for line in file.readlines()[27:]:
+			try:
+				value = float(line.split()[1])
+				rog_values.append(value)
+			except IndexError:
+				pass
+	rounded_values = [round(value, 1) for value in rog_values]
+	rounded_counts = {value: rounded_values.count(value) for value in set(rounded_values)}
+	sorted_items = sorted(rounded_counts.items())
+	values = [value[0] for value in sorted_items]
+	counts = [value[1] for value in sorted_items]
 
-	
+
+	return rog_values, counts, values
+
+
+def axs_plot(data_path, data_idx, column_nr, include_header=True, axs=None):
+	x_header, x_list = extract_values_pandas(data_path, data_idx, 0, include_header)
+	y_header, y_list = extract_values_pandas(data_path, data_idx, column_nr, include_header)
+
+	name=Names[data_idx]
+	rep_name=name.split('/')[0]	
+	forcefield=name.split('/')[1]
+
+	parameter=y_header.split('_')[0]
+
+	df = pd.DataFrame({x_header: x_list, y_header: y_list})	
+	df.dropna(inplace=True)
+
+
+	if "hetNOE" in y_header:
+		ax_label = parameter + ' values'
+	elif "R1" in y_header or "R2" in y_header:
+		ax_label = parameter + ' relaxation rates (1/s)'
+	else:
+		ax_label = 'Effective correlation times (ns)'
+
+	if "exp" in y_header:
+		selected = "black"
+		tag = y_header.split('_')[0] + " experimental data"	
+	else:
+		selected = color_map.get(rep_name, "black")
+		tag = name
+
+	if "exp" in y_header:
+		label = y_header.split('_')[0] + " experimental data"
+	elif "results" in data_path[data_idx] and "sim" in y_header:
+		label = y_header.split('_')[0] + " simulation average"
+	else:
+		label = tag
+
+
+	df.plot(x=x_header, y=y_header, ax=axs, label=label, marker='o', linestyle="-", lw=1.0, markersize=2, color=selected)
+
+	if "hetNOE_exp" in y_header and "results" not in data_path[data_idx]:
+		y_min, y_max = find_largest_value(data_path, column_nr, include_header=False)
+		axs.set_yticks(np.arange(y_min, y_max, 0.5))
+		axs.set_ylim(y_min, y_max)
+	elif "R1_exp" in y_header and "results" not in data_path[data_idx]:
+		y_min, y_max = find_largest_value(data_path, column_nr, include_header=False)
+		axs.set_yticks(np.arange(0, y_max, 0.5))
+		axs.set_ylim(0, y_max)
+	elif "R2_exp" in y_header and "results" not in data_path[data_idx]:
+		y_min, y_max = find_largest_value(data_path, column_nr, include_header=False)
+		axs.set_yticks(np.arange(0, y_max, 20))
+		axs.set_ylim(0, y_max)
+
+
+	if axs is not None:
+		axs.set_xlim(0, res_nr)
+		axs.set_xticks(xticks)
+		axs.set_xlabel('Residue number')
+		axs.set_ylabel(ax_label)
+		axs.legend()
+	else:
+		plt.xticks(xticks)
+		plt.xlabel('Residue number')
+		plt.ylabel(ax_label)
 
 
 RMSD_R1=[]
 RMSD_R2=[]
-RMSD_NOE=[]
+RMSD_hetNOE=[]
 for i in range(len(list(extract_columns(relax_data).keys()))):	
 	RMSD_R1.append(calculate_rmsd(use_list(extract_columns(relax_data), i, "R1_diff")))
 	RMSD_R2.append(calculate_rmsd(use_list(extract_columns(relax_data), i, "R2_diff")))
-	RMSD_NOE.append(calculate_rmsd(use_list(extract_columns(relax_data), i, "NOE_diff")))
+	RMSD_hetNOE.append(calculate_rmsd(use_list(extract_columns(relax_data), i, "hetNOE_diff")))
 
 
 
 
-Rog_data_list=[]
-rog_values_best=[]
 Best_cases=[]
 
 ranking_file=relax_folder + 'ranking_table.csv'
@@ -169,41 +301,21 @@ with open(ranking_file, 'w', newline="") as csvfile:
 			ff_name=case.split("/")[1]
 			RMSD_R1=calculate_rmsd(use_list(extract_columns(relax_data), i, "R1_diff"))
 			RMSD_R2=calculate_rmsd(use_list(extract_columns(relax_data), i, "R2_diff"))
-			RMSD_NOE=calculate_rmsd(use_list(extract_columns(relax_data), i, "NOE_diff"))
+			RMSD_hetNOE=calculate_rmsd(use_list(extract_columns(relax_data), i, "hetNOE_diff"))
 
 			R1_rank_value=(float(RMSD_R1)/ranking_value(extract_columns(relax_data), "R1_diff"))*100
 			R2_rank_value=(float(RMSD_R2)/ranking_value(extract_columns(relax_data), "R2_diff"))*100
-			NOE_rank_value=(float(RMSD_NOE)/ranking_value(extract_columns(relax_data), "NOE_diff"))*100
-			Ranking_sum=R1_rank_value+R2_rank_value+NOE_rank_value
-			csvwriter.writerow([ff_name, rep_name, RMSD_R1, R1_rank_value, RMSD_R2, R2_rank_value, RMSD_NOE, NOE_rank_value, Ranking_sum])
-			if R1_rank_value/100 < 1.5 and R2_rank_value/100 < 1.5 and NOE_rank_value/100 < 1.5:
+			hetNOE_rank_value=(float(RMSD_hetNOE)/ranking_value(extract_columns(relax_data), "hetNOE_diff"))*100
+			Ranking_sum=R1_rank_value+R2_rank_value+hetNOE_rank_value
+			csvwriter.writerow([ff_name, rep_name, RMSD_R1, R1_rank_value, RMSD_R2, R2_rank_value, RMSD_hetNOE, hetNOE_rank_value, Ranking_sum])
+			if R1_rank_value/100 < 1.5 and R2_rank_value/100 < 1.5 and hetNOE_rank_value/100 < 1.5:
 				Best_cases.append(case)
-				print(Best_cases)
-				with open(glob.glob(SIM_DIR+ case +'/md*gyrate.xvg')[0], 'r') as file:
-					lines = file.readlines()
-					for line in range(27, len(lines)):
-						parts =(lines)[line].split()
-						rog_values_best.append(round(float(parts[1]), 1))
-
-
-
-if rog_values_best: 
-	value_counts = Counter(rog_values_best)
-	values, counts = zip(*sorted(value_counts.items(), key=lambda x: x[0]))
-	plt.plot(values, counts)
-	plt.xlabel('Radius of gyration')	
-	plt.ylabel('Count')
-	plt.title('Count of Radius of gyration values from best simulation extract_columns(relax_data)')
-	plt.tight_layout()	
-	plt.savefig(best_cases_folder + 'best_rog_density_landscape_plot.png')
-	plt.close()
-else:
-	print("No simulation meets ranking criteria")
-
+				print(case)
+			else:
+				print(case + " do not meet criteria")
 
 os.makedirs(Unst_folder + "correlation_functions/", exist_ok=True)
 '''
-
 i = 1
 while i <= res_nr :
 	corr_lists=[]
@@ -242,351 +354,147 @@ with fileinput.FileInput(Unst_folder + "Old_Relaxations_for_Samuli.py", inplace=
 os.chdir(Unst_folder)
 subprocess.run(["python3", Unst_folder + "Old_Relaxations_for_Samuli.py"])
 '''
-avg_data_path=glob.glob(Unst_folder + "relaxation_times.csv")
-avg_data=extract_columns(avg_data_path)
-
+avg_path=glob.glob(Unst_folder + "relaxation_times.csv")
+avg_data=extract_columns(avg_path)
 
 os.chdir(SIM_DIR)
 
-print(adjust_existing_res(extract_columns(relax_data), 0, "R1_sim"))
 for item in FORCEFIELDS:
 	fig, axs = plt.subplots(1, 3, figsize=(15, 6))
-	for i, name in enumerate(list(extract_columns(relax_data).keys())):
+	for i, name in enumerate(Names):
 		if name.split("/")[1]==item:
-			rep_name=name.split("/")[0]
-			selected = color_map.get(rep_name, 'black')
-			axs[0].plot(adjust_existing_res(extract_columns(relax_data), i, "R1_sim"), use_list(extract_columns(relax_data), i, "R1_sim"), label='R1 Data_' + rep_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
-			axs[0].set_xlabel('Residue number')
-			axs[0].set_ylabel('R1_values (1/s)')
-			axs[0].set_title('R1_data')
-			axs[0].legend()
-			axs[1].plot(adjust_existing_res(extract_columns(relax_data), i, "R2_sim"), use_list(extract_columns(relax_data), i, "R2_sim"), label='R2 Data_' + rep_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
-			axs[1].set_xlabel('Residue number')
-			axs[1].set_ylabel('R2_values (1/s)')
-			axs[1].set_title('R2_data')
-			axs[1].legend()
-			axs[2].plot(adjust_existing_res(extract_columns(relax_data), i, "NOE_sim"), use_list(extract_columns(relax_data), i, "NOE_sim"), label='NOE Data_' + rep_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
-			axs[2].set_xlabel('Residue number')				
-			axs[2].set_ylabel('NOE_values 1/s')
-			axs[2].set_title('NOE_data')
-			axs[2].legend()
+			axs_plot(relax_data, i, 2, include_header=True, axs=axs[0])
+			axs_plot(relax_data, i, 5, include_header=True, axs=axs[1])
+			axs_plot(relax_data, i, 8, include_header=True, axs=axs[2])
 	else:
-		axs[0].plot(adjust_existing_res(extract_columns(relax_data), i, "R1_exp"), use_list(extract_columns(relax_data), i, "R1_exp"), label='R1 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
-		axs[0].set_xlabel('Residue number')
-		axs[0].set_ylabel('R1_values (1/s)')
-		axs[0].set_xticks(np.arange(9, res_nr, 10))
-		axs[0].set_xlim(0, res_nr)
-		axs[0].set_title('R1_data')
-		axs[0].legend()
-		
-		axs[1].plot(adjust_existing_res(extract_columns(relax_data), i, "R2_exp"), use_list(extract_columns(relax_data), i, "R2_exp"), label='R2 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
-		axs[1].set_xlabel('Residue number')
-		axs[1].set_ylabel('R2_values (1/s)')
-		axs[1].set_xticks(np.arange(9, res_nr, 10))
-		axs[1].set_xlim(0, res_nr)
-		axs[1].set_title('R2_data')
-		axs[1].legend()
-	
-		axs[2].plot(adjust_existing_res(extract_columns(relax_data), i, "NOE_exp"), use_list(extract_columns(relax_data), i, "NOE_exp"), label='NOE Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
-		axs[2].set_xlabel('Residue number')
-		axs[2].set_ylabel('NOE_values (1/s)')
-		axs[2].set_xticks(np.arange(9, res_nr, 10))
-		axs[2].set_xlim(0, res_nr)
-		axs[2].set_title('NOE_data')
-		axs[2].legend()
-	
+		axs_plot(relax_data, i, 1, include_header=True, axs=axs[0])
+		axs_plot(relax_data, i, 4, include_header=True, axs=axs[1])
+		axs_plot(relax_data, i, 7, include_header=True, axs=axs[2])
 	plt.tight_layout()
 	plt.savefig(relax_folder + item + '_plot.png')
 	plt.close('all')
 
 fig, axs = plt.subplots(1, 3, figsize=(15, 6))
 for j in Best_cases:
-	rep_name=j.split("/")[0]
-	ff_name=j.split("/")[1]
-	i=list(extract_columns(relax_data).keys()).index(j)
-
-	selected = color_map.get(rep_name, 'black')
-	axs[0].plot(adjust_existing_res(extract_columns(relax_data), i, "R1_sim"), use_list(extract_columns(relax_data), i, "R1_sim"), label='R1 Data_' + rep_name + '_' + ff_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
-	axs[0].set_xlabel('Residue number')
-	axs[0].set_ylabel('R1_values')
-	axs[0].set_title('R1_data')
-	axs[0].legend()
-	axs[1].plot(adjust_existing_res(extract_columns(relax_data), i, "R2_sim"), use_list(extract_columns(relax_data), i, "R2_sim"), label='R2 Data_' + rep_name + '_' + ff_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
-	axs[1].set_xlabel('Residue number')
-	axs[1].set_ylabel('R2_values')
-	axs[1].set_title('R2_data')
-	axs[1].legend()
-	axs[2].plot(adjust_existing_res(extract_columns(relax_data), i, "NOE_sim"), use_list(extract_columns(relax_data), i, "NOE_sim"), label='NOE Data_' + rep_name + '_' + ff_name, marker='o', linestyle='-', lw=1.0, markersize=2, color=selected)
-	axs[2].set_xlabel('Residue number')				
-	axs[2].set_ylabel('NOE_values')
-	axs[2].set_title('NOE_data')
-	axs[2].legend()
-		
-axs[0].plot(adjust_existing_res(extract_columns(relax_data), 0, "R1_exp"), use_list(extract_columns(relax_data), 0, "R1_exp"), label='R1 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
-axs[0].set_xlabel('Residue number')
-axs[0].set_ylabel('R1_values')
-axs[0].set_xticks(np.arange(9, res_nr, 10))
-axs[0].set_xlim(0, res_nr-20)
-axs[0].set_title('R1_data')
-axs[0].legend()
-
-axs[1].plot(adjust_existing_res(extract_columns(relax_data), 0, "R2_exp"), use_list(extract_columns(relax_data), 0, "R2_exp"), label='R2 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
-axs[1].set_xlabel('Residue number')
-axs[1].set_ylabel('R2_values')
-axs[1].set_xticks(np.arange(9, res_nr, 10))
-axs[1].set_xlim(0, res_nr-20)
-axs[1].set_title('R2_data')
-axs[1].legend()
-
-axs[2].plot(adjust_existing_res(extract_columns(relax_data), 0, "NOE_exp"), use_list(extract_columns(relax_data), 0, "NOE_exp"), label='NOE Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
-axs[2].set_xlabel('Residue number')
-axs[2].set_ylabel('NOE_values')
-axs[2].set_xticks(np.arange(9, res_nr, 10))
-axs[2].set_xlim(0, res_nr-20)
-axs[2].set_title('NOE_data')
-axs[2].legend()
-	
+	i=Names.index(j)
+	axs_plot(relax_data, i, 2, include_header=True, axs=axs[0])
+	axs_plot(relax_data, i, 5, include_header=True, axs=axs[1])
+	axs_plot(relax_data, i, 8, include_header=True, axs=axs[2])
+axs_plot(relax_data, i, 1, include_header=True, axs=axs[0])
+axs_plot(relax_data, i, 4, include_header=True, axs=axs[1])
+axs_plot(relax_data, i, 7, include_header=True, axs=axs[2])
 plt.tight_layout()
-plt.savefig(best_cases_folder + 'Best_cases_plot.png')
+plt.savefig(relax_folder + 'Accepted_cases/Best_cases_plot')
 plt.close('all')
 
+
+
 fig, axs = plt.subplots(3, 1, figsize=(11, 8))
-axs[0].plot(adjust_existing_res(avg_data, 0, "R1_sim"), use_list(avg_data, 0, "R1_sim"), label='Simulation average', marker='o', linestyle='-', lw=1.0, markersize=2, color="blue")
-axs[0].set_ylabel('R1 relaxation rate (1/s)')
-axs[0].set_title(SIM_DIR.split("/")[-2])
-axs[0].legend()
-axs[1].plot(adjust_existing_res(avg_data, 0, "R2_sim"), use_list(avg_data, 0, "R2_sim"), label='Simulation average', marker='o', linestyle='-', lw=1.0, markersize=2, color="blue")
-axs[1].set_ylabel('R2 relaxation rate (1/s)')
-axs[1].legend()
-axs[2].plot(adjust_existing_res(avg_data, 0, "NOE_sim"), use_list(avg_data, 0, "NOE_sim"), label='Simulation average', marker='o', linestyle='-', lw=1.0, markersize=2, color="blue")
-axs[2].set_xlabel('Residue number')
-axs[2].set_ylabel('hetNOE value (1/s)')
-axs[2].legend()
-
-axs[0].plot(adjust_existing_res(avg_data, 0, "R1_exp"), use_list(avg_data, 0, "R1_exp"), label='NMR experiment', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
-axs[0].set_xticks(np.arange(9, res_nr, 10))
-axs[0].set_xlim(0, res_nr-20)
-axs[0].legend()
-axs[1].plot(adjust_existing_res(avg_data, 0, "R2_exp"), use_list(avg_data, 0, "R2_exp"), label='NMR experiment', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
-axs[1].set_xticks(np.arange(9, res_nr, 10))
-axs[1].set_xlim(0, res_nr-20)
-axs[1].legend()
-axs[2].plot(adjust_existing_res(avg_data, 0, "NOE_exp"), use_list(avg_data, 0, "NOE_exp"), label='NMR experiment', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
-axs[2].set_xticks(np.arange(9, res_nr, 10))
-axs[2].set_xlim(0, res_nr-20)
-axs[2].legend()
-
+axs_plot(avg_path, 0, 2, include_header=True, axs=axs[0])
+axs_plot(avg_path, 0, 5, include_header=True, axs=axs[1])
+axs_plot(avg_path, 0, 8, include_header=True, axs=axs[2])
+axs_plot(avg_path, 0, 1, include_header=True, axs=axs[0])
+axs_plot(avg_path, 0, 4, include_header=True, axs=axs[1])
+axs_plot(avg_path, 0, 7, include_header=True, axs=axs[2])
+fig.suptitle(protein_sequence, fontsize=7)
 plt.tight_layout()
 plt.savefig(relax_folder + 'Accepted_cases/average_relaxation_compaired_plot.png')
 plt.close('all')
 
 
-def R1_relaxation_combined(input, output):
-	if len(input) > 10:
-		fig, axs = plt.subplots(5, 5, figsize=(30, 15))
-		for j, ff in enumerate(FORCEFIELDS):
-			for item in input:
-				if ff in item:
-					index=input.index(item) 
-					i=int(item.split("/")[0][-1])-1
-					rep_name=item.split("/")[0]
-					axs[j, i].plot(adjust_existing_res(extract_columns(relax_data), index, "R1_sim"), use_list(extract_columns(relax_data), index, "R1_sim"), label='R1 Data_' + rep_name + '_' + ff, marker='o', linestyle='-', lw=1.0, markersize=2, color="green")
-					axs[j, i].plot(adjust_existing_res(extract_columns(relax_data), index, "R1_exp"), use_list(extract_columns(relax_data), index, "R1_exp"), label='R1 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
-					axs[j, i].set_yticks(np.arange(0, extreme_value(extract_columns(relax_data), max, "R1_sim", "R1_exp")+1, 0.5))
-					axs[j, i].set_xticks(np.arange(9, res_nr, 10))
-					axs[j, i].set_xlim(0, res_nr-10)
-					axs[j, i].set_ylim(0, extreme_value(extract_columns(relax_data), max, "R1_sim", "R1_exp")+1)
-					axs[j, i].set_xlabel('Residue number')
-					axs[j, i].set_ylabel('R1 rates (1/s)')
-					axs[j, i].legend()
+axs_plot(avg_path, 0, 10, include_header=True, axs=None)
+plt.savefig(relax_folder + 'Accepted_cases/Tau_effective_area_avg.png')
+plt.close('all')
 
-	elif len(input) != 1:	
-		col=len(input)
-		fig, axs = plt.subplots(1, col, figsize=(15, 6))
-		for i in range(col):
-			index=list(extract_columns(relax_data).keys()).index(Best_cases[i])
-			name=Best_cases[i]
-			axs[i].plot(adjust_existing_res(extract_columns(relax_data), index, "R1_sim"), use_list(extract_columns(relax_data), index, "R1_sim"), label='R1 Data_' + name, marker='o', linestyle='-', lw=1.0, markersize=2, color="green")
-			axs[i].plot(adjust_existing_res(extract_columns(relax_data), index, "R1_exp"), use_list(extract_columns(relax_data), index, "R1_exp"), label='R1 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
-			axs[i].set_yticks(np.arange(0, extreme_value(extract_columns(relax_data), max, "R1_sim", "R1_exp")+1, 0.5))
-			axs[i].set_xticks(np.arange(9, res_nr, 10))
-			axs[i].set_xlim(1, res_nr-10)
-			axs[i].set_ylim(0, extreme_value(extract_columns(relax_data), max, "R1_sim", "R1_exp"))
-			axs[i].set_xlabel('Residue number')
-			axs[i].set_ylabel('R1 rates (1/s)')
-			axs[i].legend()
 
+def relaxation_combined(sim, exp, output, execution):
+	fig, axs = plt.subplots(5, 5, figsize=(30, 15))
+	for j, ff in enumerate(FORCEFIELDS):
+		for idx, item in enumerate(Names):
+			if ff in item:
+				rep_name=item.split("/")[0]
+				i = int(rep_name[-1]) - 1
+				execution(relax_data, idx, sim, include_header=True, axs=axs[j, i])
+				if exp is not None:
+					execution(relax_data, idx, exp, include_header=True, axs=axs[j, i])
+				if rep_name + "/" + ff in Best_cases:
+					rect = Rectangle((0, 0), 1, 1, transform=axs[j, i].transAxes,
+						linewidth=5, edgecolor='black', facecolor='None')
+					axs[j, i].add_patch(rect)
 	plt.tight_layout()
 	plt.savefig(relax_folder + output +'.png')
 	plt.close()
 
-R1_relaxation_combined(list(extract_columns(relax_data).keys()), 'R1_relaxation_combined_plot')
+relaxation_combined(1, 2, 'R1_relaxation_combined_plot', axs_plot)
+relaxation_combined(4, 5, 'R2_relaxation_combined_plot', axs_plot)
+relaxation_combined(7, 8, 'hetNOE_relaxation_combined_plot', axs_plot)
 
-def R2_relaxation_combined(input, output):
-	if len(input) > 10:
+relaxation_combined(10, None, "Tau_effective_area_all", axs_plot)
+
+
+def plot_rog_density_landscape_all(data_path, output, same=False, axs=None):
+	rog_values_all=[]
+	count_max=[]
+
+	if same == False:
 		fig, axs = plt.subplots(5, 5, figsize=(30, 15))
-		for j, ff in enumerate(FORCEFIELDS):
-			for item in input:
-				if ff in item:
-					index=input.index(item) 
-					i=int(item.split("/")[0][-1])-1
-					rep_name=item.split("/")[0]
-					axs[j, i].plot(adjust_existing_res(extract_columns(relax_data), index, "R2_sim"), use_list(extract_columns(relax_data), index, "R2_sim"), label='R2 Data_' + rep_name + '_' + ff, marker='o', linestyle='-', lw=1.0, markersize=2, color="green")
-					axs[j, i].plot(adjust_existing_res(extract_columns(relax_data), index, "R2_exp"), use_list(extract_columns(relax_data), index, "R2_exp"), label='R2 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
-					axs[j, i].set_yticks(np.arange(0, extreme_value(extract_columns(relax_data), max, "R2_sim", "R2_exp"), 5))
-					axs[j, i].set_xticks(np.arange(9, res_nr, 10))
-					axs[j, i].set_xlim(1, res_nr-10)
-					axs[j, i].set_ylim(0, extreme_value(extract_columns(relax_data), max, "R2_sim", "R2_exp"))
-					axs[j, i].set_xlabel('Residue number')
-					axs[j, i].set_ylabel('R2 rates (1/s)')
-					axs[j, i].legend()
-	elif len(input) != 1:	
-		col=len(input)
-		fig, axs = plt.subplots(1, col, figsize=(15, 6))
-		for i in range(col):
-			index=list(extract_columns(relax_data).keys()).index(Best_cases[i])
-			name=Best_cases[i]
-			axs[i].plot(adjust_existing_res(extract_columns(relax_data), index, "R2_sim"), use_list(extract_columns(relax_data), index, "R2_sim"), label='R2 Data_' + name, marker='o', linestyle='-', lw=1.0, markersize=2, color="green")
-			axs[i].plot(adjust_existing_res(extract_columns(relax_data), index, "R2_exp"), use_list(extract_columns(relax_data), index, "R2_exp"), label='R2 Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
-			axs[i].set_yticks(np.arange(0, extreme_value(extract_columns(relax_data), max, "R2_sim", "R2_exp"), 20))
-			axs[i].set_xticks(np.arange(9, res_nr, 10))
-			axs[i].set_xlim(1, res_nr-10)
-			axs[i].set_ylim(0, extreme_value(extract_columns(relax_data), max, "R2_sim", "R2_exp"))
-			axs[i].set_xlabel('Residue number')
-			axs[i].set_ylabel('R2 rates (1/s)')
-			axs[i].legend()
-		
 
+	for path in data_path:
+		name='/'.join(path.split("/")[-3:-1])
+		rep_name=name.split("/")[0]
+		forcefield=name.split("/")[1]
 
-	plt.tight_layout()
-	plt.savefig(relax_folder + output +'.png')
-	plt.close()
+		rog_values, counts, values = read_rog_values(path)
+		count_max.append(max(counts))
+		if same==False:
 
-R2_relaxation_combined(list(extract_columns(relax_data).keys()), 'R2_relaxation_combined_plot')
+			i = int(rep_name[-1]) - 1
+			j = FORCEFIELDS.index(forcefield)
 
-def NOE_relaxation_combined(input, output):
-	if len(input) > 10:
-		fig, axs = plt.subplots(5, 5, figsize=(30, 15))
-		for j, ff in enumerate(FORCEFIELDS):
-			for item in input:
-				if ff in item:
-					index=input.index(item) 
-					i=int(item.split("/")[0][-1])-1
-					rep_name=item.split("/")[0]
-					axs[j, i].plot(adjust_existing_res(extract_columns(relax_data), index, "NOE_sim"), use_list(extract_columns(relax_data), index, "NOE_sim"), label='NOE Data_' + rep_name + '_' + ff, marker='o', linestyle='-', lw=1.0, markersize=2, color="green")
-					axs[j, i].plot(adjust_existing_res(extract_columns(relax_data), index, "NOE_exp"), use_list(extract_columns(relax_data), index, "NOE_exp"), label='NOE Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
-					axs[j, i].set_yticks(np.arange(extreme_value(extract_columns(relax_data), min, "NOE_sim", "NOE_exp"), extreme_value(extract_columns(relax_data), max, "NOE_sim", "NOE_exp"), 0.5))
-					axs[j, i].set_xticks(np.arange(9, res_nr, 10))
-					axs[j, i].set_xlim(1, res_nr-10)
-					axs[j, i].set_ylim(extreme_value(extract_columns(relax_data), min, "NOE_sim", "NOE_exp"), extreme_value(extract_columns(relax_data), max, "NOE_sim", "NOE_exp"))
-					axs[j, i].set_xlabel('Residue number')
-					axs[j, i].set_ylabel('NOE_values (1/s)')
-					axs[j, i].set_title('NOE_data')
-					axs[j, i].legend()
-	elif len(input) != 1:
-		col=len(input)
-		fig, axs = plt.subplots(1, col, figsize=(15, 6))
-		for i in range(col):
-			index=list(extract_columns(relax_data).keys()).index(Best_cases[i])
-			name=Best_cases[i]
-			axs[i].plot(adjust_existing_res(extract_columns(relax_data), index, "NOE_sim"), use_list(extract_columns(relax_data), index, "NOE_sim"), label='NOE Data_' + name, marker='o', linestyle='-', lw=1.0, markersize=2, color="green")
-			axs[i].plot(adjust_existing_res(extract_columns(relax_data), index, "NOE_exp"), use_list(extract_columns(relax_data), index, "NOE_exp"), label='NOE Data', marker='o', linestyle='-', lw=1.0, markersize=2, color='black')
-			axs[i].set_yticks(np.arange(0, extreme_value(extract_columns(relax_data), max, "NOE_sim", "NOE_exp"), 0.5))
-			axs[i].set_xticks(np.arange(9, res_nr, 10))
-			axs[i].set_xlim(1, res_nr-10)
-			axs[i].set_ylim(extreme_value(extract_columns(relax_data), min, "NOE_sim", "NOE_exp"), extreme_value(extract_columns(relax_data), max, "NOE_sim", "NOE_exp"))
-			axs[i].set_xlabel('Residue number')
-			axs[i].set_ylabel('NOE_values (1/s)')
-			axs[i].set_title('NOE_data')
-			axs[i].legend()
-		
-
-	plt.tight_layout()
-	plt.savefig(relax_folder + output +'.png')
-	plt.close()
-
-NOE_relaxation_combined(list(extract_columns(relax_data).keys()), 'NOE_relaxation_combined_plot')
-
-
-rog_values_best_all=[]
-
-
-def plot_rog_density_landscape_all(input, output):
-	if len(input) > 10:
-		fig, axs = plt.subplots(5, 5, figsize=(30, 15))
-		for j, ff in enumerate(FORCEFIELDS):
-			for item in input:
-				if ff in item:
-					rog_values=[]
-					rep_name = item.split("/")[0]
-					rog_data=glob.glob(SIM_DIR + rep_name + "/" + ff + "/md*gyrate.xvg")[0]
-					with open(rog_data, 'r') as file:
-						lines = file.readlines()
-						for line in range(27, len(lines)):
-							parts =lines[line].split()
-							try:
-								rog_values.append(float(parts[1]))
-							except IndexError:
-								pass
-					rounded_values = [round(value, 1) for value in rog_values]
-					rounded_counts = {value: rounded_values.count(value) for value in set(rounded_values)}
-					sorted_items = sorted(rounded_counts.items())
-					values = [value[0] for value in sorted_items]
-					counts = [value[1] for value in sorted_items]
-
-					Rog_data_list.append((rep_name + "/" + ff, rog_values))
+			axs[j, i].set_yticks(np.arange(0, 70000, 10000))
+			axs[j, i].set_xticks(np.arange(0.5, 7, 1))
+			axs[j, i].set_xlim(0.5, 7)
+			axs[j, i].set_ylim(0, 70000)	
+			axs[j, i].plot(values, counts, label=name)
+			axs[j, i].axvline(x=statistics.mean(rog_values), color="black", linestyle='--', label="Average RoG")
+			if rep_name + "/" + forcefield in Best_cases:
+				rect = Rectangle((0, 0), 1, 1, transform=axs[j, i].transAxes,
+					linewidth=5, edgecolor='black', facecolor='none')
+				axs[j, i].add_patch(rect) 
+			axs[j, i].set_xlabel('Count')
+			axs[j, i].set_ylabel('Radius of Gyration (nm)')
+			axs[j, i].legend()
+		else:
+			rog_values_all.append(rog_values)
 	
-					i=int(rep_name[-1])-1
-#					axs[j, i].set_yticks(np.arange(0, 70000, 10000))
-					axs[j, i].set_xticks(np.arange(0.5, 7, 1))
-					axs[j, i].set_xlim(0.5, 7)
-#					axs[j, i].set_ylim(0, 70000)
-	
-					axs[j, i].plot(values, counts)
-					axs[j, i].axvline(x=statistics.mean(rog_values), color='black', linestyle='--', label='Mean Rog value')
-					axs[j, i].set_xlabel('Count')
-					axs[j, i].set_ylabel('RoG (nm)')
-					axs[j, i].set_title(rep_name + "/" + ff)
+	if same == True:
+		flattened_list=[item for sublist in rog_values_all for item in sublist]
+		rounded_values = [round(value, 1) for value in flattened_list]
+		rounded_counts = {value: rounded_values.count(value) for value in set(rounded_values)}
+		sorted_items = sorted(rounded_counts.items())
+		values = [value[0] for value in sorted_items]
+		counts = [value[1] for value in sorted_items]
+
+		print(flattened_list)
+		plt.plot(values, counts)
+		plt.axvline(x=statistics.mean(flattened_list), color="black", linestyle='--', label="Average RoG")
+		plt.xlabel('Count')
+		plt.ylabel('Radius of Gyration (nm)')
+		plt.title('Radius of gyration landscape for selected simulations')
+		plt.legend()
 	else:
-		col=len(input)
-		for i in range(col):
-			rog_values=[]
-			name=input[i]
-			ff = name.split("/")[1]
-			rep_name = name.split("/")[0]
-			rog_data=glob.glob(SIM_DIR + name + "/md*gyrate.xvg")[0]
-			with open(rog_data, 'r') as file:
-				lines = file.readlines()
-				for line in range(27, len(lines)):
-					parts = lines[line].split()
-					try:
-						rog_values.append(float(parts[1]))
-						rog_values_best_all.append(float(parts[1]))
-					except IndexError:
-						pass
-			rounded_values = [round(value, 1) for value in rog_values]
-			rounded_counts = {value: rounded_values.count(value) for value in set(rounded_values)}
-			sorted_items = sorted(rounded_counts.items())
-			values = [value[0] for value in sorted_items]
-			counts = [value[1] for value in sorted_items]
-
-			Rog_data_list.append((rep_name + "/" + ff, rog_values))
-	
-			
-			plt.plot(values, counts, color=color_list[i], label=rep_name + '_' + ff)
-			plt.xlabel('Count')
-			plt.ylabel('RoG (nm)')
-			plt.axvline(x=statistics.mean(rog_values), color=color_list[i], linestyle='--', label='Mean Rog value')
-			plt.legend()
-		plt.title("Rog landscape best cases")
-	
+		for ax in axs.flat:
+			ax.set_yticks(np.arange(0, max(count_max), 10000))
+			ax.set_ylim(0, max(count_max))
 
 	plt.tight_layout()
-	plt.savefig(relax_folder + output + '.png')
+	plt.savefig(relax_folder + output +'.png')
 	plt.close()
 
-plot_rog_density_landscape_all(list(extract_columns(relax_data).keys()), 'density_landscape_plot')
-plot_rog_density_landscape_all(Best_cases, 'Accepted_cases/density_landscape_plot_best')
+
+plot_rog_density_landscape_all(glob.glob(SIM_DIR + "*/*/md*gyrate.xvg"), "density_landscape_plot", same=False)
+#plot_rog_density_landscape_all([glob.glob(SIM_DIR + i + "/md*gyrate.xvg")[0] for i in Best_cases], "Accepted_cases/best_rog_density_landscape_plot", same=True)
+
 
 def dif_to_exp(input, output):
 
@@ -596,7 +504,8 @@ def dif_to_exp(input, output):
 		list=[[], [], []]
 		for num, item in enumerate(input):
 			if ff in item and item in input:
-				R1_diff=use_list(extract_columns(relax_data), num, "R1_diff")
+				R1_diff_unfiltered=extract_values_pandas(relax_data, num, 3, include_header=False)
+				R1_diff = [value for value in R1_diff_unfiltered if not math.isnan(value)]
 				model=item.replace("/" + ff, "")
 				try:
 					if model in used_labels[0]:
@@ -608,7 +517,8 @@ def dif_to_exp(input, output):
 					pass
 				list[0].extend(R1_diff)	
 
-				R2_diff=use_list(extract_columns(relax_data), num, "R2_diff")
+				R2_diff_unfiltered=extract_values_pandas(relax_data, num, 6, include_header=False)
+				R2_diff = [value for value in R2_diff_unfiltered if not math.isnan(value)]
 				try:
 					if model in used_labels[1]:
 						axs[1].scatter(i, statistics.mean(R2_diff), zorder=5, color=color_map.get(model, 'black'))
@@ -619,16 +529,17 @@ def dif_to_exp(input, output):
 					pass
 				list[1].extend(R2_diff)
 			
-				NOE_diff=use_list(extract_columns(relax_data), num, "NOE_diff")
+				hetNOE_diff_unfiltered=extract_values_pandas(relax_data, num, 9, include_header=False)
+				hetNOE_diff = [value for value in hetNOE_diff_unfiltered if not math.isnan(value)]
 				try:
 					if model in used_labels[2]:
-						axs[2].scatter(i, statistics.mean(NOE_diff), zorder=5, color=color_map.get(model, 'black'))
+						axs[2].scatter(i, statistics.mean(hetNOE_diff), zorder=5, color=color_map.get(model, 'black'))
 					else:
-						axs[2].scatter(i, statistics.mean(NOE_diff), zorder=5, label=model, color=color_map.get(model, 'black'))
+						axs[2].scatter(i, statistics.mean(hetNOE_diff), zorder=5, label=model, color=color_map.get(model, 'black'))
 						used_labels[2].append(model)
 				except:
 					pass
-				list[2].extend(NOE_diff)
+				list[2].extend(hetNOE_diff)
 		try:
 			R1_avg=statistics.mean(list[0])
 			axs[0].bar(i, R1_avg, label=ff)
@@ -640,59 +551,38 @@ def dif_to_exp(input, output):
 		except:
 			pass
 		try:
-			NOE_avg=statistics.mean(list[2])
-			axs[2].bar(i, NOE_avg, label=ff)
+			hetNOE_avg=statistics.mean(list[2])
+			axs[2].bar(i, hetNOE_avg, label=ff)
 		except: 
 			pass
 
-	axs[0].set_title('R1 (1/s)')
+	axs[0].set_title('R1 averege differences')
 	axs[0].legend()
-	axs[1].set_title('R2 (1/s)')
+	axs[1].set_title('R2 average differences')
 	axs[1].legend()
-	axs[2].set_title('hetNOE_difference')
+	axs[2].set_title('hetNOE average differences')
 	axs[2].legend()
 
 
-	fig.suptitle("Comparison of difference to experimental extract_columns(relax_data)")
+	fig.suptitle("Average differences between simulations and experimental data")
 	plt.tight_layout()
 	plt.savefig(relax_folder + output + '.png')
 	plt.close()
 
-dif_to_exp(list(extract_columns(relax_data).keys()), 'Difference_to_experiment_plot')
-
-
-
-fig, axs = plt.subplots(1, 3, figsize=(15, 6))
-R1_avg=statistics.mean(use_list(avg_data, 0, "R1_diff"))
-axs[0].bar(0, R1_avg)
-R2_avg=statistics.mean(use_list(avg_data, 0, "R2_diff"))
-axs[1].bar(0, R2_avg)
-NOE_avg=statistics.mean(use_list(avg_data, 0, "NOE_diff"))
-axs[2].bar(0, NOE_avg)
-
-axs[0].set_title('R1 (1/s)')
-axs[1].set_title('R2 (1/s)')
-axs[2].set_title('hetNOE_difference')
-
-	
-fig.suptitle("Difference to experimental extract_columns(relax_data) for average structure")
-plt.tight_layout()
-plt.savefig(relax_folder + 'Accepted_cases/Difference_to_experiment_plot_avg.png')
-plt.close()
+dif_to_exp(Names, 'Difference_to_experiment_plot')
 
 
 timescale_data=sorted(glob.glob(SIM_DIR + 'model*/*/Ctimes_Coeffs.csv'))
 timescale_data_avg=glob.glob(Unst_folder + "Ctimes_Coeffs.csv")
 
 def create_timescale_scatter_plot(path, idx, axs=None):
-	C_times_ns=extract_values_pandas(path, idx, 0)
-	Coeffs=extract_values_pandas(path, idx, 1)
-
+	C_times_ns=extract_values_pandas_list(path, idx, 0)
+	Coeffs=extract_values_pandas_list(path, idx, 1)
+	name='/'.join(path[idx].split("/")[-3:-1])
 	x_vals, y_vals, weights = [], [], []
-    
 	for line_idx in range(len(C_times_ns)):
 		if "Res" in str(C_times_ns[line_idx]):
-			x = [int(num) for num in re.findall(r'\d+', str(C_times_ns[line_idx]))][0] 
+			x = [int(num) for num in re.findall(r'\d+', str(C_times_ns[line_idx]))][0]
 			y_num = 1
 			while line_idx + y_num < len(C_times_ns):
 				next_parts = C_times_ns[line_idx + y_num]
@@ -720,8 +610,14 @@ def create_timescale_scatter_plot(path, idx, axs=None):
 		axs.scatter(x_vals, y_vals, s=weights, zorder=5, color='red')
 		axs.set_xlabel('Residue number')
 		axs.set_ylabel('Timescales (ns)')
+		if name in Best_cases:
+			rect = Rectangle((0, 0), 1, 1, transform=axs.transAxes,
+				linewidth=5, edgecolor='black', facecolor='None')
+			axs.add_patch(rect)
 		axs.set_yticks(np.arange(0, 81, 20)) 
 		axs.set_ylim(0, 80)
+		axs.set_xticks(xticks) 
+		axs.set_xlim(0, res_nr)
 		axs.set_title('/'.join(path[idx].split("/")[-3:-1]))
 
 
@@ -733,30 +629,6 @@ plot_all(timescale_data, "Timescale_plot_all.png", create_timescale_scatter_plot
 
 
 
-def tau_eff_area(path, idx, axs=None):
-	Tau_values=extract_columns(path)
-	Tau_values_adjust=[x*10**10 for x in use_list(Tau_values, idx, "Tau_eff_area")]
-	if axs is None:
-		plt.plot(adjust_existing_res(Tau_values, idx, "Tau_eff_area"), Tau_values_adjust, label='Average effective correlation time', marker='o', linestyle='-', lw=1.0, markersize=2, color="green")
-		plt.xlabel('Residue number')
-		plt.ylabel('Effective correlation time ($10^{10}$ s)')
-	else:
-		axs.plot(adjust_existing_res(Tau_values, idx, "Tau_eff_area"), Tau_values_adjust, label='/'.join(path[idx].split("/")[-3:-1]), marker='o', linestyle='-', lw=1.0, markersize=2, color="green")
-		#axs.set_yticks(np.arange(0, extreme_value(Tau_values, max, "Tau_eff_area", None)*10**10, 0.5))
-		axs.set_xticks(np.arange(9, res_nr, 10))
-		axs.set_xlim(1, res_nr-10)
-		#axs.set_ylim(0, extreme_value(Tau_values, max, "Tau_eff_area", None)*10**10)
-		axs.set_xlabel('Residue number')
-		axs.set_ylabel('Effective correlation time ($10^{10}$ s)')
-		axs.legend()
-
-
-tau_eff_area(avg_data_path, 0, axs=None)
-plt.savefig(best_cases_folder + "Tau_effective_area_avg.png")
-plt.close()
-
-plot_all(relax_data, "Tau_effective_area_all.png", tau_eff_area)
-
 
 
 def plot_avg_rog_bar(input, output):
@@ -764,17 +636,22 @@ def plot_avg_rog_bar(input, output):
 	for i, ff in enumerate(FORCEFIELDS):
 		list=[]
 		for item in input:
-			if ff in item[0]:
-				model=item[0].replace("/" + ff, "")
+			if ff in item:
+				rog_values, counts, values = read_rog_values(item)
+
+				name='/'.join(item.split("/")[-3:-1])
+				rep_name=name.split("/")[0]
+
+
 				try:
-					if model in used_labels_rog:
-						plt.scatter(i, statistics.mean(item[1]), zorder=5, color=color_map.get(model, 'black'))
+					if rep_name in used_labels_rog:
+						plt.scatter(i, statistics.mean(rog_values), zorder=5, color=color_map.get(rep_name, 'black'))
 					else:
-						plt.scatter(i, statistics.mean(item[1]), zorder=5, label=model, color=color_map.get(model, 'black'))
-						used_labels_rog.append(model)
+						plt.scatter(i, statistics.mean(rog_values), zorder=5, label=rep_name, color=color_map.get(rep_name, 'black'))
+						used_labels_rog.append(rep_name)
 				except:
 					pass
-				list.extend(item[1])
+				list.extend(rog_values)
 		try:
 			Rog_avg=statistics.mean(list)
 			plt.bar(i, Rog_avg, label=ff)
@@ -787,106 +664,48 @@ def plot_avg_rog_bar(input, output):
 	plt.savefig(relax_folder + output + '.png')
 	plt.close()
 
-plot_avg_rog_bar(Rog_data_list, "Average_rog_plot")
+
+rog_values_best_all=[]
+rog_values_best_round=[]
+rog_counts_best=[]
+
+for i in [glob.glob(SIM_DIR + i + "/md*gyrate.xvg")[0] for i in Best_cases]:
+	rog_values, counts, values = read_rog_values(i)
+	rog_values_best_all.extend(rog_values)
+	rog_values_best_round.extend(values)
+	rog_counts_best.extend(counts)
 
 
+
+with open(Unst_folder + "Best_rog_landscape.txt", 'w') as f:
+	f.write(f"Rog_avg:\t{statistics.mean(rog_values_best_all):.5f}\n")
+	for x, y in zip(rog_values_best_round, rog_counts_best):
+		f.write(f"{x:.3f}\t{y:.5f}\n")
 def plot_ensembles_images(input, output):
-	num_images = len(input)
-	if num_images > 10:
-		fig, axs = plt.subplots(5, 5, figsize=(15, 15))
-		for j, ff in enumerate(FORCEFIELDS): # Use '*.csv' for CSV
-			for k, item in enumerate(input):	
-				if ff in item:
-					ensemble = input[k]
-					rep_name = ensemble.split("/")[-3]		
-					i = int(rep_name[-1]) - 1
-					img = imread(ensemble)
-					axs[j, i].imshow(img)
-					axs[j, i].set_title(f'{rep_name}/{ff}')
-					axs[j, i].axis('off')
-	elif num_images == 1:
-		ensemble = input[0]
-		rep_name = ensemble.split("/")[-3]
-		forcefield = ensemble.split("/")[-2]
-		img = imread(ensemble)
-		plt.imshow(img)
-		plt.title(f'{rep_name}/{forcefield}')
-		plt.axis('off')
-	else:
-		col = num_images
-		fig, axs = plt.subplots(1, col, figsize=(15, 6)) 
-		for i in range(col): 
-			ensemble = input[i] 
-			rep_name = ensemble.split("/")[-3] 
-			forcefield = ensemble.split("/")[-2] 
-			img = imread(ensemble) 
-			axs[i].imshow(img) 
-			axs[i].set_title(f'{rep_name}/{forcefield}') 
-			axs[i].axis('off')
+	fig, axs = plt.subplots(5, 5, figsize=(15, 15))
+	for j, ff in enumerate(FORCEFIELDS): # Use '*.csv' for CSV
+		for k, item in enumerate(input):	
+			if ff in item:
+				ensemble = input[k]
+				rep_name = ensemble.split("/")[-3]		
+				i = int(rep_name[-1]) - 1
+				img = imread(ensemble)
+				axs[j, i].imshow(img)
+				axs[j, i].set_title(f'{rep_name}/{ff}')
+				axs[j, i].axis('off')
+
+				if rep_name + "/" + ff in Best_cases:
+					rect = Rectangle((0, 0), 1, 1, transform=axs[j, i].transAxes,
+						linewidth=5, edgecolor='black', facecolor='none')
+					axs[j, i].add_patch(rect) 
 
 	plt.tight_layout()
 	plt.savefig(f'{relax_folder}/{output}.png')
 	plt.close()
 
-plot_ensembles_images(sorted(glob.glob(SIM_DIR + "model*/*/*mdmat*.png")), "Contact_map_combined")
-plot_ensembles_images([glob.glob(SIM_DIR + i + "/md*mdmat.png") for i in Best_cases][0], "Accepted_cases/Contact_map_combined_best")
-
-plot_ensembles_images(sorted(glob.glob(SIM_DIR + "model*/*/*correlation*.png")), "Correlation_combined")
-plot_ensembles_images([glob.glob(SIM_DIR + i + "/*correlation*.png") for i in Best_cases][0], "Accepted_cases/Correlation_combined_best")
 '''
-plot_ensembles_images(sorted(glob.glob(SIM_DIR + "model*/*/Ensemble*model*aligned_fig.png")), "Ensembles_aligned_combined")
-plot_ensembles_images([glob.glob(SIM_DIR + i + "/Ensemble*model*aligned_fig.png") for i in Best_cases][0], "Accepted_cases/Ensembles_aligned_best")
-'''
+pdb_data = sorted(glob.glob(SIM_DIR + "model*/*/"))
 
-
-def contact_map_avg(input, output):
-	matrix = avg_csv(input)
-	fig, ax = plt.subplots()
-	cmap = plt.cm.viridis
-	plot = ax.imshow(matrix, cmap=cmap, origin="lower")
-	
-	ax.set_xlabel("Residue",fontsize=15)
-	ax.set_ylabel("Residue",fontsize=15)
-
-	plt.xticks(np.arange(1, res_nr+1, 10), fontsize=15)
-	plt.yticks(np.arange(1, res_nr+1, 10), fontsize=15)
-
-	cbar = plt.colorbar(plot, ax=ax)
-	cbar.set_label("Distance (nm)",fontsize=15)
-	plt.savefig(output + "Avg_contact.png", dpi=600)
-	plt.close()
-
-contact_map_avg([glob.glob(SIM_DIR + i + "/md*mdmat.csv") for i in Best_cases][0], best_cases_folder)
-
-'''
-def corr_map_avg(input, output):
-	matrix = avg_csv(input)
-
-	color_map = plt.imshow(matrix,vmin=-1, vmax=1, origin='lower')
-	color_map.set_cmap("seismic")
-	plt.colorbar()
-	plt.savefig(output + "Avg_contact.png", dpi=600)
-	plt.close()
-
-contact_map_avg([glob.glob(SIM_DIR + i + "/*correlation*.png") for i in Best_cases][0], best_cases_folder)
-
-
-
-rounded_values = [round(value, 1) for value in rog_values_best_all]
-rounded_counts = {value: rounded_values.count(value) for value in set(rounded_values)}
-sorted_items = sorted(rounded_counts.items())
-values = [value[0] for value in sorted_items]
-counts = [value[1] for value in sorted_items]
-
-
-with open(Unst_folder + "Best_rog_landscape.txt", 'w') as f:
-	f.write(f"Rog_avg:\t{statistics.mean(rog_values_best_all):.5f}\n")
-	#f.write(f"{statistics.mean(rog_values_best_all):.3f}\n")
-	for x, y in zip(values, counts):
-		f.write(f"{x:.3f}\t{y:.5f}\n")
-
-
-pdb_data = sorted(glob.glob(SIM_DIR + "/model*/*/"))
 cmd.set("ray_opaque_background", 1)
 
 for i in pdb_data:
@@ -906,13 +725,73 @@ obj = cmd.get_object_list('all')
 for i in obj[1:]:
 	cmd.align(obj[0], i, object='aln', transform=0)
 
-cmd.png(best_cases_folder + 'Ensemble_' + SIM_DIR.split('/')[-1] + '_aligned_fig.png')	
+cmd.png(best_cases_folder + 'Ensemble_' + SIM_DIR.split('/')[-2] + '_aligned_fig.png')	
 cmd.delete('all')
 cmd.quit()
 
-subprocess.run(["python3", avg_script])
-subprocess.run(["python3", pymol_analysis])
 
+
+for path in pdb_data:
+	cmd.set("ray_opaque_background", 1)
+
+	rep_name = path.split('/')[-3]
+	forcefield = path.split('/')[-2]
+	selected = color_map.get(rep_name, 'black')
+
+	md = glob.glob(path + 'md*smooth*xtc')
+	temp = glob.glob(path + 'temp*gro')
+	if len(md) > 0 and len(temp) > 0:
+		cmd.load(temp[0], rep_name + forcefield)
+		cmd.load_traj(md[0], rep_name + forcefield, state=1, interval=2000)
+		cmd.color(selected, rep_name + forcefield)
+		cmd.set('all_states', 'on')
+		cmd.ray(300, 300)
+	obj = cmd.get_object_list('all')
+	for i in obj[1:]:
+		cmd.align(obj[0], i, object='aln', transform=0)
+	cmd.png(path + 'Ensemble_' + rep_name + '_' +  forcefield + '_aligned_fig.png')	
+	cmd.delete('all')
+
+cmd.quit()
+'''
+plot_ensembles_images(sorted(glob.glob(SIM_DIR + "model*/*/*mdmat*.png")), "Contact_map_combined")
+plot_ensembles_images(sorted(glob.glob(SIM_DIR + "model*/*/*correlation*.png")), "Correlation_combined")
+plot_ensembles_images(sorted(glob.glob(SIM_DIR + "model*/*/Ensemble*model*aligned_fig.png")), "Ensembles_aligned_combined")
+'''
+def contact_map_avg(input, output):
+	matrix = avg_csv(input)
+	fig, ax = plt.subplots()
+	cmap = plt.cm.viridis
+	plot = ax.imshow(matrix, cmap=cmap, origin="lower")
+	
+	#ax.set_xlabel("Residue",fontsize=15)
+	#ax.set_ylabel("Residue",fontsize=15)
+
+	#plt.xticks(np.arange(0, res_nr+1, 20), fontsize=15)
+	#plt.yticks(np.arange(0, res_nr+1, 20), fontsize=15)
+
+	cbar = plt.colorbar(plot, ax=ax)
+	cbar.set_label("Distance (nm)",fontsize=15)
+	plt.savefig(output + "Avg_contact.png", dpi=600)
+	plt.close()
+
+contact_map_avg([glob.glob(SIM_DIR + i + "/md*mdmat.csv")[0] for i in Best_cases], best_cases_folder)
+
+
+def corr_map_avg(input, output):
+	matrix = avg_csv(input)
+
+	color_map = plt.imshow(matrix,vmin=-1, vmax=1, origin='lower')
+	color_map.set_cmap("seismic")
+	plt.colorbar()
+	plt.savefig(output + "Avg_corr.png", dpi=600)
+	plt.close()
+
+corr_map_avg([glob.glob(SIM_DIR + i + "/*correlation*.csv")[0] for i in Best_cases], best_cases_folder)
+
+
+subprocess.run(["python3", avg_script])
+#subprocess.run(["python3", pymol_analysis])
 
 
 
