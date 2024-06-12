@@ -315,7 +315,7 @@ with open(ranking_file, 'w', newline="") as csvfile:
 				print(case + " do not meet criteria")
 
 os.makedirs(Unst_folder + "correlation_functions/", exist_ok=True)
-'''
+
 i = 1
 while i <= res_nr :
 	corr_lists=[]
@@ -353,7 +353,7 @@ with fileinput.FileInput(Unst_folder + "Old_Relaxations_for_Samuli.py", inplace=
 
 os.chdir(Unst_folder)
 subprocess.run(["python3", Unst_folder + "Old_Relaxations_for_Samuli.py"])
-'''
+
 avg_path=glob.glob(Unst_folder + "relaxation_times.csv")
 avg_data=extract_columns(avg_path)
 
@@ -703,7 +703,7 @@ def plot_ensembles_images(input, output):
 	plt.savefig(f'{relax_folder}/{output}.png')
 	plt.close()
 
-'''
+
 pdb_data = sorted(glob.glob(SIM_DIR + "model*/*/"))
 
 cmd.set("ray_opaque_background", 1)
@@ -753,11 +753,11 @@ for path in pdb_data:
 	cmd.delete('all')
 
 cmd.quit()
-'''
+
 plot_ensembles_images(sorted(glob.glob(SIM_DIR + "model*/*/*mdmat*.png")), "Contact_map_combined")
 plot_ensembles_images(sorted(glob.glob(SIM_DIR + "model*/*/*correlation*.png")), "Correlation_combined")
 plot_ensembles_images(sorted(glob.glob(SIM_DIR + "model*/*/Ensemble*model*aligned_fig.png")), "Ensembles_aligned_combined")
-'''
+
 def contact_map_avg(input, output):
 	matrix = avg_csv(input)
 	fig, ax = plt.subplots()
@@ -797,4 +797,3 @@ subprocess.run(["python3", avg_script])
 
 
 
-'''
