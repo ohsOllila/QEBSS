@@ -228,7 +228,6 @@ def axs_plot(data_path, data_idx, column_nr, include_header=True, axs=None):
 	df.dropna(inplace=True)
 
 
-		
 	if "hetNOE" in y_header:
 		ax_label = parameter + ' values'
 	elif "R1" in y_header or "R2" in y_header:
@@ -277,6 +276,7 @@ def axs_plot(data_path, data_idx, column_nr, include_header=True, axs=None):
 		plt.xticks(xticks)
 		plt.xlabel('Residue number')
 		plt.ylabel(ax_label)
+
 
 
 RMSD_R1=[]
@@ -355,10 +355,9 @@ with fileinput.FileInput(Unst_folder + "Old_Relaxations_for_Samuli.py", inplace=
 os.chdir(Unst_folder)
 subprocess.run(["python3", Unst_folder + "Old_Relaxations_for_Samuli.py"])
 '''
-
 avg_path=glob.glob(Unst_folder + "relaxation_times.csv")
 avg_data=extract_columns(avg_path)
-
+'''
 os.chdir(SIM_DIR)
 
 for item in FORCEFIELDS:
@@ -398,9 +397,8 @@ axs_plot(avg_path, 0, 8, include_header=True, axs=axs[2])
 axs_plot(avg_path, 0, 1, include_header=True, axs=axs[0])
 axs_plot(avg_path, 0, 4, include_header=True, axs=axs[1])
 axs_plot(avg_path, 0, 7, include_header=True, axs=axs[2])
-fig.suptitle(protein_sequence, fontsize=12)
 plt.tight_layout()
-plt.savefig(relax_folder + 'Accepted_cases/average_relaxation_compaired_plot.png')
+plt.savefig(relax_folder + 'Accepted_cases/average_relaxation_compaired_plot.png', dpi=300)
 plt.close('all')
 
 
@@ -432,7 +430,7 @@ relaxation_combined(4, 5, 'R2_relaxation_combined_plot', axs_plot)
 relaxation_combined(7, 8, 'hetNOE_relaxation_combined_plot', axs_plot)
 
 relaxation_combined(10, None, "Tau_effective_area_all", axs_plot)
-
+'''
 
 def plot_rog_density_landscape_all(data_path, output, same=False, axs=None):
 	rog_values_all=[]
@@ -495,9 +493,9 @@ def plot_rog_density_landscape_all(data_path, output, same=False, axs=None):
 
 
 plot_rog_density_landscape_all(glob.glob(SIM_DIR + "*/*/md*gyrate.xvg"), "density_landscape_plot", same=False)
-#plot_rog_density_landscape_all([glob.glob(SIM_DIR + i + "/md*gyrate.xvg")[0] for i in Best_cases], "Accepted_cases/best_rog_density_landscape_plot", same=True)
+plot_rog_density_landscape_all([glob.glob(SIM_DIR + i + "/md*gyrate.xvg")[0] for i in Best_cases], "Accepted_cases/best_rog_density_landscape_plot", same=True)
 
-
+'''
 def dif_to_exp(input, output):
 
 	used_labels = [[], [], []]
@@ -618,7 +616,7 @@ def create_timescale_scatter_plot(path, idx, axs=None):
 			axs.add_patch(rect)
 		axs.set_yticks(np.arange(0, 81, 20)) 
 		axs.set_ylim(0, 80)
-		axs.set_xticks(xticks) 
+		#axs.set_xticks(xticks) 
 		axs.set_xlim(0, res_nr)
 		axs.set_title('/'.join(path[idx].split("/")[-3:-1]))
 
@@ -628,7 +626,7 @@ plt.savefig(best_cases_folder + 'Timescale_plot_avg.png')
 plt.close()
 
 plot_all(timescale_data, "Timescale_plot_all.png", create_timescale_scatter_plot)
-
+'''
 
 
 
@@ -668,21 +666,23 @@ def plot_avg_rog_bar(input, output):
 
 
 rog_values_best_all=[]
-rog_values_best_round=[]
-rog_counts_best=[]
 
 for i in [glob.glob(SIM_DIR + i + "/md*gyrate.xvg")[0] for i in Best_cases]:
 	rog_values, counts, values = read_rog_values(i)
 	rog_values_best_all.extend(rog_values)
-	rog_values_best_round.extend(values)
-	rog_counts_best.extend(counts)
 
-
+rounded_values = [round(value, 1) for value in rog_values_best_all]
+rounded_counts = {value: rounded_values.count(value) for value in set(rounded_values)}
+sorted_items = sorted(rounded_counts.items())
+values = [value[0] for value in sorted_items]
+counts = [value[1] for value in sorted_items]
 
 with open(Unst_folder + "Best_rog_landscape.txt", 'w') as f:
 	f.write(f"Rog_avg:\t{statistics.mean(rog_values_best_all):.5f}\n")
-	for x, y in zip(rog_values_best_round, rog_counts_best):
+	for x, y in zip(values, counts):
 		f.write(f"{x:.3f}\t{y:.5f}\n")
+
+
 def plot_ensembles_images(input, output):
 	fig, axs = plt.subplots(5, 5, figsize=(15, 15))
 	for j, ff in enumerate(FORCEFIELDS): # Use '*.csv' for CSV
@@ -732,6 +732,7 @@ cmd.delete('all')
 cmd.quit()
 
 
+pdb_data = sorted(glob.glob(SIM_DIR + "model*/*/"))
 
 for path in pdb_data:
 	cmd.set("ray_opaque_background", 1)
@@ -755,11 +756,13 @@ for path in pdb_data:
 	cmd.delete('all')
 
 cmd.quit()
+
 '''
 plot_ensembles_images(sorted(glob.glob(SIM_DIR + "model*/*/*mdmat*.png")), "Contact_map_combined")
 plot_ensembles_images(sorted(glob.glob(SIM_DIR + "model*/*/*correlation*.png")), "Correlation_combined")
 plot_ensembles_images(sorted(glob.glob(SIM_DIR + "model*/*/Ensemble*model*aligned_fig.png")), "Ensembles_aligned_combined")
-'''
+
+
 def contact_map_avg(input, output):
 	matrix = avg_csv(input)
 	fig, ax = plt.subplots()
@@ -798,5 +801,3 @@ subprocess.run(["python3", avg_script])
 
 
 
-
-'''

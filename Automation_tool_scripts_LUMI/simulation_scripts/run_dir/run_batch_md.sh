@@ -6,7 +6,7 @@ cd ..
 cd ..
 BASE_DIR=$PWD
 
-SIM_DIR=$BASE_DIR/Unst*1*
+SIM_DIR=$BASE_DIR/Unst*snare*
 
 : '
 your_projects=$(csc-projects | grep -o "project_.*" | awk '{print $1}')
@@ -26,7 +26,7 @@ project=${list[choice-1]}
 '
 
 SCRIPTS=$BASE_DIR/simulation_scripts/MD_scripts
-md_script=${SCRIPTS}/md.sh
+md_script=${SCRIPTS}/md_standard.sh
 cp ${md_script} ${SCRIPTS}/batch_md.sh
 JOB_SCRIPT=${SCRIPTS}/batch_md.sh
 

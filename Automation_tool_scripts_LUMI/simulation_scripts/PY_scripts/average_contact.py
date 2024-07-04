@@ -66,7 +66,7 @@ for i in sorted(Best_rog_files):
 names=[item[0] for item in rog_data[0]]
 rog_avg=[item[1] for item in rog_data[0]]
 
-
+print(rog_data)
 
 for i in range(len(Best_rog_files)):			
 	plt.plot(rog_data[1][i], rog_data[2][i], color=color_list[i], label=names[i])
@@ -80,7 +80,7 @@ plt.tight_layout()
 plt.savefig(RESULTS + 'best_rog_landscape.png')
 plt.close()
 
-
+'''
 fig, ax = plt.subplots()
 for i, data in enumerate(Best_relax_files):
 	tau, tau_values=extract_values_pandas(Best_relax_files, i, 10, include_header=True)
@@ -142,3 +142,4 @@ plot_images(relaxation_png, "Avg_relaxation_times")
 
 contact_png = sorted(glob.glob(RESULTS + 'U*/rep_to_exp_data/Accepted_cases/Timescale_plot_avg.png'))
 plot_images(contact_png, "Avg_timescales_times")
+'''

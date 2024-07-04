@@ -72,7 +72,6 @@ def convert_to_one_letter(three_letter_code):
 	return three_to_one.get(three_letter_code, 'X')
 
 seq_string=[]
-
 with open("model_01.pdb", 'r') as file:
 	lines = file.readlines()
 	for i in range(len(lines)):
@@ -94,7 +93,7 @@ Names=['/'.join(i.split("/")[-3:-1]) for i in relax_data]
 
 
 
-def extract_columns(csv_paths, sim_case_nr, variable):
+def extract_columns(csv_paths, sim_case_nr, parameter):
 	result = {}
 	for filename in csv_paths:
 		with open(filename, 'r') as csvfile:
@@ -113,9 +112,11 @@ def extract_columns(csv_paths, sim_case_nr, variable):
 			result[sim_spec] = file_data
 	
 	spec_key=list(result.keys())[sim_case_nr]
-	variable_list = result.get(spec_key, {}).get(variable, [])
+	parameter = result.get(spec_key, {}).get(parameter, [])
 
-	return variable_list
+	return parameter
+    
+	
 
 def extract_values_pandas(file_path, nr, column_number, include_header=False):
 	df = pd.read_csv(file_path[nr])
@@ -138,13 +139,11 @@ def extract_values_pandas_list(file_path, nr, column_number):
 
 
 def deviating_points(lst):
-	var_type=type(lst[0])
-
 	temp_list = [float(x) for x in lst if x != "n"]
 	temp_list.sort(key=abs, reverse=True)
 	max_val = temp_list[:4] 
 
-	max_idx=[lst.index(var_type((i))) for i in max_val]
+	max_idx=[lst.index(str(i)) for i in max_val]
     
 	return max_idx
 
@@ -154,24 +153,23 @@ def remove_largest(lst):
 	temp_list.sort(key=abs, reverse=True)
 	max_val = temp_list[:4]
 
+
 	for val in max_val:
 		lst.remove(var_type(val))
 
+    
 	return lst
 
 
-def find_largest_value(exp, sim):
+
+def find_largest_value(data_path, column_number, include_header=False):
 	ymax_list=[]
 	ymin_list=[]
 	for i in range(len(Names)):
-		exp_data_clean = [float(i) for i in extract_columns(relax_data, i, exp) if i != 'n']
-		sim_data_clean = [float(j) for j in extract_columns(relax_data, i, sim) if j != 'n']
-
-		ymax_list.append(max(exp_data_clean))
-		ymax_list.append(max(sim_data_clean))
-
-		ymin_list.append(min(exp_data_clean))
-		ymin_list.append(min(sim_data_clean))
+		ymax_list.append(np.nanmax(extract_values_pandas(data_path, i, column_number, include_header=False)))
+		ymax_list.append(np.nanmax(extract_values_pandas(data_path, i, column_number+1, include_header=False)))
+		ymin_list.append(np.nanmin(extract_values_pandas(data_path, i, column_number, include_header=False)))
+		ymin_list.append(np.nanmin(extract_values_pandas(data_path, i, column_number+1, include_header=False)))
 	ymax=max(ymax_list)
 	ymin=min(ymin_list)
 
@@ -179,35 +177,26 @@ def find_largest_value(exp, sim):
 
 
 
-def calculate_rmsd(idx, diff):
-	values_diff = extract_columns(relax_data, idx, diff)
+def calculate_rmsd(values_diff):
 	cleaned_list = [float(i) for i in values_diff if i != 'n']
-	
-	return math.sqrt(sum(float(x) ** 2 for x in cleaned_list) / len(cleaned_list))
+	if cleaned_list:
+		return math.sqrt(sum(float(x) ** 2 for x in remove_largest(cleaned_list)) / len(remove_largest(cleaned_list)))
+	else:
+		return None
 
-
-def calculate_rmsre(idx, exp, diff):
-	exp_data=extract_columns(relax_data, idx, exp)
-	diff_data=extract_columns(relax_data, idx, diff)
-
-	index_dev=deviating_points(diff_data)
-
-	exp_data = [exp_data[i] for i in range(len(exp_data)) if i not in index_dev] 
-	diff_data = [diff_data[j] for j in range(len(diff_data)) if j not in index_dev]
-
-	relative_errors = [(float(diff)) / float(a) for a, diff in zip(exp_data, diff_data) if a != "n" and diff != "n"]
+def calculate_rmsre(exp, sim):
+	relative_errors = [(a - p) / a for a, p in zip(exp, sim) if a != "n" and p != "n"]
 	squared_relative_errors = [e ** 2 for e in relative_errors]
 	mean_squared_relative_error = sum(squared_relative_errors) / len(squared_relative_errors)
 	rmsre = math.sqrt(mean_squared_relative_error)
-
+	
 	return rmsre
 
 
-def ranking_value(diff):
+def ranking_value(parameter):
 	RMSD_lists=[]
 	for i in range(len(Names)):
-		RMSD_lists.append(calculate_rmsd(i, diff))
-		#RMSD_lists.append(calculate_rmsre(i, exp, diff))
+		RMSD_lists.append(calculate_rmsd(extract_columns(relax_data, i, parameter))) 
 	rank=min(float(i) for i in RMSD_lists)
 
 	return rank
@@ -280,36 +269,37 @@ def axs_plot(data_path, data_idx, column_nr, include_dev_points=False, include_h
 		label = tag
 
 	if "hetNOE" in y_header:
+		if "sim" in y_header and "results" not in data_path[data_idx]:
+			dev_idx=deviating_points(extract_columns(data_path, data_idx, "hetNOE_diff"))
 		ax_label = parameter + ' values'
-#		if "sim" in y_header and "results" not in data_path[data_idx]:
-#			dev_idx=deviating_points(extract_columns(data_path, data_idx, "hetNOE_diff"))
 	elif "R1" in y_header or "R2" in y_header:
+		if "sim" in y_header and "results" not in data_path[data_idx]:
+			dev_idx = deviating_points(extract_columns(data_path, data_idx, parameter + "_diff"))
 		ax_label = parameter + ' relaxation rates (1/s)'
-#		if "sim" in y_header and "results" not in data_path[data_idx]:
-#			dev_idx = deviating_points(extract_columns(data_path, data_idx, parameter + "_diff"))
 	else:
 		ax_label = 'Effective correlation times (ns)'
 
 	df.plot(x=x_header, y=y_header, ax=axs, label=label, marker='o', linestyle="-", lw=1.0, markersize=2, color=selected)
+	if include_dev_points==True:
+		try:
+			max_points_x = [ x_list[i] for i in dev_idx ]
+			max_points_y = [ y_list[i] for i in dev_idx ]
+			axs.scatter(max_points_x, max_points_y, color='black', label='Max Points', s=40)
+		except:
+			pass
 
-#	if include_dev_points==True:
-#		try:
-#			max_points_x = [ x_list[i] for i in dev_idx ]
-#			max_points_y = [ y_list[i] for i in dev_idx ]
-#			axs.scatter(max_points_x, max_points_y, color='black', label='Max Points', s=40)
-#		except:
-#			pass
+	
 
 	if "hetNOE_exp" in y_header and "results" not in data_path[data_idx]:
-		y_min, y_max = find_largest_value("hetNOE_exp", "hetNOE_sim")
+		y_min, y_max = find_largest_value(data_path, column_nr, include_header=False)
 		axs.set_yticks(np.arange(y_min, y_max, 0.5))
 		axs.set_ylim(y_min, y_max)
 	elif "R1_exp" in y_header and "results" not in data_path[data_idx]:
-		y_min, y_max = find_largest_value("R1_exp", "R1_sim")
+		y_min, y_max = find_largest_value(data_path, column_nr, include_header=False)
 		axs.set_yticks(np.arange(0, y_max, 0.5))
 		axs.set_ylim(0, y_max)
 	elif "R2_exp" in y_header and "results" not in data_path[data_idx]:
-		y_min, y_max = find_largest_value("R2_exp", "R2_sim")
+		y_min, y_max = find_largest_value(data_path, column_nr, include_header=False)
 		axs.set_yticks(np.arange(0, y_max, 20))
 		axs.set_ylim(0, y_max)
 
@@ -373,9 +363,9 @@ RMSD_R1=[]
 RMSD_R2=[]
 RMSD_hetNOE=[]
 for i in range(len(Names)):	
-	RMSD_R1.append(calculate_rmsd(i, "R1_diff"))
-	RMSD_R2.append(calculate_rmsd(i, "R2_diff"))
-	RMSD_hetNOE.append(calculate_rmsd(i, "hetNOE_diff"))
+	RMSD_R1.append(calculate_rmsd(extract_columns(relax_data, i, "R1_diff")))
+	RMSD_R2.append(calculate_rmsd(extract_columns(relax_data, i, "R2_diff")))
+	RMSD_hetNOE.append(calculate_rmsd(extract_columns(relax_data, i, "hetNOE_diff")))
 
 
 
@@ -385,29 +375,20 @@ Best_cases=[]
 ranking_file=relax_folder + 'ranking_table.csv'
 with open(ranking_file, 'w', newline="") as csvfile:
 	csvwriter = csv.writer(csvfile)
-	#csvwriter.writerow(["Force field", "Replica", "R1 RMSRE", "R1 (%)", "R2 RMSRE", "R2 (%)", "hetNOE RMSRE", "hetNOE (%)", "Sum (%)"])
 	csvwriter.writerow(["Force field", "Replica", "R1 RMSD", "R1 (%)", "R2 RMSD", "R2 (%)", "hetNOE RMSD", "hetNOE (%)", "Sum (%)"])
 	for i in range(len(Names)):
 			case=Names[i]
 			rep_name=case.split("/")[0]
 			ff_name=case.split("/")[1]
-			#RMSRE_R1=calculate_rmsre(i, "R1_exp", "R1_diff")
-			#RMSRE_R2=calculate_rmsre(i, "R2_exp", "R2_diff")
-			#RMSRE_hetNOE=calculate_rmsre(i, "hetNOE_exp", "hetNOE_diff")
-
-			#R1_rank_value=(float(RMSRE_R1)/ranking_value("R1_exp", "R1_diff"))*100
-			#R2_rank_value=(float(RMSRE_R2)/ranking_value("R2_exp", "R2_diff"))*100
-			#hetNOE_rank_value=(float(RMSRE_hetNOE)/ranking_value("hetNOE_exp", "hetNOE_diff"))*100
-			RMSD_R1=calculate_rmsd(i, "R1_diff")
-			RMSD_R2=calculate_rmsd(i, "R2_diff")
-			RMSD_hetNOE=calculate_rmsd(i, "hetNOE_diff")
+			RMSD_R1=calculate_rmsd(remove_largest(extract_columns(relax_data, i, "R1_diff")))
+			RMSD_R2=calculate_rmsd(remove_largest(extract_columns(relax_data, i, "R2_diff")))
+			RMSD_hetNOE=calculate_rmsd(remove_largest(extract_columns(relax_data, i, "hetNOE_diff")))
 
 
 			R1_rank_value=(float(RMSD_R1)/ranking_value("R1_diff"))*100
 			R2_rank_value=(float(RMSD_R2)/ranking_value("R2_diff"))*100
 			hetNOE_rank_value=(float(RMSD_hetNOE)/ranking_value("hetNOE_diff"))*100
 			Ranking_sum=R1_rank_value+R2_rank_value+hetNOE_rank_value
-			#csvwriter.writerow([ff_name, rep_name, RMSRE_R1, R1_rank_value, RMSRE_R2, R2_rank_value, RMSRE_hetNOE, hetNOE_rank_value, Ranking_sum])
 			csvwriter.writerow([ff_name, rep_name, RMSD_R1, R1_rank_value, RMSD_R2, R2_rank_value, RMSD_hetNOE, hetNOE_rank_value, Ranking_sum])
 			if R1_rank_value/100 < 1.5 and R2_rank_value/100 < 1.5 and hetNOE_rank_value/100 < 1.5:
 				Best_cases.append(case)
@@ -416,7 +397,7 @@ with open(ranking_file, 'w', newline="") as csvfile:
 				print(case + " do not meet criteria")
 
 os.makedirs(Unst_folder + "correlation_functions/", exist_ok=True)
-
+'''
 i = 1
 while i <= res_nr :
 	corr_lists=[]
@@ -454,8 +435,7 @@ with fileinput.FileInput(Unst_folder + "Old_Relaxations_for_Samuli.py", inplace=
 
 os.chdir(Unst_folder)
 subprocess.run(["python3", Unst_folder + "Old_Relaxations_for_Samuli.py"])
-
-
+'''
 avg_path=glob.glob(Unst_folder + "relaxation_times.csv")
 
 
@@ -527,7 +507,6 @@ def relaxation_combined(sim, exp, output, execution):
 	plt.close()
 
 relaxation_combined(1, 2, 'R1_relaxation_combined_plot', axs_plot)
-
 relaxation_combined(4, 5, 'R2_relaxation_combined_plot', axs_plot)
 relaxation_combined(7, 8, 'hetNOE_relaxation_combined_plot', axs_plot)
 
@@ -727,7 +706,6 @@ create_timescale_scatter_plot(timescale_data_avg, 0, axs=None)
 plt.savefig(best_cases_folder + 'Timescale_plot_avg.png')
 plt.close()
 
-
 plot_all(timescale_data, "Timescale_plot_all.png", create_timescale_scatter_plot)
 
 
@@ -767,7 +745,6 @@ def plot_avg_rog_bar(input, output):
 	plt.savefig(relax_folder + output + '.png')
 	plt.close()
 
-plot_avg_rog_bar(glob.glob(SIM_DIR + "*/*/md*gyrate.xvg"), "Average_rog_plot")
 
 rog_values_best_all=[]
 
@@ -790,7 +767,7 @@ with open(Unst_folder + "Best_rog_landscape.txt", 'w') as f:
 
 
 def plot_ensembles_images(input, output):
-	fig, axs = plt.subplots(5, 5, figsize=(15, 15))
+	fig, axs = plt.subplots(5, 5, figsize=(25, 25))
 	for j, ff in enumerate(FORCEFIELDS): 
 		for k, item in enumerate(input):	
 			if ff in item:
@@ -822,12 +799,11 @@ def plot_ensembles_images(input, output):
 					rect = Rectangle((0, 0), 1, 1, transform=axs[j, i].transAxes,
 						linewidth=5, edgecolor='black', facecolor='none')
 					axs[j, i].add_patch(rect) 
-	
-	legend_labels = ['Coil (C)', 'Helix (H)', 'Extended (E)']
-	handles = [plt.Line2D([0], [0], color=color_map_sec[code], lw=4) for code in color_map_sec]
-	fig.subplots_adjust(bottom=0.3, wspace=0.33)
-	axs[4, 2].legend(handles, legend_labels, loc='upper center', 
-		bbox_to_anchor=(0.5, -0.2),fancybox=False, shadow=False, ncol=3)
+
+	if "align" in input[0]:
+		legend_labels = ['Coil (C)', 'Helix (H)', 'Extended (E)']
+		handles = [plt.Line2D([0], [0], color=color_map_sec[code], lw=4) for code in color_map_sec]
+		plt.legend(handles, legend_labels, loc='upper right', bbox_to_anchor=(1.1, 1.0))
 	plt.tight_layout()
 	plt.savefig(f'{relax_folder}/{output}.png', dpi=300)
 	plt.close()
@@ -836,7 +812,6 @@ def plot_ensembles_images(input, output):
 
 plot_ensembles_images(sorted(glob.glob(SIM_DIR + "model*/*/*mdmat*.png")), "Contact_map_combined")
 plot_ensembles_images(sorted(glob.glob(SIM_DIR + "model*/*/*correlation*.png")), "Correlation_combined")
-
 
 
 
@@ -849,10 +824,10 @@ def contact_map_avg(input, output):
 	#ax.set_xlabel("Residue",fontsize=15)
 	#ax.set_ylabel("Residue",fontsize=15)
 
-	ax.set_xticks(xticks)
-	ax.set_xticklabels([f"{i+1}" for i in xticks])
-	ax.set_yticks(xticks)
-	ax.set_yticklabels([f"{i+1}" for i in xticks])
+	plt.xticks(xticks)
+	plt.xticklabels([f"{i+1}" for i in xticks])
+	plt.yticks(xticks)
+	plt.yticklabels([f"{i+1}" for i in xticks])
 
 	cbar = plt.colorbar(plot, ax=ax)
 	cbar.set_label("Distance (nm)",fontsize=15)
@@ -865,15 +840,8 @@ contact_map_avg([glob.glob(SIM_DIR + i + "/md*mdmat.csv")[0] for i in Best_cases
 def corr_map_avg(input, output):
 	matrix = avg_csv(input)
 
-	fig, ax = plt.subplots()
 	color_map = plt.imshow(matrix,vmin=-1, vmax=1, origin='lower')
 	color_map.set_cmap("seismic")
-
-	ax.set_xticks(xticks)
-	ax.set_xticklabels([f"{i+1}" for i in xticks])
-	ax.set_yticks(xticks)
-	ax.set_yticklabels([f"{i+1}" for i in xticks])
-
 	plt.colorbar()
 	plt.savefig(output + "Avg_corr.png", dpi=600)
 	plt.close()
@@ -881,64 +849,62 @@ def corr_map_avg(input, output):
 corr_map_avg([glob.glob(SIM_DIR + i + "/*correlation*.csv")[0] for i in Best_cases], best_cases_folder)
 
 
-def run_pymol_operations():
-	pdb_data = sorted(glob.glob(SIM_DIR + "model*/*/"))
-	
-	cmd.set("ray_opaque_background", 1)
-
-	for i in pdb_data:
-		if i.split('/')[-3]+ "/" + i.split('/')[-2] in Best_cases:
-			name = i.split('/')[-4]
-
-			md = glob.glob(i + 'md*smooth*xtc')
-			temp = glob.glob(i + 'temp*gro')
-
-			if len(md) > 0 and len(temp) > 0:
-				cmd.load(temp[0], name)
-				cmd.load_traj(md[0], name, state=1, interval=2000)
-				cmd.color('green', name)
-				cmd.set('all_states', 'on')
-				cmd.ray(300, 300)
-	obj = cmd.get_object_list('all')
-	for i in obj[1:]:
-		cmd.align(obj[0], i, object='aln', transform=0)
-
-	cmd.png(best_cases_folder + 'Ensemble_' + SIM_DIR.split('/')[-2] + '_aligned_fig.png')	
-	cmd.delete('all')
-
-	for path in pdb_data:
-		cmd.set("ray_opaque_background", 1)
-
-		rep_name = path.split('/')[-3]
-		forcefield = path.split('/')[-2]
-		selected = color_map.get(rep_name, 'black')
-
-		md = glob.glob(path + 'md*smooth*xtc')
-		temp = glob.glob(path + 'temp*gro')
-		if len(md) > 0 and len(temp) > 0:
-			cmd.load(temp[0], rep_name + forcefield)
-			cmd.load_traj(md[0], rep_name + forcefield, state=1, interval=2000)
-			cmd.color(selected, rep_name + forcefield)
-			cmd.set('all_states', 'on')
-			cmd.ray(300, 300)
-		obj = cmd.get_object_list('all')
-		for i in obj[1:]:
-			cmd.align(obj[0], i, object='aln', transform=0)
-		cmd.png(path + 'Ensemble_' + rep_name + '_' +  forcefield + '_aligned_fig.png')	
-		cmd.delete('all')
-
-	
-	
-
-run_pymol_operations()
-
-plot_ensembles_images(sorted(glob.glob(SIM_DIR + "model*/*/Ensemble*model*aligned_fig.png")), "Ensembles_aligned_combined")
-
 subprocess.run(["python3", avg_script])
 
+'''
+
+pdb_data = sorted(glob.glob(SIM_DIR + "model*/*/"))
+
+cmd.set("ray_opaque_background", 1)
+
+for i in pdb_data:
+	if i.split('/')[-3]+ "/" + i.split('/')[-2] in Best_cases:
+		name = i.split('/')[-4]
+
+		md = glob.glob(i + 'md*smooth*xtc')
+		temp = glob.glob(i + 'temp*gro')
+
+		if len(md) > 0 and len(temp) > 0:
+			cmd.load(temp[0], name)
+			cmd.load_traj(md[0], name, state=1, interval=2000)
+			cmd.color('green', name)
+			cmd.set('all_states', 'on')
+			cmd.ray(300, 300)
+obj = cmd.get_object_list('all')
+for i in obj[1:]:
+	cmd.align(obj[0], i, object='aln', transform=0)
+
+cmd.png(best_cases_folder + 'Ensemble_' + SIM_DIR.split('/')[-2] + '_aligned_fig.png')	
+cmd.delete('all')
 cmd.quit()
 
 
+for path in pdb_data:
+	cmd.set("ray_opaque_background", 1)
+
+	rep_name = path.split('/')[-3]
+	forcefield = path.split('/')[-2]
+	selected = color_map.get(rep_name, 'black')
+
+	md = glob.glob(path + 'md*smooth*xtc')
+	temp = glob.glob(path + 'temp*gro')
+	if len(md) > 0 and len(temp) > 0:
+		cmd.load(temp[0], rep_name + forcefield)
+		cmd.load_traj(md[0], rep_name + forcefield, state=1, interval=2000)
+		cmd.color(selected, rep_name + forcefield)
+		cmd.set('all_states', 'on')
+		cmd.ray(300, 300)
+	obj = cmd.get_object_list('all')
+	for i in obj[1:]:
+		cmd.align(obj[0], i, object='aln', transform=0)
+	cmd.png(path + 'Ensemble_' + rep_name + '_' +  forcefield + '_aligned_fig.png')	
+	cmd.delete('all')
+
+cmd.quit()
+
+plot_ensembles_images(sorted(glob.glob(SIM_DIR + "model*/*/Ensemble*model*aligned_fig.png")), "Ensembles_aligned_combined")
+
+'''
 
 
 

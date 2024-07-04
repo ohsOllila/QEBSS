@@ -12,6 +12,7 @@
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export GMX_MAXBACKUP=-1
 
+
 module use /appl/local/csc/modulefiles
 module load gromacs/2023.3-gpu
 sim_time=2000
@@ -25,6 +26,7 @@ magn_field=$(awk 'NR==1 {print $6}' "${BASE_DIR}/${SIM_DIR}_exp_data.txt" 2>/dev
 make_index=${BASE_DIR}/simulation_scripts/MD_scripts/makeNHindex.awk
 py_script=${BASE_DIR}/simulation_scripts/PY_scripts/Old_Relaxations_for_Samuli.py
 mdmat_plot=${BASE_DIR}/simulation_scripts/PY_scripts/xpm_plot.py
+secondary=${BASE_DIR}/simulation_scripts/PY_scripts/pymol_structure_analysis.py
 relax_plot=${BASE_DIR}/simulation_scripts/PY_scripts/plot_replicas_to_experiment.py
 corr_plot=${BASE_DIR}/simulation_scripts/PY_scripts/correlationCALC.py
 
@@ -57,14 +59,15 @@ mkdir correlation_functions
 #sed -i.bak 's/ H /HN /g' ${name}.gro
 #awk -f ${make_index} ${name}.gro > HN.ndx
 
+
 echo 1 1 | gmx_mpi trjconv -f ${name}.xtc -s ${name}.tpr -pbc mol -center -dump 0 -o temp_${name}.gro
 echo 1 1 | gmx_mpi trjconv -f ${name}.xtc -s ${name}.tpr -pbc mol -center -o ${name}_noPBC.xtc
 gmx_mpi filter -f ${name}_noPBC.xtc -s temp_${name}.gro -nf 20 -all -ol ${name}_smooth.xtc
 echo 1 | gmx_mpi gyrate -s ${name}.tpr -f ${name}_noPBC.xtc -o ${name}_gyrate.xvg
 
-: '
-echo -e "Alpha\nAlpha" | gmx_mpi mdmat -f ${name}.xtc -s ${name}.tpr -mean ${name}_mdmat.xpm
+echo -e "Alpha\nAlpha" | gmx_mpi mdmat -f ${name}_smooth.xtc -s ${name}.tpr -mean ${name}_mdmat.xpm
 gmx_mpi xpm2ps -f ${name}_mdmat.xpm -o ${name}_mdmat.eps
+
 
 GRO_FILE=(temp_md_${sim_time}ns.gro)
 sed -i.bak 's/ H /HN /g' $GRO_FILE
@@ -76,7 +79,7 @@ line_number=1  # Initialize the line number
 numberOFfuncs=$(grep "\[" HN.ndx | tail -n 1 | awk '{print $2}')
 for ((i = 0; i <= $numberOFfuncs; i++)); do
 	num=$(awk -v line="$line_number" 'NR==line {print $2}' HN.ndx)
-	echo $i | gmx_mpi rotacf -f ${name}_noPBC.xtc -s ${name}.tpr -n HN.ndx -o correlation_functions/NHrotaCF_$num.xvg -P 2 -d -xvg none  #-nice 20 
+	echo $i | gmx_mpi rotacf -f ${name}.xtc -s ${name}.tpr -n HN.ndx -o correlation_functions/NHrotaCF_$num.xvg -P 2 -d -xvg none  #-nice 20 
 	((line_number += 2)) 
 done
 
@@ -85,6 +88,7 @@ export PATH="$(cd ../../../env/bin && pwd):$PATH"
 #export PATH="/scratch/project_462000285/cmcajsa/systems/forcefield_compare/env/bin:$PATH"
 
 python3 $mdmat_plot
+python3 $secondary
 python3 $corr_plot
 python3 ${path}/Old_Relaxations_for_Samuli.py
 
@@ -100,4 +104,3 @@ cp -r $path/correlation_functions $sim_results
 cd $SIM_PATH
 python3 $relax_plot
 
-'
