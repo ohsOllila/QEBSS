@@ -61,9 +61,9 @@ mkdir correlation_functions
 #awk -f ${make_index} ${name}.gro > HN.ndx
 
 
-## echo 1 1 | gmx_mpi trjconv -f ${name}.xtc -s ${name}.tpr -pbc mol -center -dump 0 -o temp_${name}.gro
-## echo 1 1 | gmx_mpi trjconv -f ${name}.xtc -s ${name}.tpr -pbc mol -center -o ${name}_noPBC.xtc
-## echo 1 | gmx_mpi trjconv -f ${name}_noPBC.xtc -s temp_${name}.gro -skip 10 -o ${name}_skip.xtc
+echo 1 1 | gmx_mpi trjconv -f ${name}.xtc -s ${name}.tpr -pbc mol -center -dump 0 -o temp_${name}.gro
+echo 1 1 | gmx_mpi trjconv -f ${name}.xtc -s ${name}.tpr -pbc mol -center -o ${name}_noPBC.xtc
+echo 1 | gmx_mpi trjconv -f ${name}_noPBC.xtc -s temp_${name}.gro -skip 10 -o ${name}_skip.xtc
 
 if [ -e ${name}_gyrate.xvg ]
 then
@@ -105,9 +105,7 @@ export PATH="$(cd ../../../env/bin && pwd):$PATH"
 #export PATH="/scratch/project_462000285/cmcajsa/systems/forcefield_compare/env/bin:$PATH"
 
 python3 $mdmat_plot
-echo 'Calculate secondary'
 python3 $secondary
-echo 'Secondary calucated'
 python3 $corr_plot
 python3 ${path}/Old_Relaxations_for_Samuli.py
 
