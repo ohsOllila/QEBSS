@@ -93,7 +93,7 @@ os.remove('Ctimes_Coeffs.csv') if os.path.exists('Ctimes_Coeffs.csv') else None
 #rt.initilize_output(OP,smallest_corr_time, biggest_corr_time, N_exp_to_fit,analyze,magnetic_field,input_corr_file,nuclei,output_name,author_name)
 if take_all_in_folder=="yes":
     for file in os.listdir(sorted(folder_path)):
-        with open('Ctimes_Coeffs.txt', 'a') as f:  # Use 'a' (append) mode to add content to the file
+        with open('Ctimes_Coeffs.csv', 'a') as f:  # Use 'a' (append) mode to add content to the file
             f.write('Res_nr_' + str(res_count) + '\n')
             res_count += 1
         input_corr_file = folder_path+os.fsdecode(file)

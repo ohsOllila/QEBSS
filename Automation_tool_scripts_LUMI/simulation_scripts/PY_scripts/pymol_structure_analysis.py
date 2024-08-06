@@ -6,10 +6,10 @@ import glob
 import mdtraj as md
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
-
-GRO='temp_md_1500ns.gro'
-XTC='md_1500ns_smooth.xtc'
+GRO='temp_md_2000ns.gro'
+XTC='md_2000ns_skip.xtc'
 traj = md.load(XTC, top=GRO)
 
 three_to_one = {
@@ -33,6 +33,8 @@ initial_colors = [color_map[structure] for structure in initial_secondary_struct
 final_colors = [color_map[structure] for structure in final_secondary_structure]
 
 cmd.set("ray_opaque_background", 1)
+
+path = os.getcwd()
 
 rep_name = path.split('/')[-3]
 forcefield = path.split('/')[-2]
@@ -91,5 +93,6 @@ plt.tight_layout()
 plt.show()
 
 # Save the plot to a file
-plt.savefig("secondary_with_residues.png")
+print(path + "/secondary_with_residues.png")
+plt.savefig(path + "/secondary_with_residues.png")
 

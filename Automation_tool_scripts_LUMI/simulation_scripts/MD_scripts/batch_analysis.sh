@@ -1,9 +1,8 @@
 #!/bin/bash
 #SBATCH --time=48:00:00
 #SBATCH --partition=small
-#SBATCH --ntasks-per-node=64
-#SBATCH --cpus-per-task=2
-#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --mem-per-cpu=50000
 #SBATCH --array=0-24
 #SBATCH --account=project_462000540
 ##SBATCH --account=project
@@ -15,7 +14,7 @@ export GMX_MAXBACKUP=-1
 
 module use /appl/local/csc/modulefiles
 module load gromacs/2023.3-gpu
-sim_time=2000
+sim_time=sim_time
 
 SIM_PATH=${PWD}
 SIM_DIR=$(basename $SIM_PATH)
@@ -25,6 +24,7 @@ BASE_DIR=$(cd .. && pwd)
 magn_field=$(awk 'NR==1 {print $6}' "${BASE_DIR}/${SIM_DIR}_exp_data.txt" 2>/dev/null)
 make_index=${BASE_DIR}/simulation_scripts/MD_scripts/makeNHindex.awk
 py_script=${BASE_DIR}/simulation_scripts/PY_scripts/Old_Relaxations_for_Samuli.py
+py_script2=${BASE_DIR}/simulation_scripts/MD_scripts/relaxation_times/relaxation_times.py
 mdmat_plot=${BASE_DIR}/simulation_scripts/PY_scripts/xpm_plot.py
 secondary=${BASE_DIR}/simulation_scripts/PY_scripts/pymol_structure_analysis.py
 relax_plot=${BASE_DIR}/simulation_scripts/PY_scripts/plot_replicas_to_experiment.py
@@ -48,6 +48,7 @@ ff=$(basename $path)
 
 cp $py_script ${path}
 sed -i "s|magn_field=magn_field|magn_field=$magn_field|" ${path}/Old_Relaxations_for_Samuli.py
+cp $py_script2 ${path}
 
 TEMP_NAME=(md_${sim_time}ns.tpr)
 name=${TEMP_NAME%.tpr}
@@ -60,13 +61,24 @@ mkdir correlation_functions
 #awk -f ${make_index} ${name}.gro > HN.ndx
 
 
-echo 1 1 | gmx_mpi trjconv -f ${name}.xtc -s ${name}.tpr -pbc mol -center -dump 0 -o temp_${name}.gro
-echo 1 1 | gmx_mpi trjconv -f ${name}.xtc -s ${name}.tpr -pbc mol -center -o ${name}_noPBC.xtc
-gmx_mpi filter -f ${name}_noPBC.xtc -s temp_${name}.gro -nf 20 -all -ol ${name}_smooth.xtc
-echo 1 | gmx_mpi gyrate -s ${name}.tpr -f ${name}_noPBC.xtc -o ${name}_gyrate.xvg
+## echo 1 1 | gmx_mpi trjconv -f ${name}.xtc -s ${name}.tpr -pbc mol -center -dump 0 -o temp_${name}.gro
+## echo 1 1 | gmx_mpi trjconv -f ${name}.xtc -s ${name}.tpr -pbc mol -center -o ${name}_noPBC.xtc
+## echo 1 | gmx_mpi trjconv -f ${name}_noPBC.xtc -s temp_${name}.gro -skip 10 -o ${name}_skip.xtc
 
-echo -e "Alpha\nAlpha" | gmx_mpi mdmat -f ${name}_smooth.xtc -s ${name}.tpr -mean ${name}_mdmat.xpm
-gmx_mpi xpm2ps -f ${name}_mdmat.xpm -o ${name}_mdmat.eps
+if [ -e ${name}_gyrate.xvg ]
+then
+    echo "Radius of gyration already calculated"
+else
+    echo 1 | gmx_mpi gyrate -s ${name}.tpr -f ${name}_noPBC.xtc -o ${name}_gyrate.xvg
+fi
+    
+if [ -e ${name}_mdmat.eps ]
+then
+    echo "MDmat Already calculated"
+else
+    echo -e "Alpha\nAlpha" | gmx_mpi mdmat -f ${name}_skip.xtc -s ${name}.tpr -mean ${name}_mdmat.xpm
+    gmx_mpi xpm2ps -f ${name}_mdmat.xpm -o ${name}_mdmat.eps
+fi
 
 
 GRO_FILE=(temp_md_${sim_time}ns.gro)
@@ -78,9 +90,14 @@ line_number=1  # Initialize the line number
 
 numberOFfuncs=$(grep "\[" HN.ndx | tail -n 1 | awk '{print $2}')
 for ((i = 0; i <= $numberOFfuncs; i++)); do
-	num=$(awk -v line="$line_number" 'NR==line {print $2}' HN.ndx)
+    num=$(awk -v line="$line_number" 'NR==line {print $2}' HN.ndx)
+    if [ -e correlation_functions/NHrotaCF_$num.xvg ]
+    then
+	echo "Correlation function already calculated"
+    else
 	echo $i | gmx_mpi rotacf -f ${name}.xtc -s ${name}.tpr -n HN.ndx -o correlation_functions/NHrotaCF_$num.xvg -P 2 -d -xvg none  #-nice 20 
-	((line_number += 2)) 
+	((line_number += 2))
+    fi
 done
 
 module purge
@@ -88,7 +105,9 @@ export PATH="$(cd ../../../env/bin && pwd):$PATH"
 #export PATH="/scratch/project_462000285/cmcajsa/systems/forcefield_compare/env/bin:$PATH"
 
 python3 $mdmat_plot
+echo 'Calculate secondary'
 python3 $secondary
+echo 'Secondary calucated'
 python3 $corr_plot
 python3 ${path}/Old_Relaxations_for_Samuli.py
 

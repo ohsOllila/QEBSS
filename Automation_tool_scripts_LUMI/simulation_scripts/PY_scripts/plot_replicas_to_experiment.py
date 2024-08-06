@@ -183,7 +183,7 @@ def calculate_rmsd(idx, diff):
 	values_diff = extract_columns(relax_data, idx, diff)
 	cleaned_list = [float(i) for i in values_diff if i != 'n']
 	
-	return math.sqrt(sum(float(x) ** 2 for x in cleaned_list) / len(cleaned_list))
+	return math.sqrt(sum(float(x) ** 2 for x in remove_largest(cleaned_list)) / len(remove_largest(cleaned_list)))
 
 
 def calculate_rmsre(idx, exp, diff):
@@ -203,11 +203,11 @@ def calculate_rmsre(idx, exp, diff):
 	return rmsre
 
 
-def ranking_value(diff):
+def ranking_value(exp, diff):
 	RMSD_lists=[]
 	for i in range(len(Names)):
-		RMSD_lists.append(calculate_rmsd(i, diff))
-		#RMSD_lists.append(calculate_rmsre(i, exp, diff))
+		#RMSD_lists.append(calculate_rmsd(i, diff))
+		RMSD_lists.append(calculate_rmsre(i, exp, diff))
 	rank=min(float(i) for i in RMSD_lists)
 
 	return rank
@@ -385,30 +385,30 @@ Best_cases=[]
 ranking_file=relax_folder + 'ranking_table.csv'
 with open(ranking_file, 'w', newline="") as csvfile:
 	csvwriter = csv.writer(csvfile)
-	#csvwriter.writerow(["Force field", "Replica", "R1 RMSRE", "R1 (%)", "R2 RMSRE", "R2 (%)", "hetNOE RMSRE", "hetNOE (%)", "Sum (%)"])
-	csvwriter.writerow(["Force field", "Replica", "R1 RMSD", "R1 (%)", "R2 RMSD", "R2 (%)", "hetNOE RMSD", "hetNOE (%)", "Sum (%)"])
+	csvwriter.writerow(["Force field", "Replica", "R1 RMSRE", "R1 (%)", "R2 RMSRE", "R2 (%)", "hetNOE RMSRE", "hetNOE (%)", "Sum (%)"])
+	#csvwriter.writerow(["Force field", "Replica", "R1 RMSD", "R1 (%)", "R2 RMSD", "R2 (%)", "hetNOE RMSD", "hetNOE (%)", "Sum (%)"])
 	for i in range(len(Names)):
 			case=Names[i]
 			rep_name=case.split("/")[0]
 			ff_name=case.split("/")[1]
-			#RMSRE_R1=calculate_rmsre(i, "R1_exp", "R1_diff")
-			#RMSRE_R2=calculate_rmsre(i, "R2_exp", "R2_diff")
-			#RMSRE_hetNOE=calculate_rmsre(i, "hetNOE_exp", "hetNOE_diff")
+			RMSRE_R1=calculate_rmsre(i, "R1_exp", "R1_diff")
+			RMSRE_R2=calculate_rmsre(i, "R2_exp", "R2_diff")
+			RMSRE_hetNOE=calculate_rmsre(i, "hetNOE_exp", "hetNOE_diff")
 
-			#R1_rank_value=(float(RMSRE_R1)/ranking_value("R1_exp", "R1_diff"))*100
-			#R2_rank_value=(float(RMSRE_R2)/ranking_value("R2_exp", "R2_diff"))*100
-			#hetNOE_rank_value=(float(RMSRE_hetNOE)/ranking_value("hetNOE_exp", "hetNOE_diff"))*100
-			RMSD_R1=calculate_rmsd(i, "R1_diff")
-			RMSD_R2=calculate_rmsd(i, "R2_diff")
-			RMSD_hetNOE=calculate_rmsd(i, "hetNOE_diff")
+			R1_rank_value=(float(RMSRE_R1)/ranking_value("R1_exp", "R1_diff"))*100
+			R2_rank_value=(float(RMSRE_R2)/ranking_value("R2_exp", "R2_diff"))*100
+			hetNOE_rank_value=(float(RMSRE_hetNOE)/ranking_value("hetNOE_exp", "hetNOE_diff"))*100
+			#RMSD_R1=calculate_rmsd(i, "R1_diff")
+			#RMSD_R2=calculate_rmsd(i, "R2_diff")
+			#RMSD_hetNOE=calculate_rmsd(i, "hetNOE_diff")
 
 
-			R1_rank_value=(float(RMSD_R1)/ranking_value("R1_diff"))*100
-			R2_rank_value=(float(RMSD_R2)/ranking_value("R2_diff"))*100
-			hetNOE_rank_value=(float(RMSD_hetNOE)/ranking_value("hetNOE_diff"))*100
+			#R1_rank_value=(float(RMSD_R1)/ranking_value("R1_diff"))*100
+			#R2_rank_value=(float(RMSD_R2)/ranking_value("R2_diff"))*100
+			#hetNOE_rank_value=(float(RMSD_hetNOE)/ranking_value("hetNOE_diff"))*100
 			Ranking_sum=R1_rank_value+R2_rank_value+hetNOE_rank_value
-			#csvwriter.writerow([ff_name, rep_name, RMSRE_R1, R1_rank_value, RMSRE_R2, R2_rank_value, RMSRE_hetNOE, hetNOE_rank_value, Ranking_sum])
-			csvwriter.writerow([ff_name, rep_name, RMSD_R1, R1_rank_value, RMSD_R2, R2_rank_value, RMSD_hetNOE, hetNOE_rank_value, Ranking_sum])
+			csvwriter.writerow([ff_name, rep_name, RMSRE_R1, R1_rank_value, RMSRE_R2, R2_rank_value, RMSRE_hetNOE, hetNOE_rank_value, Ranking_sum])
+			#csvwriter.writerow([ff_name, rep_name, RMSD_R1, R1_rank_value, RMSD_R2, R2_rank_value, RMSD_hetNOE, hetNOE_rank_value, Ranking_sum])
 			if R1_rank_value/100 < 1.5 and R2_rank_value/100 < 1.5 and hetNOE_rank_value/100 < 1.5:
 				Best_cases.append(case)
 				print(case)
@@ -445,12 +445,12 @@ while i <= res_nr :
 	corr_lists=[]			
 	i += 1
 
-shutil.copy(py_script, Unst_folder)
+#shutil.copy(py_script, Unst_folder)
 
-with fileinput.FileInput(Unst_folder + "Old_Relaxations_for_Samuli.py", inplace=True) as file:
-	for line in file:
-		line = line.replace('magn_field=magn_field', 'magn_field=' + str(magn_field))
-		print(line, end="")
+#with fileinput.FileInput(Unst_folder + "Old_Relaxations_for_Samuli.py", inplace=True) as file:
+#	for line in file:
+#		line = line.replace('magn_field=magn_field', 'magn_field=' + str(magn_field))
+#		print(line, end="")
 
 os.chdir(Unst_folder)
 subprocess.run(["python3", Unst_folder + "Old_Relaxations_for_Samuli.py"])
@@ -822,12 +822,12 @@ def plot_ensembles_images(input, output):
 					rect = Rectangle((0, 0), 1, 1, transform=axs[j, i].transAxes,
 						linewidth=5, edgecolor='black', facecolor='none')
 					axs[j, i].add_patch(rect) 
-	
-	legend_labels = ['Coil (C)', 'Helix (H)', 'Extended (E)']
-	handles = [plt.Line2D([0], [0], color=color_map_sec[code], lw=4) for code in color_map_sec]
-	fig.subplots_adjust(bottom=0.3, wspace=0.33)
-	axs[4, 2].legend(handles, legend_labels, loc='upper center', 
-		bbox_to_anchor=(0.5, -0.2),fancybox=False, shadow=False, ncol=3)
+	if "align" in input[0]:
+		legend_labels = ['Coil (C)', 'Helix (H)', 'Extended (E)']
+		handles = [plt.Line2D([0], [0], color=color_map_sec[code], lw=4) for code in color_map_sec]
+		fig.subplots_adjust(bottom=0.3, wspace=0.33)
+		axs[4, 2].legend(handles, legend_labels, loc='upper center', 
+			bbox_to_anchor=(0.5, -0.2),fancybox=False, shadow=False, ncol=3)
 	plt.tight_layout()
 	plt.savefig(f'{relax_folder}/{output}.png', dpi=300)
 	plt.close()

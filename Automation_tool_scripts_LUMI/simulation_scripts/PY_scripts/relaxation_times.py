@@ -8,7 +8,6 @@ import os
 import re
 import yaml
 import time
-import csv
 import MDAnalysis as mda
 import fnmatch
 
@@ -17,11 +16,7 @@ gammaH=267.513*10**6;
 gammaC=67.262*10**6;
 gammaN=-27.166*10**6;
 
-if "results" in os.getcwd():
-	base = os.getcwd().replace("/results", "")
-	exp_data = base + '_exp_data.txt'
-else:
-	exp_data="/".join(os.getcwd().split("/")[:-2]) + "_exp_data.txt"
+
 
 
 #added 31.5.2022
@@ -470,7 +465,7 @@ def CorrelationFunctionsLipids(parent_folder_path,begin,end,RM_avail,moleculeTyp
 
 
 class GetRelaxationData():
-    def __init__(self,OP,smallest_corr_time, biggest_corr_time, N_exp_to_fit,analyze,magnetic_field,input_data,nuclei,title, res_nr):
+    def __init__(self,OP,smallest_corr_time, biggest_corr_time, N_exp_to_fit,analyze,magnetic_field,input_data,nuclei,title):
         self.OP=OP
         self.smallest_corr_time=smallest_corr_time
         self.biggest_corr_time=biggest_corr_time
@@ -480,7 +475,7 @@ class GetRelaxationData():
         self.nuclei=nuclei
         self.title=title
         self.analyze=analyze
-        self.res_nr=res_nr
+        
         self.org_corrF, self.times_out=self.read_data()
         
         #analyze only the part specified by the user
@@ -488,52 +483,15 @@ class GetRelaxationData():
         self.org_corrF=self.org_corrF[0:self.analyze_until]
         self.times_out=self.times_out[0:self.analyze_until]
         Teff, self.tau_eff_area, self.T1, self.T2, self.NOE, self.Coeffs, self.Ctimes_ns = self.calc_relax_time()
-        R1_exp, R1_sim, R1_diff, R2_exp, R2_sim, R2_diff, NOE_exp, NOE_sim, NOE_diff = self.data_to_csv()
-        print(self.res_nr, R1_exp, R1_sim, R1_diff, R2_exp, R2_sim, R2_diff, NOE_exp, NOE_sim, NOE_diff, self.tau_eff_area)
-        with open('relaxation_times.csv', 'a', newline='') as file:
-        	writer = csv.writer(file)
-        	writer.writerow([self.res_nr, R1_exp, R1_sim, R1_diff, R2_exp, R2_sim, R2_diff, NOE_exp, NOE_sim, NOE_diff, self.tau_eff_area])
-        with open('Ctimes_Coeffs.csv', 'a', newline='') as file:  
-        	writer = csv.writer(file)
-        	for i, j in zip(self.Ctimes_ns, self.Coeffs):
-        		if j != 0:
-        			writer.writerow([i, j])
-      
-    def safe_float(self, value):
-        try:
-            return float(value)
-        except:
-            return "n"
+        print("T1: {} T2: {} NOE: {} Tau_eff_area: {}".format(self.T1, self.T2, self.NOE, self.tau_eff_area))
+        with open('Ctimes_Coeffs.txt', 'a') as file:  
+        	data_to_write = '\n'.join(
+        		f"C_times_ns, Coeffs: {i}, {j}"
+        		for i, j in zip(self.Ctimes_ns, self.Coeffs)
+        		if j != 0
+        	)
+        	file.write(data_to_write + '\n')
 
-    def data_to_csv(self):
-        Teff, self.tau_eff_area, self.T1, self.T2, self.NOE, self.Coeffs, self.Ctimes_ns = self.calc_relax_time()
-        with open(exp_data, 'r') as file:
-            lines = file.readlines()[1:]
-            for line in lines:
-                splitted = line.split()
-                #print(self.res_nr, splitted[0])
-                if int(self.res_nr) == int(splitted[0]):
-                        residue_row = line
-                        #print(line)
-                        break
-                else:
-                        continue
-            #print(residue_row)
-            parts=residue_row.split()
-
-            R1_sim = self.safe_float(1 / self.T1)
-            R2_sim = self.safe_float(1 / self.T2)
-            NOE_sim = self.safe_float(self.NOE)
-
-            R1_exp = self.safe_float(parts[1])
-            R2_exp = self.safe_float(parts[2])
-            NOE_exp = self.safe_float(parts[3])
-
-            R1_diff = self.safe_float(R1_sim - R1_exp) if R1_exp != "n" and R1_sim != "n" else "n"
-            R2_diff = self.safe_float(R2_sim - R2_exp) if R2_exp != "n" and R2_sim != "n" else "n"
-            NOE_diff = self.safe_float(NOE_sim - NOE_exp) if NOE_exp != "n" and NOE_sim != "n" else "n"
-
-        return R1_exp, R1_sim, R1_diff, R2_exp, R2_sim, R2_diff, NOE_exp, NOE_sim, NOE_diff
 
     def read_data(self):
         # for reading the correlation function data
@@ -1023,4 +981,3 @@ if __name__ == "__main__":
     parser.add_option('-s', '--tpr', dest='tprfile', help='tpr file name.', default="top.tpr")
     parser.add_option('-o', '--out',  dest='out_fname',  help='output (OPs mean&std) file name', default="Headgroup_Glycerol_OPs.dat")
     opts, args = parser.parse_args()
-
