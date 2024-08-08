@@ -20,6 +20,7 @@ import MDAnalysis as mda
 from pymol import cmd
 import io
 from PIL import Image
+from matplotlib.backends.backend_pdf import PdfPages
 import mdtraj as md
 from matplotlib.patches import Rectangle
 import pymol
@@ -91,7 +92,6 @@ for i in range(9, res_nr, 20):
 
 
 Names=['/'.join(i.split("/")[-3:-1]) for i in relax_data]
-
 
 
 def extract_columns(csv_paths, sim_case_nr, variable):
@@ -367,6 +367,36 @@ def secondary_structure_bar(GRO, XTC):
     
 	return secondary_img_array
 
+def csv_to_pdf_with_conditional_formatting(csv_file, value_min_threshold=None, value_max_threshold=None):
+	df = pd.read_csv(csv_file)
+	pdf_file=csv_file.replace("csv", "pdf")
+
+	fig, ax = plt.subplots(figsize=(12, 8))
+	ax.axis('off')
+
+	ax.axis('tight')
+	ax.axis('off')
+	ax.set_title(SIM_DIR.split("/")[-2], fontsize=16, pad=20)
+
+	table = ax.table(cellText=df.values,
+	colLabels=df.columns,
+	cellLoc='center',
+	loc='center',
+	colColours=["lightgray"] * df.shape[1])
+
+	for (i, j), val in np.ndenumerate(df.values):
+		try:
+			if value_min_threshold <= int(val) <= value_max_threshold:
+				table[(i+1, j)].set_facecolor('lightgray')  # +1 to skip the header row
+		except:
+			pass
+	table.auto_set_font_size(False)
+	table.set_fontsize(10)
+	table.scale(1.2, 1.2) 
+	
+	with PdfPages(pdf_file) as pdf:
+		pdf.savefig(fig, bbox_inches='tight')
+
 
 
 RMSD_R1=[]
@@ -407,14 +437,17 @@ with open(ranking_file, 'w', newline="") as csvfile:
 			#R2_rank_value=(float(RMSD_R2)/ranking_value("R2_diff"))*100
 			#hetNOE_rank_value=(float(RMSD_hetNOE)/ranking_value("hetNOE_diff"))*100
 			Ranking_sum=R1_rank_value+R2_rank_value+hetNOE_rank_value
-			csvwriter.writerow([ff_name, rep_name, RMSRE_R1, R1_rank_value, RMSRE_R2, R2_rank_value, RMSRE_hetNOE, hetNOE_rank_value, Ranking_sum])
+			csvwriter.writerow([ff_name, rep_name, round(RMSRE_R1, 2), round(R1_rank_value), round(RMSRE_R2, 2), round(R2_rank_value), round(RMSRE_hetNOE, 2), round(hetNOE_rank_value), round(Ranking_sum)])
 			#csvwriter.writerow([ff_name, rep_name, RMSD_R1, R1_rank_value, RMSD_R2, R2_rank_value, RMSD_hetNOE, hetNOE_rank_value, Ranking_sum])
-			if R1_rank_value/100 < 1.5 and R2_rank_value/100 < 1.5 and hetNOE_rank_value/100 < 1.5:
+			if R1_rank_value/100 < 1.6 and R2_rank_value/100 < 1.6 and hetNOE_rank_value/100 < 1.6:
 				Best_cases.append(case)
 				print(case)
 			else:
 				print(case + " do not meet criteria")
 
+csv_to_pdf_with_conditional_formatting(ranking_file, value_min_threshold = 100, value_max_threshold=160)
+
+'''
 os.makedirs(Unst_folder + "correlation_functions/", exist_ok=True)
 
 i = 1
@@ -445,12 +478,12 @@ while i <= res_nr :
 	corr_lists=[]			
 	i += 1
 
-#shutil.copy(py_script, Unst_folder)
+shutil.copy(py_script, Unst_folder)
 
-#with fileinput.FileInput(Unst_folder + "Old_Relaxations_for_Samuli.py", inplace=True) as file:
-#	for line in file:
-#		line = line.replace('magn_field=magn_field', 'magn_field=' + str(magn_field))
-#		print(line, end="")
+with fileinput.FileInput(Unst_folder + "Old_Relaxations_for_Samuli.py", inplace=True) as file:
+	for line in file:
+		line = line.replace('magn_field=magn_field', 'magn_field=' + str(magn_field))
+		print(line, end="")
 
 os.chdir(Unst_folder)
 subprocess.run(["python3", Unst_folder + "Old_Relaxations_for_Samuli.py"])
@@ -799,7 +832,7 @@ def plot_ensembles_images(input, output):
 				if "align" in item:
 					path='/'.join(item.split("/")[0:-1])
 					
-					XTC = glob.glob(path + '/md*smooth*xtc')[0]
+					XTC = glob.glob(path + '/md*ns.xtc')[0]
 					GRO = glob.glob(path + '/temp*gro')[0]
 
 					ensemble_img = imread(item)
@@ -890,7 +923,7 @@ def run_pymol_operations():
 		if i.split('/')[-3]+ "/" + i.split('/')[-2] in Best_cases:
 			name = i.split('/')[-4]
 
-			md = glob.glob(i + 'md*smooth*xtc')
+			md = glob.glob(i + 'md*ns.xtc')
 			temp = glob.glob(i + 'temp*gro')
 
 			if len(md) > 0 and len(temp) > 0:
@@ -913,7 +946,7 @@ def run_pymol_operations():
 		forcefield = path.split('/')[-2]
 		selected = color_map.get(rep_name, 'black')
 
-		md = glob.glob(path + 'md*smooth*xtc')
+		md = glob.glob(path + 'md*ns.xtc')
 		temp = glob.glob(path + 'temp*gro')
 		if len(md) > 0 and len(temp) > 0:
 			cmd.load(temp[0], rep_name + forcefield)
@@ -929,7 +962,6 @@ def run_pymol_operations():
 
 	
 	
-
 run_pymol_operations()
 
 plot_ensembles_images(sorted(glob.glob(SIM_DIR + "model*/*/Ensemble*model*aligned_fig.png")), "Ensembles_aligned_combined")
@@ -942,4 +974,4 @@ cmd.quit()
 
 
 
-
+'''

@@ -9,21 +9,22 @@ BASE_DIR=${PWD}
 SCRIPTS=${BASE_DIR}/simulation_scripts/MD_scripts
 md_script=${SCRIPTS}/md_prep.sh
 
-#your_projects=$(csc-projects | grep -o "project_.*" | awk '{print $1}')
-#echo "Select the number of the project you want to use:"
+: '
+your_projects=$(csc-projects | grep -o "project_.*" | awk '{print $1}')
+echo "Select the number of the project you want to use:"
 
 num=1
 list=()
 
-#for i in $your_projects; do
-#        list+=($i)
-#        echo "("$num")" ${i} 
-#        ((num++))
-#done
+for i in $your_projects; do
+        list+=($i)
+        echo "("$num")" ${i} 
+        ((num++))
+done
 
-#read choice
-#project=${list[choice-1]}
-
+read choice
+project=${list[choice-1]}
+'
 
 
 FORCEFIELD=(AMBER03WS AMBER99SB-DISP AMBER99SBWS CHARMM36M DESAMBER)
@@ -39,7 +40,7 @@ for pdb_file in $BASE_DIR/Unst*/*.pdb; do
 done
 
 
-for i in $BASE_DIR/Unst*
+for i in $BASE_DIR/Unst*199*/
 do
   	cd $i
 	jobs=$(( $(find $i -mindepth 2 -maxdepth 2 -type d | wc -l) - 1 ))

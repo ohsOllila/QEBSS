@@ -34,6 +34,7 @@ Name the file Unst_prot_exp_data.txt
 
 An example of what it should look like can be seen in the file Unst_alphasynuclein_exp_data.txt
 
+You can also copy relaxation times T1, T2 and hetNOE from https://bmrb.io/ and run `create_exp.py` to automatically create the file. OBS! Copy only the data, skipping the initial text.
 
 
 Set up the environment:

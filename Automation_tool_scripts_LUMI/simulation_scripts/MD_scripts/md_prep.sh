@@ -1,13 +1,11 @@
 #!/bin/bash
-#SBATCH --time=12:00:00
+#SBATCH --time=48:00:00
 #SBATCH --partition=small
-#SBATCH --ntasks-per-node=64
-#SBATCH --cpus-per-task=2
-#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --mem-per-cpu=50000
 #SBATCH --array=0-num_jobs
-#SBATCH --output=array_job_output_%A_%a.txt
-#SBATCH --account=project_462000404
-
+#SBATCH --account=project_462000540
+##SBATCH --account=project
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export GMX_MAXBACKUP=-1
@@ -68,7 +66,7 @@ fi
 
 
 
-gmx_mpi editconf -f ${PROTEIN}.gro -o ${PROTEIN}_newbox.gro -c -d 0.75 -bt dodecahedron
+gmx_mpi editconf -f ${PROTEIN}.gro -o ${PROTEIN}_newbox.gro -c -d 1.5 -bt dodecahedron
 
 if [[ $i == "AMBER03WS" || $i == AMBER99SBWS ]]; then
 	gmx_mpi solvate -cp ${PROTEIN}_newbox.gro -cs ${PARAM_DIR}/${i}/${i,,}.ff/tip4p2005.gro -o ${PROTEIN}_solv.gro -p topol.top

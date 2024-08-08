@@ -508,17 +508,8 @@ class GetRelaxationData():
     def data_to_csv(self):
         Teff, self.tau_eff_area, self.T1, self.T2, self.NOE, self.Coeffs, self.Ctimes_ns = self.calc_relax_time()
         with open(exp_data, 'r') as file:
-            lines = file.readlines()[1:]
-            for line in lines:
-                splitted = line.split()
-                #print(self.res_nr, splitted[0])
-                if int(self.res_nr) == int(splitted[0]):
-                        residue_row = line
-                        #print(line)
-                        break
-                else:
-                        continue
-            #print(residue_row)
+            lines = file.readlines()
+            residue_row = lines[self.res_nr]
             parts=residue_row.split()
 
             R1_sim = self.safe_float(1 / self.T1)
@@ -526,8 +517,8 @@ class GetRelaxationData():
             NOE_sim = self.safe_float(self.NOE)
 
             R1_exp = self.safe_float(parts[1])
-            R2_exp = self.safe_float(parts[2])
-            NOE_exp = self.safe_float(parts[3])
+            R2_exp = self.safe_float(parts[3])
+            NOE_exp = self.safe_float(parts[5])
 
             R1_diff = self.safe_float(R1_sim - R1_exp) if R1_exp != "n" and R1_sim != "n" else "n"
             R2_diff = self.safe_float(R2_sim - R2_exp) if R2_exp != "n" and R2_sim != "n" else "n"

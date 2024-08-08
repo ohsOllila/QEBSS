@@ -66,6 +66,10 @@ END {
       #-- Print atoms 
       run_num = 0
       for(ind = 1; ind <= NATOMS; ind++) {
+	  if(ATOMNAME[ind]=="    N" && ATOMNAME[ind+1]=="   CD"){
+	      continue
+	  }
+
 	  if(ATOMNAME[ind]=="    N" && ATOMNAME[ind+1]=="   HN"){
 	      print "["MOLNUM[ind]" ]"
 	      print ATOMNUM[ind] ATOMNUM[ind+1]

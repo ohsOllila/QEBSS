@@ -5,7 +5,7 @@ cd ..
 cd ..
 BASE_DIR=$PWD
 
-SIM_DIR=$BASE_DIR/Unst*snare*
+SIM_DIR=$BASE_DIR/Unst*hyd*
 
 
 SCRIPTS=$BASE_DIR/simulation_scripts/MD_scripts

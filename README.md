@@ -33,7 +33,9 @@ Go to folder where you added your simulation folders/scripts:
 
 `cd /scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare`
 
-❗️Add your experimental data file to this folder. Make sure to add the first line with the magnetic field strength in MHz. Any missing data should type "n". Name the file **Unst_prot_exp_data.txt**. An example of what it should look like can be seen in the file Unst_hydrolase_exp_data.txt or Unst_alphasynuclein_exp_data.txt
+❗️Add your experimental data file to this folder. Make sure to add the first line with the magnetic field strength in MHz. Any missing data should type "n". Name the file **Unst_prot_exp_data.txt**. An example of what it should look like can be seen in the file Unst_hydrolase_exp_data.txt or Unst_alphasynuclein_exp_data.txt.
+
+You can also copy relaxation times T1, T2 and hetNOE from https://bmrb.io/ and run `create_exp.py` to automatically create the file. OBS! Copy only the data, skipping the initial text.
 
 Set up the environment here too:
 
@@ -75,4 +77,4 @@ Run scripts in order:
 
 ❗️Before you run the next script, you must ensure the previous step was finished. E.g., you can check if the system preparation run was successful by going to /scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/Unst_prot and running `ls -lh */*/md*tpr`. Run `ls -lh */*/md*tpr | wc –l` to count the files. If this step was succesful you should have 25 md*tpr files when the jobs are finished. To know if the md run is completed you can similairly type `ls -lh */*/md*gro | wc –l`. This script should be rerun multiple times until you have 25 files. The last script collects the results, which can be found in /scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/results/Unst_prot.
 
-OBS: The run_batch_md.sh script prevents double submission of identical jobs so you can rerun this script even though some of your jobs are still running. 
+OBS: The run_batch_md.sh script prevents double submission of identical jobs so you can rerun this script even though some of your jobs are still running.  
