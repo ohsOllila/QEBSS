@@ -99,5 +99,8 @@ cp $path/*eps  $sim_results
 cp -r $path/correlation_functions $sim_results
 
 cd $SIM_PATH
-python3 $relax_plot
 
+
+if [ "$SLURM_ARRAY_TASK_ID" -eq "$SLURM_ARRAY_TASK_MAX" ]; then
+	python3 $relax_plot
+fi
