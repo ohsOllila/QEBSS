@@ -1,4 +1,6 @@
-Quality evaluated selection system for molecular dynamics evaluated against NMR data
+Semi-automatic Quality Evaluated Selection System for Molecular Dynamics
+
+This model derives relaxation times R1, R2 and hetNOE from molecular dynamics simulations generated with different forcefields and initial structures and compairs against NMR relaxation times. The system accepts simulations which meet selection requirements, based on smallest RMSD across all simulations for each relaxation parameter. All parameters need to be within a factor of 1.5 to the reference value to be accepted. Analysis is made for each simulation as well as the average of selected simulations, which is assumed to be representative of the overall characteristics of the specific protein.  
 
 (Download and extract Automation_tool_scripts_LUMI recipitory) 
 
