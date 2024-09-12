@@ -1,4 +1,4 @@
-Semi-automatic MD production and comparison to NMR relaxation times
+Quality evaluated selection system for molecular dynamics evaluated against NMR data
 
 (Download and extract Automation_tool_scripts_LUMI recipitory) 
 
