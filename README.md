@@ -14,7 +14,6 @@ cd IDPConformerGenerator
 
 conda env create -f requirements.yml 
 
-cd ..
 
 
 Copy your fasta file to Automation_tool_scripts_LUMI directory and generate replicas by running: 
