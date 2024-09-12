@@ -5,6 +5,7 @@ Quality evaluated selection system for molecular dynamics evaluated against NMR 
 
 The first step is to generate the initial replicas. Go to https://idpconformergenerator.readthedocs.io/en/latest/installation.html or follow the installation steps below: 
  
+
 cd Automation_tool_scripts_*/Idpconfgenerator_automation
 
 git clone https://github.com/julie-forman-kay-lab/IDPConformerGenerator 
@@ -20,10 +21,13 @@ Copy your fasta file to Automation_tool_scripts_LUMI directory and generate repl
 
 conda activate idpconfgen 
 
+
 ./create_replicas.sh (Choose the number of your fasta file) 
 
 
+
 Copy Unst_prot, MD_parameter_files, simulation_scripts and env.yml to your project scratch in LUMI. Using my LUMI paths as example:
+
 
 scp -r Unst_prot MD_parameter_files simulation_scripts env.yml malmcajs@lumi.csc.fi:/scratch/project_462000285/cmcajsa/systems/forcefield_compare 
 
@@ -37,7 +41,9 @@ Go to folder:
 
 cd /scratch/project_462000285/cmcajsa/systems/forcefield_compare
 
+
 Add your experimental data to this folder. Make sure to add the first line with the magnetic field strength in MHz. Any missing data should type "n". 
+
 Name the file Unst_prot_exp_data.txt
 
 An example of what it should look like can be seen in the file Unst_alphasynuclein_exp_data.txt
@@ -56,6 +62,7 @@ module load lumi-container-wrapper
 mkdir env
 
 conda-containerize new --prefix env env.yml
+
 
 You need to manually add your project number to the scripts. Go to simulation_scripts/MD_scripts:
 
