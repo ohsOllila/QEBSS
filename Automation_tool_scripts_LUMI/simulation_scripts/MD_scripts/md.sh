@@ -1,4 +1,4 @@
-dkå#!/bin/bash
+#!/bin/bash
 #SBATCH --partition=standard-g
 ##SBATCH --account=project
 #SBATCH --account=project_462000540
