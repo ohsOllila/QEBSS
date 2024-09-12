@@ -25,7 +25,7 @@ done
 read choice
 project=${list[choice-1]}
 '
-for i in $BASE_DIR/Unst*alpha*/
+for i in $BASE_DIR/hZIP4/
 do
   	cd $i
 	jobs=$(( $(find "$i" -mindepth 2 -maxdepth 2 -type d | wc -l) - 1 ))

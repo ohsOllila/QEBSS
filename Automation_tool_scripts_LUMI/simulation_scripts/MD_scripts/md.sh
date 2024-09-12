@@ -1,7 +1,7 @@
-#!/bin/bash
+dkå#!/bin/bash
 #SBATCH --partition=standard-g
 ##SBATCH --account=project
-#SBATCH --account=project_462000285
+#SBATCH --account=project_462000540
 #SBATCH --time=2-00:00:00
 #SBATCH --nodes=1
 #SBATCH --gpus-per-node=8
@@ -33,16 +33,16 @@ CPU_BIND="${CPU_BIND},fe00000000,fe0000000000"
 temp_name=(*.pdb)
 protein=${temp_name%.pdb}
 
-PARAM_DIR=/scratch/project_462000199/cmcajsa
+PARAM_DIR="$(cd ../../../.. && pwd)"
 i=$(basename $PWD)
 
 
-sim_time=sim_time
+sim_time=2000
 FORCEFIELD=$(basename $PWD)
-export GMXLIB=/scratch/project_462000199/cmcajsa/$i
+export GMXLIB=$PARAM_DIR/$i
 
-#srun gmx_mpi grompp -f ${PARAM_DIR}/${i}/md_diff_sim_time/md_${sim_time}ns.mdp -c npt_${i}.gro -t npt_${i}.cpt -p topol.top -o md_${sim_time}ns.tpr -v
-srun --cpu-bind=$CPU_BIND ./select_gpu gmx_mpi mdrun -deffnm md_${sim_time}ns -cpi md_${sim_time}ns.cpt -nb gpu -bonded gpu -pme gpu -npme 1 -v
+srun gmx_mpi grompp -f ${PARAM_DIR}/${i}/md_diff_sim_time/md_${sim_time}ns.mdp -c npt_${i}.gro -t npt_${i}.cpt -p topol.top -o md_${sim_time}ns.tpr
+srun --cpu-bind=$CPU_BIND ./select_gpu gmx_mpi mdrun -deffnm md_${sim_time}ns -cpi md_${sim_time}ns.cpt -nb gpu -bonded gpu -pme gpu -npme 1
 #srun --cpu-bind=$CPU_BIND ./select_gpu gmx_mpi mdrun -deffnm md_${sim_time}ns -cpi md_${sim_time}ns.cpt -nb gpu -bonded gpu -pme gpu -npme 1 -v -noappend
 
 #gmx_mpi trjconv -f md_${sim_time}ns.xtc -s md_${sim_time}ns.tpr -b 0 -e 2000000 -o md_2000ns.xtc

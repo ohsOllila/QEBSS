@@ -29,9 +29,9 @@ BASE_DIR=os.path.dirname(SIM_DIR)
 RESULTS=BASE_DIR + '/results/'
 
 
-Best_rog_files=glob.glob(RESULTS + 'U*/Best_rog_landscape.txt')
-Best_relax_files=glob.glob(RESULTS + 'U*/relaxation_times.csv')
-Ctimes_files=glob.glob(RESULTS + 'U*/Ctimes_Coeffs.csv')
+Best_rog_files=glob.glob(RESULTS + '*/Best_rog_landscape.txt')
+Best_relax_files=glob.glob(RESULTS + '*/relaxation_times.csv')
+Ctimes_files=glob.glob(RESULTS + '*/Ctimes_Coeffs.csv')
 
 color_list=['red', 'blue', 'green', 'purple', 'orange']
 
@@ -80,7 +80,7 @@ plt.tight_layout()
 plt.savefig(RESULTS + 'best_rog_landscape.png')
 plt.close()
 
-'''
+
 fig, ax = plt.subplots()
 for i, data in enumerate(Best_relax_files):
 	tau, tau_values=extract_values_pandas(Best_relax_files, i, 10, include_header=True)
@@ -109,37 +109,37 @@ def plot_images(input, output):
 	if 'relaxation_compaired' in input[0]:
 		fig, axs = plt.subplots(col, 1, figsize=(8.27, 11.69))
 	else:
-		fig, axs = plt.subplots(1, col, figsize=(12, 4))
+		fig, axs = plt.subplots(1, col, figsize=(10, 5))
 	for i, data in enumerate(input):
 		data=input[i]
 		PROTEIN = data.split("/")[-4]
 		img = imread(data)
 		if col == 1:
 			plt.imshow(img)
-			plt.title(PROTEIN)
+			plt.title(PROTEIN, fontweight='bold')
 			plt.axis('off')
 		else:
 			axs[i].imshow(img)
-			axs[i].set_title(PROTEIN)
+			axs[i].set_title(PROTEIN, fontweight='bold')
 			axs[i].axis('off')
 	plt.tight_layout()
 	plt.savefig(RESULTS + output + '.png')
 	plt.close()
 
 
-contact_png = sorted(glob.glob(RESULTS + 'U*/rep_to_exp_data/Accepted_cases/Avg_corr.png'))
+contact_png = sorted(glob.glob(RESULTS + '*/rep_to_exp_data/Accepted_cases/Avg_corr.png'))
 plot_images(contact_png, "Avg_correlation_map")
 
-contact_png = sorted(glob.glob(RESULTS + 'U*/rep_to_exp_data/Accepted_cases/Avg_contact.png'))
+contact_png = sorted(glob.glob(RESULTS + '*/rep_to_exp_data/Accepted_cases/Avg_contact.png'))
 plot_images(contact_png, "Avg_contact_map")
 
-contact_png = sorted(glob.glob(RESULTS + 'U*/rep_to_exp_data/Accepted_cases/Ensemble_*.png'))
+contact_png = sorted(glob.glob(RESULTS + '*/rep_to_exp_data/Accepted_cases/Ensemble_*.png'))
 plot_images(contact_png, "Avg_structure")
 
 
-relaxation_png = sorted(glob.glob(RESULTS + 'U*/rep_to_exp_data/Accepted_cases/average_relaxation_compaired_plot.png'))
+relaxation_png = sorted(glob.glob(RESULTS + '*/rep_to_exp_data/Accepted_cases/average_relaxation_compaired_plot.png'))
 plot_images(relaxation_png, "Avg_relaxation_times")
 
-contact_png = sorted(glob.glob(RESULTS + 'U*/rep_to_exp_data/Accepted_cases/Timescale_plot_avg.png'))
+contact_png = sorted(glob.glob(RESULTS + '*/rep_to_exp_data/Accepted_cases/Timescale_plot_avg.png'))
 plot_images(contact_png, "Avg_timescales_times")
-'''
+

@@ -1,19 +1,19 @@
 #!/bin/bash
-#SBATCH --time=48:00:00
-#SBATCH --partition=small
-#SBATCH --ntasks=1
-#SBATCH --mem-per-cpu=50000
+#SBATCH --time=12:00:00
+#SBATCH --partition=medium
+#SBATCH --ntasks-per-node=128
+#SBATCH --nodes=1
 #SBATCH --array=0-num_jobs
-#SBATCH --account=project_462000540
+#SBATCH --account=project_2003809
 ##SBATCH --account=project
 
 
-export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+#export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export GMX_MAXBACKUP=-1
 
 
-module use /appl/local/csc/modulefiles
-module load gromacs/2023.3-gpu
+module load gromacs-env
+
 sim_time=sim_time
 
 SIM_PATH=${PWD}
@@ -24,8 +24,9 @@ BASE_DIR=$(cd .. && pwd)
 magn_field=$(awk 'NR==1 {print $6}' "${BASE_DIR}/${SIM_DIR}_exp_data.txt" 2>/dev/null)
 make_index=${BASE_DIR}/simulation_scripts/MD_scripts/makeNHindex.awk
 py_script=${BASE_DIR}/simulation_scripts/PY_scripts/Old_Relaxations_for_Samuli.py
-mdmat_plot=${BASE_DIR}/simulation_scripts/PY_scripts/xpm_plot.py
-secondary=${BASE_DIR}/simulation_scripts/PY_scripts/pymol_structure_analysis.py
+contact_plot=${BASE_DIR}/simulation_scripts/PY_scripts/create_contact.py
+dist_plot=${BASE_DIR}/simulation_scripts/PY_scripts/create_distance.py
+#secondary=${BASE_DIR}/simulation_scripts/PY_scripts/pymol_structure_analysis.py
 relax_plot=${BASE_DIR}/simulation_scripts/PY_scripts/plot_replicas_to_experiment.py
 corr_plot=${BASE_DIR}/simulation_scripts/PY_scripts/correlationCALC.py
 
@@ -60,8 +61,8 @@ echo 1 1 | gmx_mpi trjconv -f ${name}.xtc -s ${name}.tpr -pbc mol -center -dump 
 echo 1 1 | gmx_mpi trjconv -f ${name}.xtc -s ${name}.tpr -pbc mol -center -o ${name}_noPBC.xtc
 echo 1 | gmx_mpi gyrate -s ${name}.tpr -f ${name}_noPBC.xtc -o ${name}_gyrate.xvg
 
-echo -e "Alpha\nAlpha" | gmx_mpi mdmat -f ${name}.xtc -s ${name}.tpr -mean ${name}_mdmat.xpm
-gmx_mpi xpm2ps -f ${name}_mdmat.xpm -o ${name}_mdmat.eps
+#echo -e "Alpha\nAlpha" | gmx_mpi mdmat -f ${name}_noPBC.xtc -s ${name}.tpr -mean ${name}_mdmat.xpm
+#gmx_mpi xpm2ps -f ${name}_mdmat.xpm -o ${name}_mdmat.eps
 
 
 GRO_FILE=(temp_md_${sim_time}ns.gro)
@@ -71,19 +72,20 @@ awk -f ${make_index} $GRO_FILE > HN.ndx
 
 line_number=1  # Initialize the line number
 
-numberOFfuncs=$(grep "\[" HN.ndx | tail -n 1 | awk '{print $2}')
+numberOFfuncs=$(awk -v lines="$(wc -l < HN.ndx)" 'BEGIN {print int(lines / 2)}')
 for ((i = 0; i <= $numberOFfuncs; i++)); do
 	num=$(awk -v line="$line_number" 'NR==line {print $2}' HN.ndx)
-	echo $i | gmx_mpi rotacf -f ${name}.xtc -s ${name}.tpr -n HN.ndx -o correlation_functions/NHrotaCF_$num.xvg -P 2 -d -xvg none  #-nice 20 
+	echo $i | gmx_mpi rotacf -f ${name}_noPBC.xtc -s ${name}.tpr -n HN.ndx -o correlation_functions/NHrotaCF_$num.xvg -P 2 -d -xvg none  #-nice 20 
 	((line_number += 2)) 
 done
 
 module purge
 export PATH="$(cd ../../../env/bin && pwd):$PATH"
-#export PATH="/scratch/project_462000285/cmcajsa/systems/forcefield_compare/env/bin:$PATH"
+#export PATH="/scratch/project_2003809/cmcajsa/forcefield/env/bin:$PATH"
 
-python3 $mdmat_plot
-python3 $secondary
+python3 $contact_plot
+python3 $dist_plot
+#python3 $secondary
 python3 $corr_plot
 python3 ${path}/Old_Relaxations_for_Samuli.py
 

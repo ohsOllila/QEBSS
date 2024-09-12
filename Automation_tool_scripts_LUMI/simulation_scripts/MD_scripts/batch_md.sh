@@ -1,32 +1,108 @@
 #!/bin/bash
-#SBATCH --partition=standard
-##SBATCH --account=project
+#SBATCH --time=48:00:00
+#SBATCH --partition=small
+#SBATCH --ntasks=1
+#SBATCH --mem-per-cpu=50000
+#SBATCH --array=0-24
 #SBATCH --account=project_462000540
-#SBATCH --time=2-00:00:00
-#SBATCH --ntasks-per-node=128
-#SBATCH --nodes=1
+##SBATCH --account=project
+
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+export GMX_MAXBACKUP=-1
 
 module use /appl/local/csc/modulefiles
-module load gromacs/2023.3
+module load gromacs/2023.3-gpu
 
-export OMP_NUM_THREADS=1
+sim_time=2000
+water_model=tip4p
 
-: '
+SIM_DIR=${PWD}
+PARAM_DIR=$(cd ../MD_parameter_files && pwd)
+time_input=$((500000 * $sim_time))
 
-for i in md*2000*xtc; do
-	echo 1 | gmx_mpi trjconv -f "$i" -s md_2000ns.tpr -o "$i"
+
+FORCEFIELD=("AMBER03WS" "AMBER99SB-DISP" "AMBER99SBWS" "CHARMM36M" "DESAMBER")
+
+
+PROT_FOLDERS=()
+
+for pdb_file in $SIM_DIR/model*/*; do
+		PROT_FOLDERS+=($pdb_file)
 done
 
-echo 1 | gmx_mpi trjconv -f md_1000ns.xtc -s md_1000ns.tpr -o md_1000ns.xtc
 
-#mv md_2000ns.xtc md_2000ns.xtc.cp
+cd ${PROT_FOLDERS[${SLURM_ARRAY_TASK_ID}]}
 
-rm md_2000ns.xtc
+i=$(basename $PWD)
+export GMXLIB=$PARAM_DIR/$i
 
-gmx_mpi trjcat -f md*xtc -o md_2000ns.xtc
-gmx_mpi check -f md_2000ns.xtc
+sed "s/time_input/${time_input}/" "${PARAM_DIR}/${i}/md_diff_sim_time/md_any_ns.mdp" > "${PARAM_DIR}/${i}/md_diff_sim_time/md_${sim_time}ns.mdp"
+sed -i "s/sim_time/${sim_time}/" "${PARAM_DIR}/${i}/md_diff_sim_time/md_${sim_time}ns.mdp"
 
-echo 1 | gmx_mpi trjconv -f md_2000ns.xtc -s md_2000ns.tpr -b 0 -e 2000000 -o md_2000ns.xtc
-'
 
-gmx_mpi check -f md_1500ns.xtc
+if [[ $i == "CHARMM36M" ]]; then
+	pos=SOD
+	neg=CLA
+else
+	pos=NA
+	neg=CL
+fi
+
+
+temp_name=(*.pdb)
+PROTEIN=${temp_name%.pdb}
+
+if [ -f md*$sim_time*tpr ]; then
+       exit 0
+fi
+
+
+if [[ $i == "CHARMM36M" || $i == "AMBER99SB-DISP" ]]; then
+	sed -i.bak 's/HIP/HIS/g' $temp_name
+        echo 1 0 | gmx_mpi pdb2gmx -f ${PROTEIN}.pdb -o ${PROTEIN}.gro -ter -water ${water_model} -ff ${i,,} -ignh
+else
+        gmx_mpi pdb2gmx -f ${PROTEIN}.pdb -o ${PROTEIN}.gro -water ${water_model} -ff ${i,,} -ignh
+fi
+
+
+
+gmx_mpi editconf -f ${PROTEIN}.gro -o ${PROTEIN}_newbox.gro -c -d 1.5 -bt dodecahedron
+
+if [[ $i == "AMBER03WS" || $i == AMBER99SBWS ]]; then
+	gmx_mpi solvate -cp ${PROTEIN}_newbox.gro -cs ${PARAM_DIR}/${i}/${i,,}.ff/tip4p2005.gro -o ${PROTEIN}_solv.gro -p topol.top
+elif [[ $i == "AMBER99SB-DISP" ]]; then
+	gmx_mpi solvate -cp ${PROTEIN}_newbox.gro -cs ${PARAM_DIR}/${i}/${i,,}.ff/a99SBdisp_water.gro -o ${PROTEIN}_solv.gro -p topol.top
+else
+	gmx_mpi solvate -cp ${PROTEIN}_newbox.gro -cs tip4p.gro -o ${PROTEIN}_solv.gro -p topol.top
+fi
+
+
+if [[ $i == "DESAMBER" ]]; then
+        sed -i 's/tip4p.itp/tip4pd.itp/' topol.top
+elif [[ $i == "AMBER03WS" || $i == AMBER99SBWS ]]; then
+        sed -i 's/tip4p.itp/tip4p2005s.itp/' topol.top
+elif [[ $i == "AMBER99SB-DISP" ]]; then
+        sed -i 's/tip4p.itp/a99SBdisp_water.itp/' topol.top
+fi
+
+gmx_mpi grompp -f ${PARAM_DIR}/${i}/ions.mdp -c ${PROTEIN}_solv.gro -p topol.top -o ions.tpr
+echo SOL | gmx_mpi -quiet genion -s ions.tpr -o ${PROTEIN}_solv_ions.gro -p topol.top -pname $pos -nname $neg -neutral
+
+
+
+srun -n 1 gmx_mpi grompp -f ${PARAM_DIR}/${i}/em.mdp -c ${PROTEIN}_solv_ions.gro -p topol.top -o em_${i}.tpr  
+srun gmx_mpi mdrun -deffnm em_${i}
+
+
+srun -n 1 gmx_mpi grompp -f ${PARAM_DIR}/${i}/nvt.mdp -c em_${i}.gro -r em_${i}.gro -p topol.top -o nvt_${i}.tpr
+srun gmx_mpi mdrun -deffnm nvt_${i}
+
+
+
+srun -n 1 gmx_mpi grompp -f ${PARAM_DIR}/${i}/npt.mdp -c nvt_${i}.gro -r nvt_${i}.gro -t nvt_${i}.cpt -p topol.top -o npt_${i}.tpr
+srun gmx_mpi mdrun -deffnm npt_${i}
+
+
+
+srun gmx_mpi grompp -f ${PARAM_DIR}/${i}/md_diff_sim_time/md_${sim_time}ns.mdp -c npt_${i}.gro -t npt_${i}.cpt -p topol.top -o md_${sim_time}ns.tpr
+

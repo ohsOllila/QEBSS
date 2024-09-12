@@ -52,7 +52,7 @@ fi
 temp_name=(*.pdb)
 PROTEIN=${temp_name%.pdb}
 
-if [ -f md*tpr ]; then
+if [ -f md*$sim_time*tpr ]; then
        exit 0
 fi
 

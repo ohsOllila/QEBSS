@@ -492,7 +492,7 @@ class GetRelaxationData():
         print(self.res_nr, R1_exp, R1_sim, R1_diff, R2_exp, R2_sim, R2_diff, NOE_exp, NOE_sim, NOE_diff, self.tau_eff_area)
         with open('relaxation_times.csv', 'a', newline='') as file:
         	writer = csv.writer(file)
-        	writer.writerow([self.res_nr, R1_exp, R1_sim, R1_diff, R2_exp, R2_sim, R2_diff, NOE_exp, NOE_sim, NOE_diff, self.tau_eff_area])
+        	writer.writerow([self.res_nr, R1_exp, R1_sim, R1_diff, R2_exp, R2_sim, R2_diff, NOE_exp, NOE_sim, NOE_diff, self.tau_eff_area*10**9])
         with open('Ctimes_Coeffs.csv', 'a', newline='') as file:  
         	writer = csv.writer(file)
         	for i, j in zip(self.Ctimes_ns, self.Coeffs):
@@ -517,8 +517,8 @@ class GetRelaxationData():
             NOE_sim = self.safe_float(self.NOE)
 
             R1_exp = self.safe_float(parts[1])
-            R2_exp = self.safe_float(parts[3])
-            NOE_exp = self.safe_float(parts[5])
+            R2_exp = self.safe_float(parts[2])
+            NOE_exp = self.safe_float(parts[3])
 
             R1_diff = self.safe_float(R1_sim - R1_exp) if R1_exp != "n" and R1_sim != "n" else "n"
             R2_diff = self.safe_float(R2_sim - R2_exp) if R2_exp != "n" and R2_sim != "n" else "n"

@@ -40,7 +40,7 @@ for pdb_file in $BASE_DIR/Unst*/*.pdb; do
 done
 
 
-for i in $BASE_DIR/Unst*199*/
+for i in $BASE_DIR/Unst*sn*/
 do
   	cd $i
 	jobs=$(( $(find $i -mindepth 2 -maxdepth 2 -type d | wc -l) - 1 ))

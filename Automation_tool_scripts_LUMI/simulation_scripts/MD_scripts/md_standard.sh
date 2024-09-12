@@ -13,20 +13,26 @@ export OMP_NUM_THREADS=1
 export GMX_MAXBACKUP=0
 
 
+PARAM_DIR="$(cd ../../../MD_parameter_files && pwd)"
+i=$(basename $PWD)
+
 
 sim_time=2000
+FORCEFIELD=$(basename $PWD)
+export GMXLIB=$PARAM_DIR/$i
 
+srun gmx_mpi grompp -f ${PARAM_DIR}/${i}/md_diff_sim_time/md_${sim_time}ns.mdp -c npt_${i}.gro -t npt_${i}.cpt -p topol.top -o md_${sim_time}ns.tpr
 
 #gmx_mpi convert-tpr -s md_${sim_time}ns.tpr -extend 1000000 -o md_2000ns.tpr
 #srun gmx_mpi mdrun -deffnm md_2000ns -cpi md_1000ns.cpt -noappend
 
-#srun gmx_mpi mdrun -deffnm md_${sim_time}ns -cpi md_${sim_time}ns.cpt -dlb yes
+srun gmx_mpi mdrun -deffnm md_${sim_time}ns -cpi md_${sim_time}ns.cpt -dlb yes
 #srun gmx_mpi mdrun -deffnm md_${sim_time}ns -cpi md_${sim_time}ns.cpt -dlb yes -nsteps -1 
 #srun gmx_mpi mdrun -deffnm md_${sim_time}ns -cpi md_${sim_time}ns.cpt -dlb yes -noappend
 
 #gmx_mpi mdrun -v -deffnm md_1500ns -cpi md_1500ns.cpt -noappend
-mv md_2000ns.xtc md_2000ns.xtc.back
-gmx_mpi trjcat -f md*xtc -o md_2000ns.xtc
+#mv md_2000ns.xtc md_2000ns.xtc.back
+#gmx_mpi trjcat -f md*xtc -o md_2000ns.xtc
 
-echo 1 | gmx_mpi trjconv -f md_${sim_time}ns.xtc -s md_${sim_time}ns.tpr -b 0 -e 2000000 -o md_2000ns.xtc
-gmx_mpi check -f md_2000ns.xtc
+#echo 1 | gmx_mpi trjconv -f md_${sim_time}ns.xtc -s md_${sim_time}ns.tpr -b 0 -e 2000000 -o md_2000ns.xtc
+#gmx_mpi check -f md_2000ns.xtc

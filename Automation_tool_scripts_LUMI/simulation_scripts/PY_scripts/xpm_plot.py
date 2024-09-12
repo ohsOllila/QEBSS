@@ -24,7 +24,6 @@ def col(c):
 temp_file=glob.glob("*xpm")
 
 
-
 xpm = open(temp_file[0])
 png_file_name = temp_file[0].replace(".xpm", ".png")
 csv_file_name = temp_file[0].replace(".xpm", ".csv")
@@ -67,11 +66,12 @@ np.savetxt(csv_file_name, mdmat[::-1,:], delimiter = ",")
 
 fig, ax = plt.subplots()
 cmap = plt.cm.viridis
-plot = ax.imshow(mdmat[::-1,:], cmap = cmap, origin = "lower", vmin=0, vmax=1.4)
+plot = ax.imshow(mdmat[::-1,:], cmap = cmap, origin = "lower", vmin=0, vmax=0.3)
 num_residues = np.shape(mdmat)[0]
 
-ax.set_xlabel("Residue")
-ax.set_ylabel("Residue")
+
+plt.xlabel("Residue")
+plt.ylabel("Residue")
 
 cbar = plt.colorbar(plot, ax = ax)
 cbar.set_label("Distance (nm)")
