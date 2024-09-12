@@ -1,4 +1,5 @@
 Semi-automatic MD production and comparison to NMR relaxation times
+
 (Download and extract Automation_tool_scripts_LUMI recipitory) 
 
 
@@ -18,6 +19,7 @@ cd ..
 Copy your fasta file to Automation_tool_scripts_LUMI directory and generate replicas by running: 
 
 conda activate idpconfgen 
+
 ./create_replicas.sh (Choose the number of your fasta file) 
 
 
@@ -27,10 +29,12 @@ scp -r Unst_prot MD_parameter_files simulation_scripts env.yml malmcajs@lumi.csc
 
 
 Log into Lumi: 
+
 ssh malmcajs@lumi.csc.fi 
 
 
 Go to folder: 
+
 cd /scratch/project_462000285/cmcajsa/systems/forcefield_compare
 
 Add your experimental data to this folder. Make sure to add the first line with the magnetic field strength in MHz. Any missing data should type "n". 
@@ -44,9 +48,13 @@ You can also copy relaxation times T1, T2 and hetNOE from https://bmrb.io/ and r
 Set up the environment:
  
 module purge
+
 module load LUMI
+
 module load lumi-container-wrapper
+
 mkdir env
+
 conda-containerize new --prefix env env.yml
 
 You need to manually add your project number to the scripts. Go to simulation_scripts/MD_scripts:
@@ -57,7 +65,9 @@ Change line #SBATCH --account=project in files md_prep.sh, md.sh and analysis.sh
 Go to simulation_scripts/run_dir and run scripts in order:
 
 sh run_prep.sh 
+
 sh run_batch_md.sh 
+
 sh run_analysis.sh 
 
 
