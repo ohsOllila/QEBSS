@@ -1,19 +1,19 @@
 #!/bin/bash
-#SBATCH --time=00:30:00
-#SBATCH --partition=medium
-#SBATCH --ntasks-per-node=128
+#SBATCH --time=04:00:00
+#SBATCH --partition=small
+#SBATCH --ntasks-per-node=64
+#SBATCH --cpus-per-task=2
 #SBATCH --nodes=1
-#SBATCH --account=Project_2003809
-##SBATCH --mail-type=END #uncomment to get mail
+#SBATCH --account=Project_462000199
 
-# this script runs a 256 core (2 full nodes, no hyperthreading) gromacs job, re$
-# 64 tasks per node, each with 2 OpenMP threads
+
+export EBU_USER_PREFIX=/project/project_462000154/EasyBuild
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+export GMX_MAXBACKUP=-1
 
 module purge
-module load gcc/9.4.0 openmpi/4.1.2 gromacs/2021.5
-
-export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
-
+module load LUMI/22.08
+module load GROMACS/2021.6-cpeGNU-22.08-CPU
 
 
 sim_time=sim_time

@@ -1,22 +1,22 @@
 #!/bin/bash
 #SBATCH --time=04:00:00
-#SBATCH --partition=medium
-#SBATCH --ntasks-per-node=128
-#SBATCH --cpus-per-task=1
+#SBATCH --partition=small
+#SBATCH --ntasks-per-node=64
+#SBATCH --cpus-per-task=2
 #SBATCH --nodes=1
-#SBATCH --account=Project_2003809
-##SBATCH --mail-type=END #uncomment to get mail
+#SBATCH --account=Project_462000199
 
-module purge
-module load gcc/9.4.0 openmpi/4.1.2 gromacs/2021.5
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export GMX_MAXBACKUP=-1
 
-FORCEFIELD=$(basename $PWD)
-export GMXLIB=/scratch/project_2003809/cmcajsa/MD-stabilization/MD_parameter_files/$FORCEFIELD
+module use /appl/local/csc/modulefiles
+module load gromacs/2023.1-hipsycl
 
-MD_BASEDIR=/scratch/project_2003809/cmcajsa/MD-stabilization
+FORCEFIELD=CHARMM27
+SUFFIX=c27
+
+MD_BASEDIR=/scratch/project_2003809/cmcajsa/MD-stabilization_puhti
 SCRIPT_DIR=${MD_BASEDIR}/scripts
 STRUCTURE_DIR=${MD_BASEDIR}/structures
 PARAM_DIR=${MD_BASEDIR}/MD_parameter_files
@@ -24,7 +24,7 @@ PARAM_DIR=${MD_BASEDIR}/MD_parameter_files
 
 
 
-srun -n 1 gmx_mpi grompp -f ${PARAM_DIR}/${FORCEFIELD}/npt.mdp -c nvt.gro -r nvt.gro -t nvt.cpt -p topol.top -o npt.tpr
+srun -n 1 gmx_mpi grompp -f ${PARAM_DIR}/${FORCEFIELD}/npt_${SUFFIX}.mdp -c nvt_${SUFFIX}.gro -r nvt_${SUFFIX}.gro -t nvt_${SUFFIX}.cpt -p topol.top -o npt_${SUFFIX}.tpr
 
-srun gmx_mpi mdrun -deffnm npt
+srun gmx_mpi mdrun -deffnm npt_${SUFFIX}
 

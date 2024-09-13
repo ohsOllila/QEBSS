@@ -1,25 +1,28 @@
 #!/bin/bash
 #SBATCH --time=04:00:00
-#SBATCH --partition=medium
-#SBATCH --ntasks-per-node=128
-#SBATCH --nodes=1
-#SBATCH --array=0-0
+#SBATCH --partition=small
+#SBATCH --ntasks-per-node=64
+#SBATCH --cpus-per-task=2
+#SBATCH --nodes=4
+#SBATCH --array=0-29
+##SBATCH --array=0
 #SBATCH --output=array_job_output_%A_%a.txt
-#SBATCH --account=Project_2001058
+#SBATCH --account=Project_462000199
 
 
-export OMP_NUM_THREADS=1
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export GMX_MAXBACKUP=-1
 
-module load gromacs-env
+module use /appl/local/csc/modulefiles
+module load gromacs/2023.1-hipsycl
 
 sim_time=1000
 water_model=tip4p
 
-PARAM_DIR=/scratch/project_2003809/cmcajsa/MD-stabilization/MD_parameter_files
+PARAM_DIR=/scratch/project_462000199/cmcajsa
 SIM_DIR=${PWD}
 
-FORCEFIELD=(AMBER03WS AMBER99SB-DISP AMBER99SBWS CHARMM36M DESAMBER)
+FORCEFIELD=(AMBER03WS AMBER99SB-DISP AMBER99SBWS CHARMM36M DESAMBER AMBER19)
 
 PROT_FOLDERS=()
 
@@ -27,21 +30,22 @@ for pdb_file in $SIM_DIR/*.pdb; do
 	replicas=$(basename ${pdb_file%.pdb})
 	for i in "${FORCEFIELD[@]}"; do
         	mkdir -p $SIM_DIR/$replicas/${i}
-        	cp -R -u -p $pdb_file $SIM_DIR/$replicas/${i}
+        	cp $pdb_file $SIM_DIR/$replicas/${i}
 		PROT_FOLDERS+=($SIM_DIR/$replicas/$i)
 	done
 done
-#rm *pdb
+rm *pdb
 
+echo $PROT_FOLDERS
 
 cd ${PROT_FOLDERS[${SLURM_ARRAY_TASK_ID}]}
 
 i=$(basename $PWD)
-export GMXLIB=/scratch/project_2003809/cmcajsa/MD-stabilization/MD_parameter_files/$i
+export GMXLIB=/scratch/project_462000199/cmcajsa/$i
 
 
 
-if [[ $i == "CHARMM36M" ]]; then
+if [[ $i == "CHARMM36" ]]; then
 	pos=SOD
 	neg=CLA
 else
@@ -53,20 +57,7 @@ fi
 temp_name=(*.pdb)
 PROTEIN=${temp_name%.pdb}
 
-if [ -f npt*gro ]; then
-	exit 0
-fi
-
-
-if [[ $i == "CHARMM36M" || $i == "AMBER99SB-DISP" ]]; then
-	sed -i.bak 's/HIP/HIS/g' $temp_name
-	echo 1 0 | gmx_mpi pdb2gmx -f ${PROTEIN}.pdb -o ${PROTEIN}.gro -ter -water ${water_model} -ff ${i,,} -ignh
-else
-	gmx_mpi pdb2gmx -f ${PROTEIN}.pdb -o ${PROTEIN}.gro -water ${water_model} -ff ${i,,} -ignh
-fi
-
-
-
+gmx_mpi pdb2gmx -f ${PROTEIN}.pdb -o ${PROTEIN}.gro -water ${water_model} -ff ${i,,} -ignh
 gmx_mpi editconf -f ${PROTEIN}.gro -o ${PROTEIN}_newbox.gro -c -d 1.5 -bt dodecahedron
 
 if [[ $i == "AMBER03WS" || $i == AMBER99SBWS ]]; then
@@ -102,7 +93,10 @@ srun -n 1 gmx_mpi grompp -f ${PARAM_DIR}/${i}/npt.mdp -c nvt_${i}.gro -r nvt_${i
 srun gmx_mpi mdrun -deffnm npt_${i}
 
 
+
 srun gmx_mpi grompp -f ${PARAM_DIR}/${i}/md_diff_sim_time/md_${sim_time}ns.mdp -c npt_${i}.gro -t npt_${i}.cpt -p topol.top -o md_${sim_time}ns.tpr
+
+
 
 
 

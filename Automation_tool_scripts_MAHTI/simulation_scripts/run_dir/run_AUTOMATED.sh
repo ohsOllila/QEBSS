@@ -26,35 +26,24 @@ SCRIPT1=${SIM_SCRIPTS}/MD_scripts/batch_prep.sh
 SCRIPT2=${SIM_SCRIPTS}/MD_scripts/batch_run.sh
 SCRIPT3=${SIM_SCRIPTS}/MD_scripts/batch_analysis.sh
 
-list=$SIM_DIR/Unst_hydrolase/*/*/
-seq_dir=($(find $SIM_DIR -maxdepth 2 -type d -name "Unst_hydrolase"))
-
-jobs=$(ls -l $list | grep -c '^d')
-
 sed -i "s/sim_time=sim_time/sim_time=${time_input}/" "${SCRIPT1}" "${SCRIPT2}" "${SCRIPT3}"
-sed -i "s/num_jobs/${jobs}/" "${SCRIPT1}" "${SCRIPT3}"
 
 
-cd $seq_dir
-sbatch ${SCRIPT1}
-
-for i in $list
+for i in $SIM_DIR/U*
 do
-	cd $i
+  	cd $i
+	sbatch ${SCRIPT1}
 	sbatch --dependency=afterany:$(squeue -h -o %i -n batch_prep.sh) ${SCRIPT2}
 	while [ ! -f md*$time_input*gro ] && [ ! squeue -h -o %i -n batch_run.sh ]; do
         	sbatch ${SCRIPT2}
 		sleep 300
 	done
-
-done	
-
-cd $seq_dir
-while true; do
-	if [ ! -f md*$time_input*gro ]; then
-		sleep 300
-	else            
-		sbatch ${SCRIPT3}
-		break
-	fi
+	while true; do
+		if [ ! -f md*$time_input*gro ]; then
+			sleep 300
+		else		
+			sbatch ${SCRIPT3}
+			break
+		fi
+	done
 done

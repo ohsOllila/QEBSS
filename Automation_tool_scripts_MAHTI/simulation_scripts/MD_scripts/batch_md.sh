@@ -1,31 +1,108 @@
 #!/bin/bash
-#SBATCH --time=36:00:00
-#SBATCH --partition=medium
-#SBATCH --ntasks-per-node=128
-#SBATCH --nodes=4
-#SBATCH --account=project_2003809
-##SBATCH --mail-type=END #uncomment to get mail
+#SBATCH --time=48:00:00
+#SBATCH --partition=small
+#SBATCH --ntasks=1
+#SBATCH --mem-per-cpu=50000
+#SBATCH --array=0-24
+#SBATCH --account=project_462000540
+##SBATCH --account=project
 
-# this script runs a 256 core (2 full nodes, no hyperthreading) gromacs job, requesting 15 minutes time
-# 64 tasks per node, each with 2 OpenMP threads
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+export GMX_MAXBACKUP=-1
 
-module purge
-module load gromacs-env
+module use /appl/local/csc/modulefiles
+module load gromacs/2023.3-gpu
 
-export OMP_NUM_THREADS=1
-export GMX_MAXBACKUP=0
+sim_time=2000
+water_model=tip4p
+
+SIM_DIR=${PWD}
+PARAM_DIR=$(cd ../MD_parameter_files && pwd)
+time_input=$((500000 * $sim_time))
+
+
+FORCEFIELD=("AMBER03WS" "AMBER99SB-DISP" "AMBER99SBWS" "CHARMM36M" "DESAMBER")
+
+
+PROT_FOLDERS=()
+
+for pdb_file in $SIM_DIR/model*/*; do
+		PROT_FOLDERS+=($pdb_file)
+done
+
+
+cd ${PROT_FOLDERS[${SLURM_ARRAY_TASK_ID}]}
+
+i=$(basename $PWD)
+export GMXLIB=$PARAM_DIR/$i
+
+sed "s/time_input/${time_input}/" "${PARAM_DIR}/${i}/md_diff_sim_time/md_any_ns.mdp" > "${PARAM_DIR}/${i}/md_diff_sim_time/md_${sim_time}ns.mdp"
+sed -i "s/sim_time/${sim_time}/" "${PARAM_DIR}/${i}/md_diff_sim_time/md_${sim_time}ns.mdp"
+
+
+if [[ $i == "CHARMM36M" ]]; then
+	pos=SOD
+	neg=CLA
+else
+	pos=NA
+	neg=CL
+fi
+
+
+temp_name=(*.pdb)
+PROTEIN=${temp_name%.pdb}
+
+if [ -f md*$sim_time*tpr ]; then
+       exit 0
+fi
+
+
+if [[ $i == "CHARMM36M" || $i == "AMBER99SB-DISP" ]]; then
+	sed -i.bak 's/HIP/HIS/g' $temp_name
+        echo 1 0 | gmx_mpi pdb2gmx -f ${PROTEIN}.pdb -o ${PROTEIN}.gro -ter -water ${water_model} -ff ${i,,} -ignh
+else
+        gmx_mpi pdb2gmx -f ${PROTEIN}.pdb -o ${PROTEIN}.gro -water ${water_model} -ff ${i,,} -ignh
+fi
 
 
 
-sim_time=1500
+gmx_mpi editconf -f ${PROTEIN}.gro -o ${PROTEIN}_newbox.gro -c -d 1.5 -bt dodecahedron
+
+if [[ $i == "AMBER03WS" || $i == AMBER99SBWS ]]; then
+	gmx_mpi solvate -cp ${PROTEIN}_newbox.gro -cs ${PARAM_DIR}/${i}/${i,,}.ff/tip4p2005.gro -o ${PROTEIN}_solv.gro -p topol.top
+elif [[ $i == "AMBER99SB-DISP" ]]; then
+	gmx_mpi solvate -cp ${PROTEIN}_newbox.gro -cs ${PARAM_DIR}/${i}/${i,,}.ff/a99SBdisp_water.gro -o ${PROTEIN}_solv.gro -p topol.top
+else
+	gmx_mpi solvate -cp ${PROTEIN}_newbox.gro -cs tip4p.gro -o ${PROTEIN}_solv.gro -p topol.top
+fi
 
 
-#gmx_mpi convert-tpr -s md_${sim_time}ns.tpr -extend 1000000 -o md_2000ns.tpr
-#srun gmx_mpi mdrun -deffnm md_2000ns -cpi md_1000ns.cpt -noappend
+if [[ $i == "DESAMBER" ]]; then
+        sed -i 's/tip4p.itp/tip4pd.itp/' topol.top
+elif [[ $i == "AMBER03WS" || $i == AMBER99SBWS ]]; then
+        sed -i 's/tip4p.itp/tip4p2005s.itp/' topol.top
+elif [[ $i == "AMBER99SB-DISP" ]]; then
+        sed -i 's/tip4p.itp/a99SBdisp_water.itp/' topol.top
+fi
 
-#srun gmx_mpi mdrun -deffnm md_${sim_time}ns -cpi md_${sim_time}ns.cpt -dlb yes -v 
-srun gmx_mpi mdrun -deffnm md_${sim_time}ns -cpi md_${sim_time}ns.cpt -dlb yes -noappend -v
+gmx_mpi grompp -f ${PARAM_DIR}/${i}/ions.mdp -c ${PROTEIN}_solv.gro -p topol.top -o ions.tpr
+echo SOL | gmx_mpi -quiet genion -s ions.tpr -o ${PROTEIN}_solv_ions.gro -p topol.top -pname $pos -nname $neg -neutral
 
-#gmx_mpi mdrun -v -deffnm md_1500ns -cpi md_1500ns.cpt -noappend
-#gmx_mpi trjcat -f *ns.xtc -o md_2000ns.xtc
+
+
+srun -n 1 gmx_mpi grompp -f ${PARAM_DIR}/${i}/em.mdp -c ${PROTEIN}_solv_ions.gro -p topol.top -o em_${i}.tpr  
+srun gmx_mpi mdrun -deffnm em_${i}
+
+
+srun -n 1 gmx_mpi grompp -f ${PARAM_DIR}/${i}/nvt.mdp -c em_${i}.gro -r em_${i}.gro -p topol.top -o nvt_${i}.tpr
+srun gmx_mpi mdrun -deffnm nvt_${i}
+
+
+
+srun -n 1 gmx_mpi grompp -f ${PARAM_DIR}/${i}/npt.mdp -c nvt_${i}.gro -r nvt_${i}.gro -t nvt_${i}.cpt -p topol.top -o npt_${i}.tpr
+srun gmx_mpi mdrun -deffnm npt_${i}
+
+
+
+srun gmx_mpi grompp -f ${PARAM_DIR}/${i}/md_diff_sim_time/md_${sim_time}ns.mdp -c npt_${i}.gro -t npt_${i}.cpt -p topol.top -o md_${sim_time}ns.tpr
 

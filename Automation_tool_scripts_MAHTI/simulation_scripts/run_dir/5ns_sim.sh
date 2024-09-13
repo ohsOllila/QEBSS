@@ -9,7 +9,7 @@ cd ..
 SIM_DIR=${PWD}
 
 mkdir results/5ns
-mkdir results/5ns/xtc
+#mkdir results/5ns/xtc
 #mkdir results/5ns/gro
 mkdir results/5ns/pdb
 

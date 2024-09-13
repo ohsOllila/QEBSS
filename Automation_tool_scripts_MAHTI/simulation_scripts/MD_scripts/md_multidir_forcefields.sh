@@ -1,9 +1,10 @@
 #!/bin/bash -l
-#SBATCH --partition=standard
+#SBATCH --partition=standard-g
 #SBATCH --account=project_462000199
 #SBATCH --time=2-00:00:00
-#SBATCH --nodes=80                             # change according to the number of simulations to be run, keeping in mind that each node can run 8 jobs
-#SBATCH --ntasks-per-node=128
+#SBATCH --nodes=4                             # change according to the number of simulations to be run, keeping in mind that each node can run 8 jobs
+#SBATCH --gpus-per-node=5
+#SBATCH --ntasks-per-node=5
 
 module use /appl/local/csc/modulefiles
 module load gromacs/2023.1-hipsycl

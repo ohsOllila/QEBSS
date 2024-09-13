@@ -6,9 +6,10 @@ cd ..
 cd ..
 BASE_DIR=$PWD
 
-SIM_DIR=$BASE_DIR/Unst_snear*
+SIM_DIR=$BASE_DIR/Unst*snare*
 
-your_projects=$(csc-projects | grep -o "project_2.*" | awk '{print $1}')
+: '
+your_projects=$(csc-projects | grep -o "project_.*" | awk '{print $1}')
 echo "Select the number of the project you want to use:"
 
 num=1
@@ -22,22 +23,21 @@ done
 
 read choice
 project=${list[choice-1]}
-
+'
 
 SCRIPTS=$BASE_DIR/simulation_scripts/MD_scripts
-md_script=${SCRIPTS}/md.sh
+md_script=${SCRIPTS}/md_standard.sh
 cp ${md_script} ${SCRIPTS}/batch_md.sh
 JOB_SCRIPT=${SCRIPTS}/batch_md.sh
 
 sed -i "s/sim_time=sim_time/sim_time=${time_input}/" "${JOB_SCRIPT}"
-sed -i "s/project/${project}/" "${JOB_SCRIPT}"
+#sed -i "s/project/${project}/" "${JOB_SCRIPT}"
 
 for i in $SIM_DIR/model*/*; do
-	cd $i
+        cd $i
 	id="${i/$BASE_DIR"/"}"
-	echo $id
-	if ! squeue -u $USER -n $id -h -o %T | grep -q "R"; then 
-		sbatch --job-name=$id ${JOB_SCRIPT}
-	fi
-done
 
+   	if ! squeue -u $USER -n $id -h -o %T | grep -q "R"; then 
+                sbatch --job-name=$id ${JOB_SCRIPT}
+        fi
+done

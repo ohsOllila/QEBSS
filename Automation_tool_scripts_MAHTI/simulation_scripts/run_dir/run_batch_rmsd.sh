@@ -1,24 +1,26 @@
 #!/bin/bash
 
+echo "Choose simulation time (ns) to calculate rmsd, (10, 20, 100)"
+read time_input
+
+
 cd ..
 cd ..
 SIM_DIR=${PWD}
-batch=${SIM_DIR}/simulation_scripts/MD_scripts/rmsd.sh
 
-FORCEFIELDS=(AMBER03WS AMBER99SB-DISP AMBER99SBWS CHARMM36 DESAMBER)
+SCRIPTS=${SIM_DIR}/simulation_scripts/MD_scripts
+rmsd_script=${SCRIPTS}/rmsd.sh
+cp ${rmsd_script} ${SCRIPTS}/batch_rmsd.sh
 
 
-for pdb_file in *pdb; do
-        pdb_filename=$(basename $pdb_file)
-        pdb_name=${pdb_filename%.pdb}
-        pdb_folder=$SIM_DIR/$pdb_name
-        # Create the folder if it doesn't exist
-    
-        # Move the PDB file into the folder
-        cd $pdb_folder
-        for i in "${FORCEFIELDS[@]}"; do
-                cd $pdb_folder/$i
-                sbatch $batch
-        done
+JOB_SCRIPT=${SCRIPTS}/batch_rmsd.sh
+
+sed -i "s/sim_time=sim_time/sim_time=${time_input}/" "${JOB_SCRIPT}"
+
+
+for i in $SIM_DIR/*
+do
+  	cd $i
+	sbatch ${JOB_SCRIPT}
 done
 

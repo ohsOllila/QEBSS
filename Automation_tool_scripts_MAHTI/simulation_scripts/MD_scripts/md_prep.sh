@@ -1,20 +1,17 @@
 #!/bin/bash
-#SBATCH --time=12:00:00
-#SBATCH --partition=medium
-#SBATCH --ntasks-per-node=64
-#SBATCH --cpus-per-task=2
-#SBATCH --nodes=1
+#SBATCH --time=48:00:00
+#SBATCH --partition=small
+#SBATCH --ntasks=1
+#SBATCH --mem-per-cpu=50000
 #SBATCH --array=0-num_jobs
-#SBATCH --output=array_job_output_%A_%a.txt
-#SBATCH --account=project
-
+#SBATCH --account=project_462000540
+##SBATCH --account=project
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export GMX_MAXBACKUP=-1
 
-module load gromacs-env
-
-
+module use /appl/local/csc/modulefiles
+module load gromacs/2023.3-gpu
 
 sim_time=sim_time
 water_model=tip4p
@@ -55,11 +52,10 @@ fi
 temp_name=(*.pdb)
 PROTEIN=${temp_name%.pdb}
 
-: '
-if [ -f md*tpr ]; then
+if [ -f md*$sim_time*tpr ]; then
        exit 0
 fi
-'
+
 
 if [[ $i == "CHARMM36M" || $i == "AMBER99SB-DISP" ]]; then
 	sed -i.bak 's/HIP/HIS/g' $temp_name

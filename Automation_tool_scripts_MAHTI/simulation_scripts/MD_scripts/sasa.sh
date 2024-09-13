@@ -1,22 +1,17 @@
 #!/bin/bash
-#SBATCH --time=02:00:00
-#SBATCH --partition=medium
-#SBATCH --mem-per-cpu=64
+#SBATCH --time=04:00:00
+#SBATCH --partition=small
 #SBATCH --ntasks-per-node=64
 #SBATCH --cpus-per-task=2
 #SBATCH --nodes=1
-#SBATCH --account=Project_2003809
-##SBATCH --mail-type=END #uncomment to get mail
+#SBATCH --account=Project_462000199
 
-# this script runs a 256 core (2 full nodes, no hyperthreading) gromacs job, requesting 15 minutes time
-# 64 tasks per node, each with 2 OpenMP threads
-
-module purge
-module load gcc/9.4.0 openmpi/4.1.2 gromacs/2021.5
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export GMX_MAXBACKUP=-1
 
+module use /appl/local/csc/modulefiles
+module load gromacs/2023.1-hipsycl
 
 FORCEFIELD=CHARMM27
 SUFFIX=c27
