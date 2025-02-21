@@ -1,8 +1,6 @@
 **Semi-automatic Workflow for the Quality Evaluation-Based Simulation Selection (QEBSS)**
 
-QEBSS is a tool that generates and evaluates a diverse set of molecular dynamics simulations based on various starting structures and force fields. The simulations are evaluated against NMR relaxation times (R1, R2) and heteronuclear NOE (hetNOE). This helps identify the best simulations for intrinsically disordered proteins (IDPs) or partially disordered proteins.
-
-The analysis includes contact maps, distance maps, and backbone correlation maps, which help identify regions of rigidity or areas that could potentially stabilize or bind IDPs
+QEBSS is a tool that generates and evaluates a diverse set of molecular dynamics simulations based on various starting structures and force fields. The simulations are evaluated against NMR relaxation times (R1, R2) and heteronuclear NOE (hetNOE). This helps identify the best simulations for intrinsically disordered proteins (IDPs) or partially disordered proteins. The analysis includes contact maps, distance maps, and backbone correlation maps, which help identify regions of rigidity or areas that could potentially stabilize or bind IDPs
 
 
 For running these simulations you need access to a supercomputer like Mahti or Lumi. Depending on the platform you are gonna use download and extract the right recipitory named Automation_tool_scripts_*. 
