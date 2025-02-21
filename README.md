@@ -22,6 +22,7 @@ The first step is to generate the initial conformers. Go to https://idpconformer
 Copy your fasta file to Automation_tool_scripts_*/Idpconfgenerator_automation directory and generate replicas by running: 
 
 `conda activate idpconfgen` 
+
 `./create_replicas.sh` (Choose the number of your fasta file) 
 
 This step will generate five initial structures that you can find in the folder Automation_tool_scripts_*/Unst_prot
