@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 base_dir = os.path.dirname(os.getcwd()) + "/"
 
 
-models = ["model_01", "model_02", "model_03", "model_04", "model_05"]
+models = ["replica_01", "replica_02", "replica_03", "replica_04", "replica_05"]
 forcefields = ["AMBER03WS", "AMBER99SB-DISP", "AMBER99SBWS", "CHARMM36M", "DESAMBER"]
 
 
@@ -101,9 +101,10 @@ for system in systems:
     path_parts.insert(-2, "results")
     output_dir='/' + '/'.join(part.strip('/') for part in path_parts if part) + "/rep_to_exp_data"
 
-    fig.savefig(os.path.join(output_dir, "Distance_map_combined.png"), dpi=300, bbox_inches='tight')
+    fig.savefig(os.path.join(output_dir, "Distance_map_combined_improved.png"), dpi=300, bbox_inches='tight')
+    print()
     plt.close(fig)
 
-    print("Figure saved in ", os.path.join(output_dir, "Distance_map_combined.png"))
+    print("Figure saved in ", os.path.join(output_dir, "Distance_map_all_improved.png"))
     print(f"vmin: {vmin}, vmax: {vmax}")
 

@@ -1,6 +1,9 @@
-Instructions to generate five initial conformer replicas with completely disordered structures. 
+IDPConformerGenerator is a structural homology tool that generates diverse conformers from any sequence using dihedral angle information from short sequences in culled lists. (You can choose other culled lists by going to http://dunbrack.fccc.edu/lab/pisces). 
 
-🔹️Create/Download FASTA file and move it to the current folder (Idpconfgenerator_automation).
+
+Below are instructions to help you generate five completely disordered initial conformers:
+
+🔹️Create/Download FASTA file and move it to the folder (Idpconfgenerator_automation).
 
 ▶️Set up the Idpconfgenerator tool:
 Open terminal:
@@ -17,10 +20,11 @@ conda activate idpconfgen
 
 
 🔹️Select your FASTA file by typing in the number related to that file
-and the script will generete 5 different pdb files for you and move 
-them into the folder Unst_prot
 
 
-(You can choose other culled lists by going to http://dunbrack.fccc.edu/lab/pisces)
+The script will generete 5 different pdb files for you and move 
+them into the folder Unst_prot.
+
+
 
 

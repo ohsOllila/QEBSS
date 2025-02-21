@@ -1,12 +1,10 @@
 #!/bin/bash
-#SBATCH --time=12:00:00
+#SBATCH --time=36:00:00
 #SBATCH --partition=medium
-#SBATCH --ntasks-per-node=128
-#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --mem-per-cpu=1000
 #SBATCH --array=0-24
 #SBATCH --account=project_2003809
-##SBATCH --account=project
-
 
 #export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export GMX_MAXBACKUP=-1
@@ -57,9 +55,9 @@ gmx_mpi check -f ${name}.xtc
 mkdir correlation_functions
 
 
-echo 1 1 | gmx_mpi trjconv -f ${name}.xtc -s ${name}.tpr -pbc mol -center -dump 0 -o temp_${name}.gro
-echo 1 1 | gmx_mpi trjconv -f ${name}.xtc -s ${name}.tpr -pbc mol -center -o ${name}_noPBC.xtc
-echo 1 | gmx_mpi gyrate -s ${name}.tpr -f ${name}_noPBC.xtc -o ${name}_gyrate.xvg
+echo 1 1 | srun gmx_mpi trjconv -f ${name}.xtc -s ${name}.tpr -pbc mol -center -dump 0 -o temp_${name}.gro
+echo 1 1 | srun gmx_mpi trjconv -f ${name}.xtc -s ${name}.tpr -pbc mol -center -o ${name}_noPBC.xtc
+echo 1 | srun gmx_mpi gyrate -s ${name}.tpr -f ${name}_noPBC.xtc -o ${name}_gyrate.xvg
 
 #echo -e "Alpha\nAlpha" | gmx_mpi mdmat -f ${name}_noPBC.xtc -s ${name}.tpr -mean ${name}_mdmat.xpm
 #gmx_mpi xpm2ps -f ${name}_mdmat.xpm -o ${name}_mdmat.eps
@@ -75,7 +73,7 @@ line_number=1  # Initialize the line number
 numberOFfuncs=$(awk -v lines="$(wc -l < HN.ndx)" 'BEGIN {print int(lines / 2)}')
 for ((i = 0; i <= $numberOFfuncs; i++)); do
 	num=$(awk -v line="$line_number" 'NR==line {print $2}' HN.ndx)
-	echo $i | gmx_mpi rotacf -f ${name}_noPBC.xtc -s ${name}.tpr -n HN.ndx -o correlation_functions/NHrotaCF_$num.xvg -P 2 -d -xvg none  #-nice 20 
+	echo $i | srun gmx_mpi rotacf -f ${name}_noPBC.xtc -s ${name}.tpr -n HN.ndx -o correlation_functions/NHrotaCF_$num.xvg -P 2 -d -xvg none  #-nice 20 
 	((line_number += 2)) 
 done
 
@@ -99,5 +97,8 @@ cp $path/*eps  $sim_results
 cp -r $path/correlation_functions $sim_results
 
 cd $SIM_PATH
-python3 $relax_plot
 
+
+if [ "$SLURM_ARRAY_TASK_ID" -eq "$SLURM_ARRAY_TASK_MAX" ]; then
+	python3 $relax_plot
+fi

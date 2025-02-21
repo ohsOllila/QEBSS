@@ -1,0 +1,24 @@
+[2025-02-19 11:05:30,152]cli_build.py:idpconfgen:main:489: Starting The Building Process:
+[2025-02-19 11:05:30,152]cli_build.py:idpconfgen:main:493:     input sequence: APLEPEYPGDNATPEQMAQYAAELRRYINMLTRPRY
+[2025-02-19 11:05:30,152]cli_build.py:idpconfgen:main:548: running in 1 cores with 0 remaining confs
+[2025-02-19 11:05:30,152]xmer_probs.py:idpconfgen:logxmerprobs:47: Fragment Size And Probabilities Selected:
+[2025-02-19 11:05:30,152]xmer_probs.py:idpconfgen:logxmerprobs:48:     sizes of: (1, 2, 3, 4, 5)
+[2025-02-19 11:05:30,152]xmer_probs.py:idpconfgen:logxmerprobs:49:     probs of: (0.1, 0.1, 0.3, 0.3, 0.2)
+[2025-02-19 11:05:30,153]libbuild.py:idpconfgen:prepare_slice_dict:570: preparing regex xmers
+[2025-02-19 11:05:30,154]libbuild.py:idpconfgen:prepare_slice_dict:577:     searching database with DSSP regexes: ([E]+)
+[2025-02-19 11:05:30,171]xmer_probs.py:idpconfgen:logxmerprobs:47: Corrected Fragment Selection Probabilities:
+[2025-02-19 11:05:30,171]xmer_probs.py:idpconfgen:logxmerprobs:48:     sizes of: ()
+[2025-02-19 11:05:30,171]xmer_probs.py:idpconfgen:logxmerprobs:49:     probs of: ()
+[2025-02-19 11:05:35,606]libenergyij.py:idpconfgen:init_lennard_jones_calculator:77:     Lennard-Jones type configured to: 'pairs'
+[2025-02-19 11:05:35,606]libbuild.py:idpconfgen:prepare_energy_function:701: prepared lj
+[2025-02-19 11:05:35,606]libbuild.py:idpconfgen:prepare_energy_function:724: done preparing energy func
+[2025-02-19 11:05:35,807]libenergyij.py:idpconfgen:init_lennard_jones_calculator:77:     Lennard-Jones type configured to: 'pairs'
+[2025-02-19 11:05:35,807]libbuild.py:idpconfgen:prepare_energy_function:701: prepared lj
+[2025-02-19 11:05:35,807]libbuild.py:idpconfgen:prepare_energy_function:724: done preparing energy func
+[2025-02-19 11:05:35,824]cli_build.py:idpconfgen:conformer_generator:1187: random seed: 0
+[2025-02-19 11:05:35,825]cli_build.py:idpconfgen:conformer_generator:1259:     configuring sidechain method: faspr
+[2025-02-19 11:05:35,850]logger.py:idpconfgen:report_on_crash:138:     saved ERROR REPORT: /home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/build_-8881813836610645628_1739955935850577313.rpr_on_crash
+[2025-02-19 11:05:35,850]exceptions.py:idpconfgen:__init__:58: Exception errors: Crash reported to {}.
+[2025-02-19 11:05:35,850]exceptions.py:idpconfgen:__init__:59: Exception args: (PosixPath('/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/build_-8881813836610645628_1739955935850577313.rpr_on_crash'),)
+[2025-02-19 11:05:35,851]exceptions.py:idpconfgen:__init__:58: Exception errors: Crash reported to {}.
+[2025-02-19 11:05:35,851]exceptions.py:idpconfgen:__init__:59: Exception args: (PosixPath('/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/build_-8881813836610645628_1739955935850577313.rpr_on_crash'),)

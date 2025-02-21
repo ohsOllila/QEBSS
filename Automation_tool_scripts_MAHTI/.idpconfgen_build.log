@@ -1,0 +1,6 @@
+[2025-01-29 14:27:24,117]Starting The Building Process:
+[2025-01-29 14:27:24,117]    input sequence: GNHWAVGHLMX
+[2025-01-29 14:27:24,117]running in 7 cores with 3 remaining confs
+[2025-01-29 14:27:24,117]Fragment Size And Probabilities Selected:
+[2025-01-29 14:27:24,117]    sizes of: (1, 2, 3, 4, 5)
+[2025-01-29 14:27:24,117]    probs of: (0.1, 0.1, 0.3, 0.3, 0.2)

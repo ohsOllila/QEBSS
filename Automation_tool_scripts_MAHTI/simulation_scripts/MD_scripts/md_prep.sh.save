@@ -1,0 +1,120 @@
+#!/bin/bash
+#SBATCH --time=24:00:00
+#SBATCH --partition=medium
+#SBATCH --ntasks-per-node=128
+#SBATCH --nodes=1
+#SBATCH --array=0-num_jobs
+#SBATCH --account=project_2003809
+##SBATCH --account=project
+
+#export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+export GMX_MAXBACKUP=-1
+
+
+module load gromacs-env
+
+sim_time=sim_time
+water_model=tip4p
+
+SIM_DIR=${PWD}
+PARAM_DIR=$(cd ../MD_parameter_files && pwd)
+time_input=$((500000 * $sim_time))
+
+
+FORCEFIELD=("AMBER03WS" "AMBER99SB-DISP" "AMBER99SBWS" "CHARMM36M" "DESAMBER")
+
+
+PROT_FOLDERS=()
+
+for pdb_file in $SIM_DIR/replica*/*; do
+		PROT_FOLDERS+=($pdb_file)
+done
+
+
+cd ${PROT_FOLDERS[${SLURM_ARRAY_TASK_ID}]}
+
+JOB_FOLD=${PWD}
+export GMXLIB=$PARAM_DIR/$i
+
+sed "s/time_input/${time_input}/" "${PARAM_DIR}/${i}/md_diff_sim_time/md_any_ns.mdp" > "${PARAM_DIR}/${i}/md_diff_sim_time/md_${sim_time}ns.mdp"
+sed -i "s/sim_time/${sim_time}/" "${PARAM_DIR}/${i}/md_diff_sim_time/md_${sim_time}ns.mdp"
+
+
+if [[ $i == "CHARMM36M" ]]; then
+	pos=SOD
+	neg=CLA
+else
+	pos=NA
+	neg=CL
+fi
+
+
+temp_name=(rep*.pdb)
+PROTEIN=${temp_name%.pdb}
+
+i=
+
+# Define an array for box types and distances
+box_types=("dodecahedron" "octahedron")
+#box_types=("triclinic")
+distances=("0.05" "0.1" "0.2" "0.8")  # You can adjust these as needed
+#distances=("0.8")
+
+# Loop through each combination of box type and distance
+for box_type in "${box_types[@]}"; do
+    for dist in "${distances[@]}"; do
+        mkdir $JOB_FOLD/md_${i}_${box_type}_${dist}
+        cp $JOB_FOLD/$temp_name $JOB_FOLD/md_${i}_${box_type}_${dist}
+        cd $JOB_FOLD/md_${i}_${box_type}_${dist} 
+        # Check if the simulation already exists for the given box type and distance
+        if [ -f md_${i}_${box_type}_${dist}*tpr ]; then
+            echo "Simulation for box type $box_type and distance $dist already exists, skipping..."
+            continue  # Skip this iteration if file exists
+        fi
+
+        # Prepare the system with pdb2gmx and editconf
+        echo "Running simulation with box type $box_type and distance $dist..."
+
+        if [[ $i == "CHARMM36M" || $i == "AMBER99SB-DISP" ]]; then
+            sed -i.bak 's/HIP/HIS/g' $temp_name
+            echo 1 0 | gmx_mpi pdb2gmx -f ${PROTEIN}.pdb -o ${PROTEIN}.gro -ter -water ${water_model} -ff ${i,,} -ignh
+        else
+            gmx_mpi pdb2gmx -f ${PROTEIN}.pdb -o ${PROTEIN}.gro -water ${water_model} -ff ${i,,} -ignh
+        fi
+
+        # Adjust the box type and distance
+        gmx_mpi editconf -f ${PROTEIN}.gro -o ${PROTEIN}_newbox.gro -c -d $dist -bt $box_type
+
+        # Solvate the system
+        gmx_mpi solvate -cp ${PROTEIN}_newbox.gro -cs ${PARAM_DIR}/${i}/${i,,}.ff/tip4p2005.gro -o ${PROTEIN}_solv_${box_type}_${dist}.gro -p topol.top
+        sed -i 's/tip4p.itp/tip4p2005s.itp/' topol.top
+
+        # Add ions
+        gmx_mpi grompp -f ${PARAM_DIR}/${i}/ions.mdp -c ${PROTEIN}_solv_${box_type}_${dist}.gro -p topol.top -o ions_${box_type}_${dist}.tpr
+        echo SOL | gmx_mpi -quiet genion -s ions_${box_type}_${dist}.tpr -o ${PROTEIN}_solv_ions_${box_type}_${dist}.gro -p topol.top -pname $pos -nname $neg -neutral
+
+        # Energy minimization
+        srun -n 1 gmx_mpi grompp -f ${PARAM_DIR}/${i}/em.mdp -c ${PROTEIN}_solv_ions_${box_type}_${dist}.gro -p topol.top -o em_${i}_${box_type}_${dist}.tpr
+        srun gmx_mpi mdrun -deffnm em_${i}_${box_type}_${dist} &  # Run this step in the background
+
+
+	srun -n 1 gmx_mpi grompp -f ${PARAM_DIR}/${i}/nvt.mdp -c em_${i}_${box_type}_${dist}.gro -r em_${i}_${box_type}_${dist}.gro -p topol.top -o nvt_${i}_${box_type}_${dist}.tpr
+	srun gmx_mpi mdrun -deffnm nvt_${i}_${box_type}_${dist}
+
+
+
+	srun -n 1 gmx_mpi grompp -f ${PARAM_DIR}/${i}/npt.mdp -c nvt_${i}_${box_type}_${dist}.gro -r nvt_${i}_${box_type}_${dist}.gro -t nvt_${i}_${box_type}_${dist}.cpt -p topol.top -o npt_${i}_${box_type}_${dist}.tpr
+	srun gmx_mpi mdrun -deffnm npt_${i}_${box_type}_${dist}
+
+
+
+	srun gmx_mpi grompp -f ${PARAM_DIR}/${i}/md_diff_sim_time/md_${sim_time}ns.mdp -c npt_${i}_${box_type}_${dist}.gro -t npt_${i}_${box_type}_${dist}.cpt -p topol.top -o md_${i}_${box_type}_${dist}.tpr
+    done
+done
+
+# Wait for all background jobs to finish before continuing
+wait
+
+
+
+#cp ${PARAM_DIR}/${i}/md_diff_sim_time/md_${sim_time}ns.mdp .

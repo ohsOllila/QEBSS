@@ -1,51 +1,39 @@
-Semi-automatic Quality Evaluated Selection System for Molecular Dynamics
-
-This model derives relaxation times R1, R2 and hetNOE from molecular dynamics simulations generated with different forcefields and initial structures and compairs against NMR relaxation times. The system accepts simulations which meet selection requirements, based on smallest RMSD across all simulations for each relaxation parameter. All parameters need to be within a factor of 1.5 to the reference value to be accepted. Analysis is made for each simulation as well as the average of selected simulations, which is assumed to be representative of the overall characteristics of the specific protein.  
-
-(Download and extract Automation_tool_scripts_LUMI recipitory) 
+Semi-automatic MD production and comparison to NMR relaxation times for intrinsically disordered proteins
 
 
-The first step is to generate the initial replicas. Go to https://idpconformergenerator.readthedocs.io/en/latest/installation.html or follow the installation steps below: 
+For running these simulations you need access to a supercomputer like Mahti or Lumi. Depending on the platform you are gonna use download and extract the right recipitory named Automation_tool_scripts_*. 
+
+
+The first step is to generate the initial conformers. Go to https://idpconformergenerator.readthedocs.io/en/latest/installation.html or follow the installation steps below: 
  
-
-`cd Automation_tool_scripts_*/Idpconfgenerator_automation`
-
-`git clone https://github.com/julie-forman-kay-lab/IDPConformerGenerator` 
-
-`cd IDPConformerGenerator `
-
-`conda env create -f requirements.yml `
+cd Automation_tool_scripts_**/Idpconfgenerator_automation
+git clone https://github.com/julie-forman-kay-lab/IDPConformerGenerator 
+cd IDPConformerGenerator 
+conda env create -f requirements.yml 
+cd ..
 
 
-
-Copy your fasta file to Automation_tool_scripts_LUMI directory and generate replicas by running: 
+Copy your fasta file to Automation_tool_scripts_*/Idpconfgenerator_automation directory and generate replicas by running: 
 
 conda activate idpconfgen 
+./create_replicas.sh (Choose the number of your fasta file) 
+
+This step will generate five initial structures that you can find in the folder Automation_tool_scripts_*/Unst_prot
 
 
-`./create_replicas.sh` (Choose the number of your fasta file) 
+Copy Unst_prot, MD_parameter_files, simulation_scripts and env.yml to your project scratch in MAHTI/LUMI. Using my MAHTI paths as example:
+
+scp -r Unst_prot MD_parameter_files simulation_scripts env.yml malmcajs@mahti.csc.fi:/scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare 
 
 
+Log into Mahti: 
+ssh malmcajs@mahti.csc.fi 
 
-Copy Unst_prot, MD_parameter_files, simulation_scripts and env.yml to your project scratch in LUMI. Using my LUMI paths as example:
-
-
-`scp -r Unst_prot MD_parameter_files simulation_scripts env.yml malmcajs@lumi.csc.fi:/scratch/project_462000285/cmcajsa/systems/forcefield_compare `
-
-
-Log into Lumi: 
-
-`ssh malmcajs@lumi.csc.fi` 
-
-
-Go to folder: 
-
-`cd /scratch/project_462000285/cmcajsa/systems/forcefield_compare`
-
+Go to the folder where you copied all the files: 
+cd /scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare
 
 Add your experimental data to this folder. Make sure to add the first line with the magnetic field strength in MHz. Any missing data should type "n". 
-
-Name the file Unst_prot_exp_data.txt
+Name the file Unst_prot_exp_data.txt. 
 
 An example of what it should look like can be seen in the file Unst_alphasynuclein_exp_data.txt
 
@@ -54,29 +42,22 @@ You can also copy relaxation times T1, T2 and hetNOE from https://bmrb.io/ and r
 
 Set up the environment:
  
-`module purge`
-
-`module load LUMI`
-
-`module load lumi-container-wrapper`
-
-`mkdir env`
-
-`conda-containerize new --prefix env env.yml`
+module purge
+module load tykky
+mkdir env
+conda-containerize new --prefix env env.yml
 
 
-You need to manually add your project number to the scripts. Go to simulation_scripts/MD_scripts:
+You need to manually add your project number to the scripts in LUMI, in MAHTI you can select the project number when running the scripts. Go to simulation_scripts/MD_scripts:
 
 Change line #SBATCH --account=project in files md_prep.sh, md.sh and analysis.sh
 
 
 Go to simulation_scripts/run_dir and run scripts in order:
 
-`sh run_prep.sh` 
-
-`sh run_batch_md.sh` 
-
-`sh run_analysis.sh` 
+sh run_prep.sh 
+sh run_batch_md.sh 
+sh run_analysis.sh 
 
 
-Before you run the next script, you must ensure the previous step was finished. E.g., you can check if the system preparation run was successful by going to /scratch/project_462000285/cmcajsa/systems/forcefield_compare/Unst_prot and running ls -lh */*/md*tpr. Run ls -lh */*/md*tpr | wc –l to count the files. The last script collects the results, which can be found in /scratch/project_462000285/cmcajsa/systems/forcefield_compare/results  
+Before you run the next script, you must ensure the previous step was finished. E.g., you can check if the system preparation run was successful by going to /scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/Unst_prot and running ls -lh */*/md*tpr. Run ls -lh */*/md*tpr | wc –l to count the files. The last script collects the results, which can be found in /scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/results

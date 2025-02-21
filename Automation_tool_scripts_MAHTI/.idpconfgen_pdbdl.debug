@@ -1,0 +1,22 @@
+[2025-01-29 14:27:20,484]libhigherlevel.py:idpconfgen:main:84: Reading Input Pdb List:
+[2025-01-29 14:27:20,484]libhigherlevel.py:idpconfgen:main:88:     PDBList with 1 element(s)
+    done
+
+[2025-01-29 14:27:20,484]libhigherlevel.py:idpconfgen:main:94: Filtering Input:
+[2025-01-29 14:27:20,484]libhigherlevel.py:idpconfgen:main:96:     from destination: pdbs.tar
+    and other sources...
+[2025-01-29 14:27:20,484]libio.py:idpconfgen:read_PDBID_from_tar:558:     tar_file pdbs.tar not found. Returning empty PDBList.
+[2025-01-29 14:27:20,485]libhigherlevel.py:idpconfgen:main:114:     Found PDBList with 1 element(s) to download
+[2025-01-29 14:27:21,984]logger.py:idpconfgen:report_on_crash:138:     saved ERROR REPORT: /home/cmcajsa@ad.vtt.fi/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/download_pipeline_7258420513246036568_1738153641984180874.rpr_on_crash
+[2025-01-29 14:27:21,995]exceptions.py:idpconfgen:__init__:58: Exception errors: Crash reported to {}.
+[2025-01-29 14:27:21,995]exceptions.py:idpconfgen:__init__:59: Exception args: (PosixPath('/home/cmcajsa@ad.vtt.fi/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/download_pipeline_7258420513246036568_1738153641984180874.rpr_on_crash'),)
+[2025-01-29 14:27:21,997]exceptions.py:idpconfgen:__init__:58: Exception errors: Crash reported to {}.
+[2025-01-29 14:27:21,998]exceptions.py:idpconfgen:__init__:59: Exception args: (PosixPath('/home/cmcajsa@ad.vtt.fi/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/download_pipeline_7258420513246036568_1738153641984180874.rpr_on_crash'),)
+[2025-01-29 14:27:22,006]libhigherlevel.py:idpconfgen:main:149: Reading Updated Destination:
+[2025-01-29 14:27:22,009]libio.py:idpconfgen:read_PDBID_from_tar:555:     found: pdbs.tar
+[2025-01-29 14:27:22,009]libhigherlevel.py:idpconfgen:main:152:     PDBList with 1 element(s)
+[2025-01-29 14:27:22,009]libhigherlevel.py:idpconfgen:main:154:     There are PDBIDs not downloaded
+.Those IDs have been registered in the .idpconfgen_pdbdl.debug file.
+[2025-01-29 14:27:22,009]libhigherlevel.py:idpconfgen:main:159: CULLED_LIST5
+[2025-01-29 14:27:22,009]libhigherlevel.py:idpconfgen:main:168: Pdb Downloader Finished:
+[2025-01-29 14:27:22,009]cli.py:idpconfgen:maincli:143:     finished properly

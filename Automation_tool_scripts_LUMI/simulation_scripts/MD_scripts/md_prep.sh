@@ -2,12 +2,11 @@
 #SBATCH --time=48:00:00
 #SBATCH --partition=small
 #SBATCH --ntasks=1
-#SBATCH --mem-per-cpu=50000
+#SBATCH --mem-per-cpu=1000
 #SBATCH --array=0-num_jobs
 #SBATCH --account=project_462000540
 ##SBATCH --account=project
 
-export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export GMX_MAXBACKUP=-1
 
 module use /appl/local/csc/modulefiles
@@ -26,7 +25,7 @@ FORCEFIELD=("AMBER03WS" "AMBER99SB-DISP" "AMBER99SBWS" "CHARMM36M" "DESAMBER")
 
 PROT_FOLDERS=()
 
-for pdb_file in $SIM_DIR/model*/*; do
+for pdb_file in $SIM_DIR/replica*/*; do
 		PROT_FOLDERS+=($pdb_file)
 done
 
@@ -106,3 +105,4 @@ srun gmx_mpi mdrun -deffnm npt_${i}
 
 srun gmx_mpi grompp -f ${PARAM_DIR}/${i}/md_diff_sim_time/md_${sim_time}ns.mdp -c npt_${i}.gro -t npt_${i}.cpt -p topol.top -o md_${sim_time}ns.tpr
 
+cp ${PARAM_DIR}/${i}/md_diff_sim_time/md_${sim_time}ns.mdp .

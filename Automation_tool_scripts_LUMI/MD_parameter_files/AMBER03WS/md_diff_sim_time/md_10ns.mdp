@@ -1,0 +1,55 @@
+; title		= MD run CHARMM36 10 ns
+; Run parameters
+integrator	= md		; leap-frog integrator
+nsteps		= 5000000	; Simulation time 10 ns
+dt		= 0.002		; 2 fs
+
+; OUTPUT CONTROL OPTIONS
+nstxout                  = 0 ; save coordinates every 10ps
+nstvout                  = 0 ; save coordinates every 10ps
+nstlog                   = 5000  ; Writing to the log file every 10ps
+nstenergy                = 5000  ; Writing out energy information every 10ps
+nstxtcout                = 5000  ; Writing coordinates every 10ps
+compressed-x-grps    = Protein
+
+; NEIGHBORSEARCHING PARAMETERS
+nstlist                  = 10
+ns-type                  = Grid
+pbc                      = xyz
+
+; OPTIONS FOR ELECTROSTATICS AND VDW
+coulombtype              = PME
+pme_order		 = 4		; cubic interpolation
+fourierspacing		 = 0.1		; grid spacing for FFT
+rcoulomb                 = 1.4
+rlist                    = 1.4
+vdw-type                 = Cut-off
+rvdw                     = 1.4
+
+; Temperature coupling  
+Tcoupl                   = v-rescale
+tc-grps                  = Protein  Non-Protein
+tau_t                    = 0.1      0.1
+ref_t                    = 303      303
+
+; Pressure coupling     
+Pcoupl                   = Parrinello-Rahman
+Pcoupltype               = Isotropic
+tau_p                    = 2.0
+compressibility          = 4.5e-5
+ref_p                    = 1.0
+
+; GENERATE VELOCITIES FOR STARTUP RUN
+gen_vel                  = no
+
+; OPTIONS FOR BONDS    
+constraints              = h-bonds
+constraint-algorithm     = lincs
+continuation	         = yes		; Restarting after NPT without position restraints
+lincs-order              = 4
+lincs-iter               = 1
+lincs-warnangle          = 30
+cutoff-scheme 		 = verlet
+
+;disre                    = simple
+;nstdisreout              = 0

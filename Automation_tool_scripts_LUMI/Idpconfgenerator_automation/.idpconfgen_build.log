@@ -1,0 +1,20 @@
+[2025-02-19 11:05:30,152]Starting The Building Process:
+[2025-02-19 11:05:30,152]    input sequence: APLEPEYPGDNATPEQMAQYAAELRRYINMLTRPRY
+[2025-02-19 11:05:30,152]running in 1 cores with 0 remaining confs
+[2025-02-19 11:05:30,152]Fragment Size And Probabilities Selected:
+[2025-02-19 11:05:30,152]    sizes of: (1, 2, 3, 4, 5)
+[2025-02-19 11:05:30,152]    probs of: (0.1, 0.1, 0.3, 0.3, 0.2)
+[2025-02-19 11:05:30,153]preparing regex xmers
+[2025-02-19 11:05:30,154]    searching database with DSSP regexes: ([E]+)
+[2025-02-19 11:05:30,171]Corrected Fragment Selection Probabilities:
+[2025-02-19 11:05:30,171]    sizes of: ()
+[2025-02-19 11:05:30,171]    probs of: ()
+[2025-02-19 11:05:35,606]    Lennard-Jones type configured to: 'pairs'
+[2025-02-19 11:05:35,606]prepared lj
+[2025-02-19 11:05:35,606]done preparing energy func
+[2025-02-19 11:05:35,807]    Lennard-Jones type configured to: 'pairs'
+[2025-02-19 11:05:35,807]prepared lj
+[2025-02-19 11:05:35,807]done preparing energy func
+[2025-02-19 11:05:35,824]random seed: 0
+[2025-02-19 11:05:35,825]    configuring sidechain method: faspr
+[2025-02-19 11:05:35,850]    saved ERROR REPORT: /home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/build_-8881813836610645628_1739955935850577313.rpr_on_crash

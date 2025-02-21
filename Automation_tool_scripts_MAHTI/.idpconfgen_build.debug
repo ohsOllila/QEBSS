@@ -1,0 +1,6 @@
+[2025-01-29 14:27:24,117]cli_build.py:idpconfgen:main:478: Starting The Building Process:
+[2025-01-29 14:27:24,117]cli_build.py:idpconfgen:main:482:     input sequence: GNHWAVGHLMX
+[2025-01-29 14:27:24,117]cli_build.py:idpconfgen:main:530: running in 7 cores with 3 remaining confs
+[2025-01-29 14:27:24,117]xmer_probs.py:idpconfgen:logxmerprobs:47: Fragment Size And Probabilities Selected:
+[2025-01-29 14:27:24,117]xmer_probs.py:idpconfgen:logxmerprobs:48:     sizes of: (1, 2, 3, 4, 5)
+[2025-01-29 14:27:24,117]xmer_probs.py:idpconfgen:logxmerprobs:49:     probs of: (0.1, 0.1, 0.3, 0.3, 0.2)

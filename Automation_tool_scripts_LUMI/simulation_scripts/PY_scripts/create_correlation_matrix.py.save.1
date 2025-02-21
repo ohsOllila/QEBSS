@@ -1,0 +1,100 @@
+import os
+import numpy as np
+import pandas as pd
+import glob
+from matplotlib.patches import Rectangle
+import matplotlib.lines as lines
+import matplotlib.pyplot as plt
+
+
+
+base_dir = os.path.dirname(os.getcwd()) + "/"
+RESULTS = base_dir + 'results/'
+
+
+files = sorted(glob.glob(RESULTS + "*/rep_to_exp_data/Accepted_cases/best_cases_list.txt"))
+csv_files = sorted(glob.glob(RESULTS + "*/rep_to_exp_data/Accepted_cases/best_worst_middle_cases_list.csv"))
+
+paths_in_files = []
+for file_path in files:
+	with open(file_path, 'r') as file:
+		paths_in_files.extend(line.strip() for line in file)
+
+
+proteins = ["SNARE", "ChiZ", "KRS", "aSyn", "ICL2"]
+models = ["replica_01", "replica_02", "replica_03", "replica_04", "replica_05"]
+forcefields = ["AMBER03WS", "AMBER99SB-DISP", "AMBER99SBWS", "CHARMM36M", "DESAMBER"]
+
+def csv_columns_to_lists(csv_file_paths, column_names):
+	combined_df = pd.DataFrame(columns=column_names)
+
+	for file_path in csv_file_paths:
+		df = pd.read_csv(file_path, header=None)
+		df.columns = column_names
+		combined_df = pd.concat([combined_df, df], ignore_index=True)
+
+	columns_as_lists = {column: combined_df[column].tolist() for column in combined_df.columns}
+
+	return columns_as_lists
+
+column_names = ['Color', 'PATH']
+
+columns_as_lists = csv_columns_to_lists(csv_files, column_names)
+
+print(columns_as_lists['PATH'])
+fig, axs = plt.subplots(25, 5, figsize=(8, 40))
+
+for k, prot in enumerate(proteins):
+	for i, model in enumerate(models):
+		for j, forcefield in enumerate(forcefields):
+			try:
+				file_path = base_dir + prot + "/" + model + "/" + forcefield + "/LRAEcorrelationHELICALstart.csv"
+				df = pd.read_csv(file_path, index_col=0)
+				axs[5*k+i, j].imshow(df.values, vmin=-1, vmax=1, cmap="seismic", origin='lower')
+			
+
+				current_xlim = axs[5 * k + i, j].get_xlim()
+				current_ylim = axs[5 * k + i, j].get_ylim()
+
+				new_xlim = (current_xlim[0]*0.8, current_xlim[1]*1.2)
+				new_ylim = (current_ylim[0]*0.8, current_ylim[1]*1.2)
+
+				axs[5 * k + i, j].set_xlim(new_xlim)	
+				axs[5 * k + i, j].set_ylim(new_ylim)
+	
+				axs[5*k+i, j].set_xticks([])
+				axs[5*k+i, j].set_yticks([])
+	
+				if f"{base_dir}{prot}/{model}/{forcefield}" in paths_in_files:
+					rect = Rectangle((0, 0), 1, 1, transform=axs[5*k+i, j].transAxes,
+					linewidth=10, edgecolor='#4CAF50', facecolor='None')
+					axs[5*k+i, j].add_patch(rect)
+
+
+
+				if f"{base_dir}{prot}/{model}/{forcefield}" in columns_as_lists['PATH']:
+					path_index = columns_as_lists['PATH'].index(f"{base_dir}{prot}/{model}/{forcefield}")
+					corresponding_color = columns_as_lists['Color'][path_index]
+
+					rect = Rectangle((0, 0), 1, 1, transform=axs[5*k+i, j].transAxes,
+					linewidth=10, edgecolor=corresponding_color, facecolor='None')
+					axs[5*k+i, j].add_patch(rect)
+
+
+			except:
+				axs[5*k + i, j].imshow(np.zeros((10, 10)), cmap='gray')
+				axs[5*k+i, j].set_xticks([])
+				axs[5*k+i, j].set_yticks([])				
+			
+
+#dividers = [0.184, 0.364, 0.544, 0.724]
+#for y_coord in dividers:
+#	line = plt.Line2D([0, 1], [y_coord, y_coord], color="black", linewidth=3, transform=fig.transFigure, clip_on=False)
+#	fig.add_artist(line)
+
+plt.subplots_adjust(wspace=0, hspace=0)
+
+fig.savefig(RESULTS + "major_correlation.pdf", dpi=300, bbox_inches='tight')
+plt.close(fig)
+
+

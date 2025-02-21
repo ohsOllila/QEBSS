@@ -4,14 +4,14 @@ Semi-automatic MD production and comparison to NMR relaxation times
 
 The first step is to generate the initial replicas. Go to https://idpconformergenerator.readthedocs.io/en/latest/installation.html or follow the installation steps below: 
  
-cd Automation_tool_scripts_*/Idpconfgenerator_automation
+cd Automation_tool_scripts_LUMI/Idpconfgenerator_automation
 git clone https://github.com/julie-forman-kay-lab/IDPConformerGenerator 
 cd IDPConformerGenerator 
 conda env create -f requirements.yml 
 cd ..
 
 
-Copy your fasta file to Automation_tool_scripts_LUMI directory and generate replicas by running: 
+Copy your fasta file to Automation_tool_scripts_LUMI/Idpconfgenerator_automation directory and generate replicas by running: 
 
 conda activate idpconfgen 
 ./create_replicas.sh (Choose the number of your fasta file) 

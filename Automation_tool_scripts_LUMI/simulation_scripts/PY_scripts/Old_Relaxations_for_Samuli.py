@@ -71,7 +71,7 @@ else:
 	base  = "/".join(directories[:-4])
 
 
-with open(base + '/model_01.pdb', 'r') as file:
+with open(base + '/replica_01.pdb', 'r') as file:
 	lines = file.readlines()
 	words = lines[-3].split()	
 	res_nr=words[5]

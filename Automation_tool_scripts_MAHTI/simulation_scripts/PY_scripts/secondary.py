@@ -4,7 +4,7 @@ import mdtraj as md
 import matplotlib.pyplot as plt
 import numpy as np
 
-traj = md.load('md_2000ns_smooth.xtc', top='temp_md_2000ns.gro')
+traj = md.load('md_2000ns_noPBC.xtc', top='temp_md_2000ns.gro')
 
 three_to_one = {
     'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D', 'CYS': 'C', 'GLU': 'E', 'GLN': 'Q', 'GLY': 'G',

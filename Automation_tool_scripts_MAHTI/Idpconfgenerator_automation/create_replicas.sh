@@ -26,7 +26,7 @@ fasta_name=${list[choice-1]}
 
 
 culled_lists=("culled_list1" "culled_list2" "culled_list3" "culled_list4" "culled_list5")
-models=("model_01.pdb" "model_02.pdb" "model_03.pdb" "model_04.pdb" "model_05.pdb")
+replicas=("replica_01.pdb" "replica_02.pdb" "replica_03.pdb" "replica_04.pdb" "replica_05.pdb")
 
 
 for i in {0..4}; do
@@ -43,13 +43,13 @@ for i in {0..4}; do
         -n 
     wait
     
-    mv conformer_1.pdb ${models[i]}
+    mv conformer_1.pdb ${replicas[i]}
     rm pdbs.tar
     rm conformer*pdb
 done
 
 mkdir ../Unst_prot
-mv model*pdb ../Unst_prot
+mv replica*pdb ../Unst_prot
 
 
 

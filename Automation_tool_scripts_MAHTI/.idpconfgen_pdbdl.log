@@ -1,0 +1,17 @@
+[2025-01-29 14:27:20,484]Reading Input Pdb List:
+[2025-01-29 14:27:20,484]    PDBList with 1 element(s)
+    done
+
+[2025-01-29 14:27:20,484]Filtering Input:
+[2025-01-29 14:27:20,484]    from destination: pdbs.tar
+    and other sources...
+[2025-01-29 14:27:20,484]    tar_file pdbs.tar not found. Returning empty PDBList.
+[2025-01-29 14:27:20,485]    Found PDBList with 1 element(s) to download
+[2025-01-29 14:27:21,984]    saved ERROR REPORT: /home/cmcajsa@ad.vtt.fi/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/download_pipeline_7258420513246036568_1738153641984180874.rpr_on_crash
+[2025-01-29 14:27:22,006]Reading Updated Destination:
+[2025-01-29 14:27:22,009]    found: pdbs.tar
+[2025-01-29 14:27:22,009]    PDBList with 1 element(s)
+[2025-01-29 14:27:22,009]    There are PDBIDs not downloaded
+.Those IDs have been registered in the .idpconfgen_pdbdl.debug file.
+[2025-01-29 14:27:22,009]Pdb Downloader Finished:
+[2025-01-29 14:27:22,009]    finished properly

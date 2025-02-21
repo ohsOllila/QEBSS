@@ -1,7 +1,7 @@
 #!/bin/bash
 
 time_input=2000
-
+PROT_NAME="EB1"
 
 cd ..
 cd ..
@@ -28,9 +28,9 @@ project=${list[choice-1]}
 
 
 FORCEFIELD=(AMBER03WS AMBER99SB-DISP AMBER99SBWS CHARMM36M DESAMBER)
+#FORCEFIELD=(AMBER03WS)
 
-
-for pdb_file in $BASE_DIR/Unst*/*.pdb; do
+for pdb_file in $BASE_DIR/TEST/$PROT_NAME/rep*.pdb; do
 	directory_path="${pdb_file%/*}"
 	replicas=$(basename ${pdb_file%.pdb})
 	for i in "${FORCEFIELD[@]}"; do
@@ -40,11 +40,12 @@ for pdb_file in $BASE_DIR/Unst*/*.pdb; do
 done
 
 
-for i in $BASE_DIR/Unst*sn*/
+for i in $BASE_DIR/TEST/$PROT_NAME/
 do
   	cd $i
 	jobs=$(( $(find $i -mindepth 2 -maxdepth 2 -type d | wc -l) - 1 ))
 
+	#jobs=1
 	cp ${md_script} ${SCRIPTS}/batch_md.sh	
 	JOB_SCRIPT=${SCRIPTS}/batch_md.sh
 	sed -i "s/sim_time=sim_time/sim_time=${time_input}/" "${JOB_SCRIPT}"
@@ -53,4 +54,5 @@ do
 
 	sbatch ${JOB_SCRIPT}
 done
+
 
