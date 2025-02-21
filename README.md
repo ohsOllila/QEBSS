@@ -33,9 +33,11 @@ Copy Unst_prot, MD_parameter_files, simulation_scripts and env.yml to your proje
 
 
 Log into Mahti: 
+
 `ssh malmcajs@mahti.csc.fi` 
 
-Go to the folder where you copied all the files: 
+Go to the folder where you copied all the files:
+
 `cd /scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare`
 
 Add your experimental data to this folder. Make sure to add the first line with the magnetic field strength in MHz. Any missing data should type "n". 
@@ -62,7 +64,9 @@ Change line #SBATCH --account=project in files md_prep.sh, md.sh and analysis.sh
 Go to simulation_scripts/run_dir and run scripts in order:
 
 `sh run_prep.sh` 
+
 `sh run_batch_md.sh` 
+
 `sh run_analysis.sh` 
 
 
