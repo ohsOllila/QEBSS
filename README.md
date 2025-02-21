@@ -1,4 +1,4 @@
-**Semi-automatic Workflow for Quality Evaluation-Based Simulation Selection (QEBSS)**
+**Semi-automatic Workflow for the Quality Evaluation-Based Simulation Selection (QEBSS)**
 
 QEBSS is a tool that generates and evaluates a diverse set of molecular dynamics simulations based on various starting structures and force fields. The simulations are evaluated against NMR relaxation times (R1, R2) and heteronuclear NOE (hetNOE). This helps identify the best simulations for intrinsically disordered proteins (IDPs) or partially disordered proteins.
 
