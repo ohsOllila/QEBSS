@@ -9,9 +9,13 @@ For running these simulations you need access to a supercomputer like Mahti or L
 The first step is to generate the initial conformers. Go to https://idpconformergenerator.readthedocs.io/en/latest/installation.html or follow the installation steps below: 
  
 `cd Automation_tool_scripts_**/Idpconfgenerator_automation`
+
 `git clone https://github.com/julie-forman-kay-lab/IDPConformerGenerator` 
+
 `cd IDPConformerGenerator` 
+
 `conda env create -f requirements.yml` 
+
 `cd ..`
 
 
