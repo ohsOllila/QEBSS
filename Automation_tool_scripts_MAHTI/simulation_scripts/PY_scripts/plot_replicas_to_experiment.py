@@ -28,6 +28,7 @@ from matplotlib.patches import Rectangle
 from math import log10, floor
 from matplotlib.lines import Line2D
 import pymol
+from sklearn.preprocessing import MinMaxScaler
 
 three_to_one = {
     'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D', 'CYS': 'C',
@@ -1083,23 +1084,20 @@ timescale_data_avg=glob.glob(Unst_folder + "Ctimes_Coeffs.csv")
 
 
 def create_timescale_scatter_plot(input, output):
-    fig, axs = plt.subplots(5, 5, figsize=(25, 25))  # 5x5 grid, adjust as needed
-    fig.subplots_adjust(left=0.12, right=0.95, top=0.95, bottom=0.05, wspace=0.07, hspace=0.07)
+    fig, axs = plt.subplots(5, 5, figsize=(15, 15))  # 5x5 grid, adjust as needed
+    fig.subplots_adjust(left=0.1, right=0.85, top=0.95, bottom=0.05, wspace=0.07, hspace=0.07)
 
 
     for i, rep in enumerate(REPLICAS):
             for j, ff in enumerate(FORCEFIELDS):
-                if i >= 5 or j >= 5:
-                    continue
+
 
                 file = os.path.join(SIM_DIR, rep, ff, input)
-                print(file)
                 if os.path.exists(file):
                     df = pd.read_csv(file, header=None)
 
                     C_times_ns = df.iloc[:, 0].tolist()
                     Coeffs = df.iloc[:, 1].tolist()
-                    print(C_times_ns)
 
                     x_vals, y_vals, weights = [], [], []
                     for line_idx in range(len(C_times_ns)):
@@ -1121,44 +1119,60 @@ def create_timescale_scatter_plot(input, output):
                                         break
                                 else:
                                     break
-    
-                    axs[i, j].scatter(x_vals, y_vals, s=weights, zorder=5, color='red')
+                    
+                    scaler = MinMaxScaler()
+                    weights = scaler.fit_transform(np.array(weights).reshape(-1, 1)).flatten()
+
+                    scatter = axs[i, j].scatter(x_vals, y_vals, c=weights, cmap='viridis', zorder=3)
                     axs[i, j].set_xticks([])
-                    axs[i, j].set_yticks(np.arange(0, 81, 20))
-                    axs[i, j].set_ylim(0, 80)
-                    axs[i, j].tick_params(axis='y', labelsize=25)
+                    axs[i, j].tick_params(axis='y', labelsize=16, pad=10)
                     axs[i, j].set_xlim(0, res_nr)
+                    axs[i, j].set_yscale('log')
+                    axs[i, j].set_ylim(10**(-3), 10**2)
+                    axs[i, j].set_yticks([10**(-3), 10**(-1), 10**1])
+
 
                     if rep + "/" + ff in Best_cases:
                         autoAxis = axs[i, j].axis()
                         print(autoAxis)
-                        rec = Rectangle((autoAxis[0]-(autoAxis[1] - autoAxis[0]) * 0.03, autoAxis[2]- (autoAxis[3] - autoAxis[2]) * 0.03), 
+                        rec = Rectangle((autoAxis[0]-(autoAxis[1] - autoAxis[0]) * 0.03, autoAxis[2]*1.5**(-1)), 
                             (autoAxis[1] - autoAxis[0])*1.06, 
-                            (autoAxis[3] - autoAxis[2])*1.06, 
+                            (autoAxis[1] - autoAxis[0])*2, 
                             fill=False, linewidth=5, edgecolor='black')
                         axs[i, j].add_patch(rec)
                         rec.set_clip_on(False)
+
+                        
+
                         
 
     for ax1, replica in zip(axs[:,0], row_header):
         y_label="Timescales (ns)"
-        ax1.set_ylabel(f"$\\bf{{{replica}}}$\n\n{y_label}", fontsize=30, rotation=90)
+        ax1.set_ylabel(f"$\\bf{{{replica}}}$\n\n{y_label}", fontsize=16, rotation=90)
     for ax2, forcefield in zip(axs[0], FORCEFIELDS):
         color = color_map.get(forcefield.split("/")[-1], "black")
-        ax2.set_title(forcefield, weight='bold', fontsize=30, pad=22, color = color)
+        ax2.set_title(forcefield, weight='bold', fontsize=16, pad=22, color = "black")
     for ax3 in axs[-1]:
-        ax3.set_xlabel('Residue', fontsize=30)
-        ax3.tick_params(axis='x', labelsize=27)
+        ax3.set_xlabel('Residue', fontsize=16)
+        ax3.tick_params(axis='x', labelsize=16)
 			#axs.set_xticklabels([f"{i+1}" for i in xticks])
         ax3.set_xticks(xticks)
         ax3.set_xticklabels([f"{i+1}" for i in xticks])
     for row in axs:
         for a in row[1:]:  # Skip the first column
             a.set_yticks([])
-		
+
+
+    cbar_ax = fig.add_axes([0.87, 0.1, 0.02, 0.75])  # Position for the colorbar
+    norm = plt.Normalize(vmin=0, vmax=1)
+    cbar = plt.colorbar(plt.cm.ScalarMappable(cmap='jet', norm=norm), cax=cbar_ax)
+    cbar.ax.tick_params(labelsize=22)
+    cbar.set_label('Weight Coefficient', rotation=270, labelpad=35, fontsize=25)
+
+
 
     output_file = os.path.join(relax_folder, output)
-    plt.savefig(output_file, dpi=300)
+    plt.savefig(output_file, dpi=600)
     plt.close()	
 		
 

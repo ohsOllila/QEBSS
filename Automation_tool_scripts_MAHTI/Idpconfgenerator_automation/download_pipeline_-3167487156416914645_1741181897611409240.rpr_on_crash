@@ -1,0 +1,41 @@
+#Recording error for exception: <class 'Exception'>
+
+#function: functools.partial(<function consume_iterable_in_list at 0x7ea5ea950550>, <function download_structure at 0x7ea5ea7c6950>, mmcif=False)
+
+#signature: (*args, **kwargs)
+
+#Args:
+
+('4XB6', ['A', 'B'])
+
+#Kwargs:
+
+
+
+#traceback:
+
+Traceback (most recent call last):
+  File "/home/cmcajsa/conda/envs/idpconfgen/lib/python3.10/http/client.py", line 592, in _read_chunked
+    value.append(self._safe_read(chunk_left))
+  File "/home/cmcajsa/conda/envs/idpconfgen/lib/python3.10/http/client.py", line 633, in _safe_read
+    raise IncompleteRead(data, amt-len(data))
+http.client.IncompleteRead: IncompleteRead(81913 bytes read, 35470 more expected)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/IDPConformerGenerator/src/idpconfgen/logger.py", line 112, in report_on_crash
+    return func(*args, **kwargs)
+  File "/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/IDPConformerGenerator/src/idpconfgen/libs/libmulticore.py", line 28, in consume_iterable_in_list
+    return list(func(*args, **kwargs))
+  File "/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/IDPConformerGenerator/src/idpconfgen/libs/libdownload.py", line 36, in download_structure
+    downloaded_data, _ = fetch_pdb_id_from_RCSB(pdbname, mmcif=mmcif)
+  File "/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/IDPConformerGenerator/src/idpconfgen/libs/libdownload.py", line 69, in fetch_pdb_id_from_RCSB
+    return response.read(), weblink.rpartition(".")[-1]
+  File "/home/cmcajsa/conda/envs/idpconfgen/lib/python3.10/http/client.py", line 460, in read
+    return self._read_chunked(amt)
+  File "/home/cmcajsa/conda/envs/idpconfgen/lib/python3.10/http/client.py", line 598, in _read_chunked
+    raise IncompleteRead(b''.join(value))
+http.client.IncompleteRead: IncompleteRead(2960657 bytes read)
+
+

@@ -1,3 +1,26 @@
-[2025-02-19 16:17:52,792]cli_torsions.py:idpconfgen:main:149: Reading Input Paths:
-[2025-02-19 16:17:52,793]cli_torsions.py:idpconfgen:main:151:     done
-[2025-02-19 16:17:52,825]cli.py:idpconfgen:maincli:143:     finished properly
+[2025-03-07 14:13:20,495]cli_torsions.py:idpconfgen:main:149: Reading Input Paths:
+[2025-03-07 14:13:20,568]cli_torsions.py:idpconfgen:main:151:     done
+[2025-03-07 14:13:20,792]exceptions.py:idpconfgen:__init__:58: Exception errors: Chain is broken. Found distance above 2.1A for consecutive atoms.
+[2025-03-07 14:13:20,792]exceptions.py:idpconfgen:__init__:58: Exception errors: Chain is broken. Found distance above 2.1A for consecutive atoms.
+[2025-03-07 14:13:20,792]exceptions.py:idpconfgen:__init__:59: Exception args: ()
+[2025-03-07 14:13:20,792]exceptions.py:idpconfgen:__init__:59: Exception args: ()
+[2025-03-07 14:13:20,794]logger.py:idpconfgen:report_on_crash:138:     saved ERROR REPORT: /home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/torsions_-5807184231998748690_1741349600794253772.rpr_on_crash
+[2025-03-07 14:13:20,794]logger.py:idpconfgen:report_on_crash:138:     saved ERROR REPORT: /home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/torsions_-1472614490746766097_1741349600794353364.rpr_on_crash
+[2025-03-07 14:13:20,794]exceptions.py:idpconfgen:__init__:58: Exception errors: Crash reported to {}.
+[2025-03-07 14:13:20,794]exceptions.py:idpconfgen:__init__:58: Exception errors: Crash reported to {}.
+[2025-03-07 14:13:20,794]exceptions.py:idpconfgen:__init__:59: Exception args: (PosixPath('/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/torsions_-5807184231998748690_1741349600794253772.rpr_on_crash'),)
+[2025-03-07 14:13:20,794]exceptions.py:idpconfgen:__init__:59: Exception args: (PosixPath('/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/torsions_-1472614490746766097_1741349600794353364.rpr_on_crash'),)
+[2025-03-07 14:13:20,796]exceptions.py:idpconfgen:__init__:58: Exception errors: Crash reported to {}.
+[2025-03-07 14:13:20,797]exceptions.py:idpconfgen:__init__:59: Exception args: (PosixPath('/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/torsions_-5807184231998748690_1741349600794253772.rpr_on_crash'),)
+[2025-03-07 14:13:20,797]exceptions.py:idpconfgen:__init__:58: Exception errors: Crash reported to {}.
+[2025-03-07 14:13:20,797]exceptions.py:idpconfgen:__init__:59: Exception args: (PosixPath('/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/torsions_-1472614490746766097_1741349600794353364.rpr_on_crash'),)
+[2025-03-07 14:13:26,227]exceptions.py:idpconfgen:__init__:58: Exception errors: Chain is broken. Found distance above 2.1A for consecutive atoms.
+[2025-03-07 14:13:26,228]exceptions.py:idpconfgen:__init__:59: Exception args: ()
+[2025-03-07 14:13:26,240]logger.py:idpconfgen:report_on_crash:138:     saved ERROR REPORT: /home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/torsions_4489886892940155121_1741349606239023687.rpr_on_crash
+[2025-03-07 14:13:26,241]exceptions.py:idpconfgen:__init__:58: Exception errors: Crash reported to {}.
+[2025-03-07 14:13:26,241]exceptions.py:idpconfgen:__init__:59: Exception args: (PosixPath('/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/torsions_4489886892940155121_1741349606239023687.rpr_on_crash'),)
+[2025-03-07 14:13:26,242]exceptions.py:idpconfgen:__init__:58: Exception errors: Crash reported to {}.
+[2025-03-07 14:13:26,243]exceptions.py:idpconfgen:__init__:59: Exception args: (PosixPath('/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/torsions_4489886892940155121_1741349606239023687.rpr_on_crash'),)
+[2025-03-07 14:13:27,920]libparse.py:idpconfgen:pop_difference_with_log:303:     Removing {'6SXT_A_seg0', '1MN8_A_seg0', '1LMI_A_seg0'} from the dictionary.
+
+[2025-03-07 14:13:29,311]cli.py:idpconfgen:maincli:143:     finished properly

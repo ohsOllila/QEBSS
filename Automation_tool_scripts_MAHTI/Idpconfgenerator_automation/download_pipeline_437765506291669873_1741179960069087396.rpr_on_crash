@@ -1,0 +1,46 @@
+#Recording error for exception: <class 'Exception'>
+
+#function: functools.partial(<function consume_iterable_in_list at 0x79d2b4258550>, <function download_structure at 0x79d2b40ce950>, mmcif=False)
+
+#signature: (*args, **kwargs)
+
+#Args:
+
+('4HGU', ['A'])
+
+#Kwargs:
+
+
+
+#traceback:
+
+Traceback (most recent call last):
+  File "/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/IDPConformerGenerator/src/idpconfgen/logger.py", line 112, in report_on_crash
+    return func(*args, **kwargs)
+  File "/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/IDPConformerGenerator/src/idpconfgen/libs/libmulticore.py", line 28, in consume_iterable_in_list
+    return list(func(*args, **kwargs))
+  File "/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/IDPConformerGenerator/src/idpconfgen/libs/libdownload.py", line 36, in download_structure
+    downloaded_data, _ = fetch_pdb_id_from_RCSB(pdbname, mmcif=mmcif)
+  File "/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/IDPConformerGenerator/src/idpconfgen/libs/libdownload.py", line 68, in fetch_pdb_id_from_RCSB
+    response = urllib.request.urlopen(weblink)
+  File "/home/cmcajsa/conda/envs/idpconfgen/lib/python3.10/urllib/request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "/home/cmcajsa/conda/envs/idpconfgen/lib/python3.10/urllib/request.py", line 519, in open
+    response = self._open(req, data)
+  File "/home/cmcajsa/conda/envs/idpconfgen/lib/python3.10/urllib/request.py", line 536, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+  File "/home/cmcajsa/conda/envs/idpconfgen/lib/python3.10/urllib/request.py", line 496, in _call_chain
+    result = func(*args)
+  File "/home/cmcajsa/conda/envs/idpconfgen/lib/python3.10/urllib/request.py", line 1391, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+  File "/home/cmcajsa/conda/envs/idpconfgen/lib/python3.10/urllib/request.py", line 1352, in do_open
+    r = h.getresponse()
+  File "/home/cmcajsa/conda/envs/idpconfgen/lib/python3.10/http/client.py", line 1375, in getresponse
+    response.begin()
+  File "/home/cmcajsa/conda/envs/idpconfgen/lib/python3.10/http/client.py", line 318, in begin
+    version, status, reason = self._read_status()
+  File "/home/cmcajsa/conda/envs/idpconfgen/lib/python3.10/http/client.py", line 287, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+http.client.RemoteDisconnected: Remote end closed connection without response
+
+

@@ -45,16 +45,13 @@ for i in {0..4}; do
     
     mv conformer_1.pdb ${replicas[i]}
     rm pdbs.tar
-    rm conformer*pdb
+    rm idpconfgen_database.json
+    rm idpconfgen.version
+    rm energies.log
+    rm sscalc*
 done
 
 mkdir ../Unst_prot
 mv replica*pdb ../Unst_prot
-
-
-
-
-
-
 
 

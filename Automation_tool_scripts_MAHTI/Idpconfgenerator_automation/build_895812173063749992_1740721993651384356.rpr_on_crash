@@ -1,0 +1,28 @@
+#Recording error for exception: <class 'Exception'>
+
+#function: functools.partial(<function _build_conformers at 0x7419d43cdc60>, input_seq='APLEPEYPGDNATPEQMAQYAAELRRYINMLTRPRY', output_folder=Path('/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation'), long=False, nconfs=5, sidechain_parameters={}, sidechain_method='faspr', bgeo_strategy='sampling', disable_sidechains=False, energy_threshold_backbone=100.0, energy_threshold_sidechains=250.0, energy_type_ij='pairs', mcsce_mode='simple', mcsce_n_trials=10, mcsce_batch_size=16, mcsce_temperature=300)
+
+#signature: (*args, input_seq='APLEPEYPGDNATPEQMAQYAAELRRYINMLTRPRY', conformer_name='conformer', output_folder=Path('/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation'), long=False, nconfs=5, sidechain_parameters={}, bgeo_strategy='sampling', **kwargs)
+
+#Args:
+
+0
+
+#Kwargs:
+
+
+
+#traceback:
+
+Traceback (most recent call last):
+  File "/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/IDPConformerGenerator/src/idpconfgen/logger.py", line 112, in report_on_crash
+    return func(*args, **kwargs)
+  File "/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/IDPConformerGenerator/src/idpconfgen/cli_build.py", line 1034, in _build_conformers
+    energy, coords = next(builder)
+  File "/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/IDPConformerGenerator/src/idpconfgen/cli_build.py", line 1438, in conformer_generator
+    primer_template, agls = GET_ADJ(bbi - 1)
+  File "/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/IDPConformerGenerator/src/idpconfgen/cli_build.py", line 1939, in func
+    raise AssertionError(_emsg)
+AssertionError: The code should not arrive here. If it does, it may mean no matches were found for fragment 'APL' down to the single residue.
+
+
