@@ -736,9 +736,9 @@ plt.savefig(relax_folder + 'Accepted_cases/average_relaxation_compaired_plot.png
 plt.close('all')
 
 
-axs_plot(avg_path, 0, 10, include_header=True, axs=None)
-plt.savefig(relax_folder + 'Accepted_cases/Tau_effective_area_avg.png')
-plt.close('all')
+#axs_plot(avg_path, 0, 10, include_header=True, axs=None)
+#plt.savefig(relax_folder + 'Accepted_cases/Tau_effective_area_avg.png')
+#plt.close('all')
 
 
 def relaxation_combined(sim, exp, output, execution):
