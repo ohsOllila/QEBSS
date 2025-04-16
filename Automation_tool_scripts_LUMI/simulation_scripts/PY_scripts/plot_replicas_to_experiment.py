@@ -1421,7 +1421,7 @@ def run_pymol_operations():
 			pass
 	
 	
-run_pymol_operations()
+#run_pymol_operations()
 
 
 plot_ensembles_images(sorted(glob.glob(SIM_DIR + "replica*/*/Contact_map.png")), "Contact_map_combined")
