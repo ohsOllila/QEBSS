@@ -517,8 +517,8 @@ class GetRelaxationData():
             NOE_sim = self.safe_float(self.NOE)
 
             R1_exp = self.safe_float(parts[1])
-            R2_exp = self.safe_float(parts[3])
-            NOE_exp = self.safe_float(parts[5])
+            R2_exp = self.safe_float(parts[2])
+            NOE_exp = self.safe_float(parts[3])
 
             R1_diff = self.safe_float(R1_sim - R1_exp) if R1_exp != "n" and R1_sim != "n" else "n"
             R2_diff = self.safe_float(R2_sim - R2_exp) if R2_exp != "n" and R2_sim != "n" else "n"
