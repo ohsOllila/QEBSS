@@ -28,20 +28,9 @@ Copy your fasta file to Automation_tool_scripts_*/Idpconfgenerator_automation di
 This step will generate five initial structures that you can find in the folder Automation_tool_scripts_*/Unst_prot
 
 
-Copy Unst_prot, MD_parameter_files, simulation_scripts and env.yml to your project scratch in MAHTI/LUMI. Using my MAHTI paths as example:
+Copy Unst_prot, MD_parameter_files, simulation_scripts and env.yml to your project scratch in MAHTI/LUMI.
 
-`scp -r Unst_prot MD_parameter_files simulation_scripts env.yml malmcajs@mahti.csc.fi:/scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare` 
-
-
-Log into Mahti: 
-
-`ssh malmcajs@mahti.csc.fi` 
-
-Go to the folder where you copied all the files:
-
-`cd /scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare`
-
-Add your experimental data to this folder. Make sure to add the first line with the magnetic field strength in MHz. Any missing data should type "n". 
+Go to the folder where you copied all the folders and add your experimental data there. Make sure to add the first line with the magnetic field strength in MHz. Any missing data should type "n". 
 Name the file Unst_prot_exp_data.txt. 
 
 An example of what it should look like can be seen in the file Unst_alphasynuclein_exp_data.txt
@@ -71,4 +60,4 @@ Go to simulation_scripts/run_dir and run scripts in order:
 `sh run_analysis.sh` 
 
 
-Before you run the next script, you must ensure the previous step was finished. E.g., you can check if the system preparation run was successful by going to /scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/Unst_prot and running ls -lh */*/md*tpr. Run ls -lh */*/md*tpr | wc –l to count the files. The last script collects the results, which can be found in /scratch/project_2003809/cmcajsa/MD-stabilization/structures/forcefield_compare/results
+OBS! Before you run the next script, you must ensure the previous step was finished. 
