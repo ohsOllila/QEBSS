@@ -4,7 +4,6 @@
 #SBATCH --ntasks=1
 #SBATCH --mem-per-cpu=1000
 #SBATCH --array=0-num_jobs
-##SBATCH --account=project_20003809
 #SBATCH --account=project
 
 

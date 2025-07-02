@@ -1,17 +1,17 @@
-[2025-03-07 14:05:09,393]libhigherlevel.py:idpconfgen:main:84: Reading Input Pdb List:
-[2025-03-07 14:05:09,408]libhigherlevel.py:idpconfgen:main:88:     PDBList with 3299 element(s)
+[2025-05-13 14:15:51,409]libhigherlevel.py:idpconfgen:main:84: Reading Input Pdb List:
+[2025-05-13 14:15:51,425]libhigherlevel.py:idpconfgen:main:88:     PDBList with 3299 element(s)
     done
 
-[2025-03-07 14:05:09,409]libhigherlevel.py:idpconfgen:main:94: Filtering Input:
-[2025-03-07 14:05:09,409]libhigherlevel.py:idpconfgen:main:96:     from destination: pdbs.tar
+[2025-05-13 14:15:51,425]libhigherlevel.py:idpconfgen:main:94: Filtering Input:
+[2025-05-13 14:15:51,425]libhigherlevel.py:idpconfgen:main:96:     from destination: pdbs.tar
     and other sources...
-[2025-03-07 14:05:09,409]libio.py:idpconfgen:read_PDBID_from_tar:558:     tar_file pdbs.tar not found. Returning empty PDBList.
-[2025-03-07 14:05:09,414]libhigherlevel.py:idpconfgen:main:114:     Found PDBList with 3299 element(s) to download
-[2025-03-07 14:05:13,583]exceptions.py:idpconfgen:__init__:58: Exception errors: Filter returns empty selection, when saving file {}.
-[2025-03-07 14:05:13,583]exceptions.py:idpconfgen:__init__:59: Exception args: ('Could not renumber atoms, most likely, because there are no lines in selection.',)
-[2025-03-07 14:05:13,583]exceptions.py:idpconfgen:__init__:58: Exception errors: Filter returns empty selection, when saving file {}.
-[2025-03-07 14:05:13,583]exceptions.py:idpconfgen:__init__:59: Exception args: ('for chain 1GKM_A',)
-[2025-03-07 14:05:13,583]libstructure.py:idpconfgen:save_structure_by_chains:760: EmptyFilterError: Filter returns empty selection, when saving file Could not renumber atoms, most likely, because there are no lines in selection..
+[2025-05-13 14:15:51,425]libio.py:idpconfgen:read_PDBID_from_tar:558:     tar_file pdbs.tar not found. Returning empty PDBList.
+[2025-05-13 14:15:51,431]libhigherlevel.py:idpconfgen:main:114:     Found PDBList with 3299 element(s) to download
+[2025-05-13 14:16:05,196]exceptions.py:idpconfgen:__init__:58: Exception errors: Filter returns empty selection, when saving file {}.
+[2025-05-13 14:16:05,196]exceptions.py:idpconfgen:__init__:59: Exception args: ('Could not renumber atoms, most likely, because there are no lines in selection.',)
+[2025-05-13 14:16:05,196]exceptions.py:idpconfgen:__init__:58: Exception errors: Filter returns empty selection, when saving file {}.
+[2025-05-13 14:16:05,196]exceptions.py:idpconfgen:__init__:59: Exception args: ('for chain 1GKM_A',)
+[2025-05-13 14:16:05,196]libstructure.py:idpconfgen:save_structure_by_chains:760: EmptyFilterError: Filter returns empty selection, when saving file Could not renumber atoms, most likely, because there are no lines in selection..
 EmptyFilterError: Filter returns empty selection, when saving file for chain 1GKM_A.
 Traceback (most recent call last):
   File "/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/IDPConformerGenerator/src/idpconfgen/libs/libstructure.py", line 243, in get_PDB
@@ -29,12 +29,12 @@ idpconfgen.core.exceptions.EmptyFilterError: Filter returns empty selection, whe
 
 continuing to new chain
 
-[2025-03-07 14:05:13,583]libstructure.py:idpconfgen:save_structure_by_chains:774: Failed to download 1GKM_A
-[2025-03-07 14:11:21,643]exceptions.py:idpconfgen:__init__:58: Exception errors: Filter returns empty selection, when saving file {}.
-[2025-03-07 14:11:21,644]exceptions.py:idpconfgen:__init__:59: Exception args: ('Could not renumber atoms, most likely, because there are no lines in selection.',)
-[2025-03-07 14:11:21,644]exceptions.py:idpconfgen:__init__:58: Exception errors: Filter returns empty selection, when saving file {}.
-[2025-03-07 14:11:21,644]exceptions.py:idpconfgen:__init__:59: Exception args: ('for chain 6QIO_D',)
-[2025-03-07 14:11:21,644]libstructure.py:idpconfgen:save_structure_by_chains:760: EmptyFilterError: Filter returns empty selection, when saving file Could not renumber atoms, most likely, because there are no lines in selection..
+[2025-05-13 14:16:05,196]libstructure.py:idpconfgen:save_structure_by_chains:774: Failed to download 1GKM_A
+[2025-05-13 14:23:34,057]exceptions.py:idpconfgen:__init__:58: Exception errors: Filter returns empty selection, when saving file {}.
+[2025-05-13 14:23:34,057]exceptions.py:idpconfgen:__init__:59: Exception args: ('Could not renumber atoms, most likely, because there are no lines in selection.',)
+[2025-05-13 14:23:34,057]exceptions.py:idpconfgen:__init__:58: Exception errors: Filter returns empty selection, when saving file {}.
+[2025-05-13 14:23:34,057]exceptions.py:idpconfgen:__init__:59: Exception args: ('for chain 6QIO_D',)
+[2025-05-13 14:23:34,057]libstructure.py:idpconfgen:save_structure_by_chains:760: EmptyFilterError: Filter returns empty selection, when saving file Could not renumber atoms, most likely, because there are no lines in selection..
 EmptyFilterError: Filter returns empty selection, when saving file for chain 6QIO_D.
 Traceback (most recent call last):
   File "/home/cmcajsa/Documents/PhD_december2024/sa_discos/Automation_tool_scripts_MAHTI/Idpconfgenerator_automation/IDPConformerGenerator/src/idpconfgen/libs/libstructure.py", line 243, in get_PDB
@@ -52,13 +52,13 @@ idpconfgen.core.exceptions.EmptyFilterError: Filter returns empty selection, whe
 
 continuing to new chain
 
-[2025-03-07 14:11:21,644]libstructure.py:idpconfgen:save_structure_by_chains:774: Failed to download 6QIO_D
-[2025-03-07 14:13:10,264]libhigherlevel.py:idpconfgen:main:149: Reading Updated Destination:
-[2025-03-07 14:13:10,343]libio.py:idpconfgen:read_PDBID_from_tar:555:     found: pdbs.tar
-[2025-03-07 14:13:10,347]libhigherlevel.py:idpconfgen:main:152:     PDBList with 2 element(s)
-[2025-03-07 14:13:10,347]libhigherlevel.py:idpconfgen:main:154:     There are PDBIDs not downloaded
+[2025-05-13 14:23:34,057]libstructure.py:idpconfgen:save_structure_by_chains:774: Failed to download 6QIO_D
+[2025-05-13 14:27:04,952]libhigherlevel.py:idpconfgen:main:149: Reading Updated Destination:
+[2025-05-13 14:27:05,024]libio.py:idpconfgen:read_PDBID_from_tar:555:     found: pdbs.tar
+[2025-05-13 14:27:05,027]libhigherlevel.py:idpconfgen:main:152:     PDBList with 2 element(s)
+[2025-05-13 14:27:05,027]libhigherlevel.py:idpconfgen:main:154:     There are PDBIDs not downloaded
 .Those IDs have been registered in the .idpconfgen_pdbdl.debug file.
-[2025-03-07 14:13:10,347]libhigherlevel.py:idpconfgen:main:159: 1GKM_A
+[2025-05-13 14:27:05,027]libhigherlevel.py:idpconfgen:main:159: 1GKM_A
 6QIO_D
-[2025-03-07 14:13:10,347]libhigherlevel.py:idpconfgen:main:168: Pdb Downloader Finished:
-[2025-03-07 14:13:10,348]cli.py:idpconfgen:maincli:143:     finished properly
+[2025-05-13 14:27:05,027]libhigherlevel.py:idpconfgen:main:168: Pdb Downloader Finished:
+[2025-05-13 14:27:05,028]cli.py:idpconfgen:maincli:143:     finished properly

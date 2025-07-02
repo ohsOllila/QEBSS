@@ -8,6 +8,7 @@ Below are instructions to help you generate five completely disordered initial c
 ▶️Set up the Idpconfgenerator tool:
 Open terminal:
 git clone https://github.com/julie-forman-kay-lab/IDPConformerGenerator 
+mkdir IDPConformerGenerator
 cd IDPConformerGenerator 
 conda env create -f requirements.yml 
 cd ..

@@ -4,8 +4,7 @@
 #SBATCH --ntasks=1
 #SBATCH --mem-per-cpu=1000
 #SBATCH --array=0-num_jobs
-#SBATCH --account=project_462000540
-##SBATCH --account=project
+##SBATCH --account=project***
 
 export GMX_MAXBACKUP=-1
 

@@ -1,31 +1,31 @@
-[2025-03-07 14:13:29,901]cli_build.py:idpconfgen:main:489: Starting The Building Process:
-[2025-03-07 14:13:29,901]cli_build.py:idpconfgen:main:493:     input sequence: TDVETTYADFIASGRTGRRNAIHDILVSSASGNSNELALKLAGLDINKTEGEEDAQRSSTEQSGEAQGEAAKSES
-[2025-03-07 14:13:29,901]cli_build.py:idpconfgen:main:548: running in 1 cores with 0 remaining confs
-[2025-03-07 14:13:29,901]xmer_probs.py:idpconfgen:logxmerprobs:47: Fragment Size And Probabilities Selected:
-[2025-03-07 14:13:29,901]xmer_probs.py:idpconfgen:logxmerprobs:48:     sizes of: (1, 2, 3, 4, 5)
-[2025-03-07 14:13:29,901]xmer_probs.py:idpconfgen:logxmerprobs:49:     probs of: (np.float64(0.1), np.float64(0.1), np.float64(0.3), np.float64(0.3), np.float64(0.2))
-[2025-03-07 14:13:30,223]libbuild.py:idpconfgen:prepare_slice_dict:570: preparing regex xmers
-[2025-03-07 14:13:30,223]libbuild.py:idpconfgen:prepare_slice_dict:577:     searching database with DSSP regexes: ([E]+)
-[2025-03-07 14:13:34,422]xmer_probs.py:idpconfgen:logxmerprobs:47: Corrected Fragment Selection Probabilities:
-[2025-03-07 14:13:34,423]xmer_probs.py:idpconfgen:logxmerprobs:48:     sizes of: (1, 2, 3, 4)
-[2025-03-07 14:13:34,423]xmer_probs.py:idpconfgen:logxmerprobs:49:     probs of: (np.float64(0.125), np.float64(0.125), np.float64(0.37499999999999994), np.float64(0.37499999999999994))
-[2025-03-07 14:13:41,281]libenergyij.py:idpconfgen:init_lennard_jones_calculator:77:     Lennard-Jones type configured to: 'pairs'
-[2025-03-07 14:13:41,281]libbuild.py:idpconfgen:prepare_energy_function:701: prepared lj
-[2025-03-07 14:13:41,281]libbuild.py:idpconfgen:prepare_energy_function:724: done preparing energy func
-[2025-03-07 14:13:41,963]libenergyij.py:idpconfgen:init_lennard_jones_calculator:77:     Lennard-Jones type configured to: 'pairs'
-[2025-03-07 14:13:41,963]libbuild.py:idpconfgen:prepare_energy_function:701: prepared lj
-[2025-03-07 14:13:41,963]libbuild.py:idpconfgen:prepare_energy_function:724: done preparing energy func
-[2025-03-07 14:13:41,983]cli_build.py:idpconfgen:conformer_generator:1187: random seed: 0
-[2025-03-07 14:13:41,983]cli_build.py:idpconfgen:conformer_generator:1259:     configuring sidechain method: faspr
-[2025-03-07 14:13:48,394]cli_build.py:idpconfgen:conformer_generator:1752: seed 0 - finished conf: 1 with energy -585.4133105720666
-[2025-03-07 14:13:48,481]cli_build.py:idpconfgen:conformer_generator:1752: seed 0 - finished conf: 2 with energy -600.8766649084317
-[2025-03-07 14:13:48,580]cli_build.py:idpconfgen:conformer_generator:1752: seed 0 - finished conf: 3 with energy -585.559450856923
-[2025-03-07 14:13:48,670]cli_build.py:idpconfgen:conformer_generator:1752: seed 0 - finished conf: 4 with energy -614.8889706446348
-[2025-03-07 14:13:48,754]cli_build.py:idpconfgen:conformer_generator:1752: seed 0 - finished conf: 5 with energy -600.6948512699073
-[2025-03-07 14:13:48,850]cli_build.py:idpconfgen:conformer_generator:1752: seed 0 - finished conf: 6 with energy -615.585671937085
-[2025-03-07 14:13:48,945]cli_build.py:idpconfgen:conformer_generator:1752: seed 0 - finished conf: 7 with energy -587.4166590773194
-[2025-03-07 14:13:49,048]cli_build.py:idpconfgen:conformer_generator:1752: seed 0 - finished conf: 8 with energy -624.6245715850438
-[2025-03-07 14:13:49,139]cli_build.py:idpconfgen:conformer_generator:1752: seed 0 - finished conf: 9 with energy -577.1762394662007
-[2025-03-07 14:13:49,229]cli_build.py:idpconfgen:conformer_generator:1752: seed 0 - finished conf: 10 with energy -595.1554925399605
-[2025-03-07 14:13:49,262]cli_build.py:idpconfgen:main:833: 10 conformers built in 7.299 seconds
-[2025-03-07 14:13:49,263]cli.py:idpconfgen:maincli:143:     finished properly
+[2025-05-13 14:27:50,106]cli_build.py:idpconfgen:main:489: Starting The Building Process:
+[2025-05-13 14:27:50,106]cli_build.py:idpconfgen:main:493:     input sequence: GSSAAAAAAAASGPGGYGPENQGPSGPGGYGPGGP
+[2025-05-13 14:27:50,106]cli_build.py:idpconfgen:main:548: running in 1 cores with 0 remaining confs
+[2025-05-13 14:27:50,106]xmer_probs.py:idpconfgen:logxmerprobs:47: Fragment Size And Probabilities Selected:
+[2025-05-13 14:27:50,107]xmer_probs.py:idpconfgen:logxmerprobs:48:     sizes of: (1, 2, 3, 4, 5)
+[2025-05-13 14:27:50,107]xmer_probs.py:idpconfgen:logxmerprobs:49:     probs of: (np.float64(0.1), np.float64(0.1), np.float64(0.3), np.float64(0.3), np.float64(0.2))
+[2025-05-13 14:27:50,406]libbuild.py:idpconfgen:prepare_slice_dict:570: preparing regex xmers
+[2025-05-13 14:27:50,406]libbuild.py:idpconfgen:prepare_slice_dict:577:     searching database with DSSP regexes: ([E]+)
+[2025-05-13 14:27:51,890]xmer_probs.py:idpconfgen:logxmerprobs:47: Corrected Fragment Selection Probabilities:
+[2025-05-13 14:27:51,891]xmer_probs.py:idpconfgen:logxmerprobs:48:     sizes of: (1, 2, 3, 4)
+[2025-05-13 14:27:51,891]xmer_probs.py:idpconfgen:logxmerprobs:49:     probs of: (np.float64(0.125), np.float64(0.125), np.float64(0.37499999999999994), np.float64(0.37499999999999994))
+[2025-05-13 14:27:57,712]libenergyij.py:idpconfgen:init_lennard_jones_calculator:77:     Lennard-Jones type configured to: 'pairs'
+[2025-05-13 14:27:57,712]libbuild.py:idpconfgen:prepare_energy_function:701: prepared lj
+[2025-05-13 14:27:57,712]libbuild.py:idpconfgen:prepare_energy_function:724: done preparing energy func
+[2025-05-13 14:27:57,873]libenergyij.py:idpconfgen:init_lennard_jones_calculator:77:     Lennard-Jones type configured to: 'pairs'
+[2025-05-13 14:27:57,873]libbuild.py:idpconfgen:prepare_energy_function:701: prepared lj
+[2025-05-13 14:27:57,873]libbuild.py:idpconfgen:prepare_energy_function:724: done preparing energy func
+[2025-05-13 14:27:57,894]cli_build.py:idpconfgen:conformer_generator:1187: random seed: 0
+[2025-05-13 14:27:57,895]cli_build.py:idpconfgen:conformer_generator:1259:     configuring sidechain method: faspr
+[2025-05-13 14:28:04,392]cli_build.py:idpconfgen:conformer_generator:1752: seed 0 - finished conf: 1 with energy 154.5672900093492
+[2025-05-13 14:28:04,414]cli_build.py:idpconfgen:conformer_generator:1752: seed 0 - finished conf: 2 with energy 154.3213721762146
+[2025-05-13 14:28:04,435]cli_build.py:idpconfgen:conformer_generator:1752: seed 0 - finished conf: 3 with energy 218.7853048994774
+[2025-05-13 14:28:04,460]cli_build.py:idpconfgen:conformer_generator:1752: seed 0 - finished conf: 4 with energy 170.37248768394048
+[2025-05-13 14:28:04,478]cli_build.py:idpconfgen:conformer_generator:1752: seed 0 - finished conf: 5 with energy 174.32314797809744
+[2025-05-13 14:28:04,557]cli_build.py:idpconfgen:conformer_generator:1752: seed 0 - finished conf: 6 with energy 164.319331249002
+[2025-05-13 14:28:04,576]cli_build.py:idpconfgen:conformer_generator:1752: seed 0 - finished conf: 7 with energy 169.34302009916928
+[2025-05-13 14:28:04,595]cli_build.py:idpconfgen:conformer_generator:1752: seed 0 - finished conf: 8 with energy 169.55035190881767
+[2025-05-13 14:28:04,614]cli_build.py:idpconfgen:conformer_generator:1752: seed 0 - finished conf: 9 with energy 123.34825031706968
+[2025-05-13 14:28:04,634]cli_build.py:idpconfgen:conformer_generator:1752: seed 0 - finished conf: 10 with energy 280.09301097766667
+[2025-05-13 14:28:04,664]cli_build.py:idpconfgen:main:833: 10 conformers built in 6.791 seconds
+[2025-05-13 14:28:04,665]cli.py:idpconfgen:maincli:143:     finished properly

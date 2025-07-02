@@ -1,16 +1,16 @@
-[2025-03-07 14:05:09,393]Reading Input Pdb List:
-[2025-03-07 14:05:09,408]    PDBList with 3299 element(s)
+[2025-05-13 14:15:51,409]Reading Input Pdb List:
+[2025-05-13 14:15:51,425]    PDBList with 3299 element(s)
     done
 
-[2025-03-07 14:05:09,409]Filtering Input:
-[2025-03-07 14:05:09,409]    from destination: pdbs.tar
+[2025-05-13 14:15:51,425]Filtering Input:
+[2025-05-13 14:15:51,425]    from destination: pdbs.tar
     and other sources...
-[2025-03-07 14:05:09,409]    tar_file pdbs.tar not found. Returning empty PDBList.
-[2025-03-07 14:05:09,414]    Found PDBList with 3299 element(s) to download
-[2025-03-07 14:13:10,264]Reading Updated Destination:
-[2025-03-07 14:13:10,343]    found: pdbs.tar
-[2025-03-07 14:13:10,347]    PDBList with 2 element(s)
-[2025-03-07 14:13:10,347]    There are PDBIDs not downloaded
+[2025-05-13 14:15:51,425]    tar_file pdbs.tar not found. Returning empty PDBList.
+[2025-05-13 14:15:51,431]    Found PDBList with 3299 element(s) to download
+[2025-05-13 14:27:04,952]Reading Updated Destination:
+[2025-05-13 14:27:05,024]    found: pdbs.tar
+[2025-05-13 14:27:05,027]    PDBList with 2 element(s)
+[2025-05-13 14:27:05,027]    There are PDBIDs not downloaded
 .Those IDs have been registered in the .idpconfgen_pdbdl.debug file.
-[2025-03-07 14:13:10,347]Pdb Downloader Finished:
-[2025-03-07 14:13:10,348]    finished properly
+[2025-05-13 14:27:05,027]Pdb Downloader Finished:
+[2025-05-13 14:27:05,028]    finished properly

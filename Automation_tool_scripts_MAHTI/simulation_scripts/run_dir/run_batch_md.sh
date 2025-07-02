@@ -1,6 +1,5 @@
 #!/bin/bash
 
-time_input=2000
 
 cd ..
 cd ..

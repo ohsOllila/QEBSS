@@ -3,7 +3,7 @@
 #SBATCH --partition=small
 #SBATCH --ntasks-per-node=128
 #SBATCH --nodes=4
-#SBATCH --account=Project_462000540
+#SBATCH --account=project***
 
 
 export GMX_MAXBACKUP=-1

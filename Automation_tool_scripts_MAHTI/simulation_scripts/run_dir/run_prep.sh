@@ -25,6 +25,9 @@ done
 read choice
 project=${list[choice-1]}
 
+echo "Input simulation time in ns:"
+read time_input
+
 
 
 FORCEFIELD=(AMBER03WS AMBER99SB-DISP AMBER99SBWS CHARMM36M DESAMBER)

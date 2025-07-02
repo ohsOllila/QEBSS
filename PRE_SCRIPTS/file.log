@@ -1,0 +1,559 @@
+INFO:root:resid 24 = GLN
+INFO:root:Starting rotamer distance analysis of trajectory pnas2018b-asyn-a99SBdisp-extended-protein-0007.dcd with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 42 = SER
+INFO:root:Starting rotamer distance analysis of trajectory pnas2018b-asyn-a99SBdisp-extended-protein-0007.dcd with labeled residue 42
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 62 = GLN
+INFO:root:Starting rotamer distance analysis of trajectory pnas2018b-asyn-a99SBdisp-extended-protein-0007.dcd with labeled residue 62
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 87 = SER
+INFO:root:Starting rotamer distance analysis of trajectory pnas2018b-asyn-a99SBdisp-extended-protein-0007.dcd with labeled residue 87
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 103 = ASN
+INFO:root:Starting rotamer distance analysis of trajectory pnas2018b-asyn-a99SBdisp-extended-protein-0007.dcd with labeled residue 103
+INFO:root:resid 24 = GLN
+INFO:root:Starting rotamer distance analysis of trajectory pnas2018b-asyn-a99SBdisp-extended-protein-0007.dcd with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 42 = SER
+INFO:root:Starting rotamer distance analysis of trajectory pnas2018b-asyn-a99SBdisp-extended-protein-0007.dcd with labeled residue 42
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 62 = GLN
+INFO:root:Starting rotamer distance analysis of trajectory pnas2018b-asyn-a99SBdisp-extended-protein-0007.dcd with labeled residue 62
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 87 = SER
+INFO:root:Starting rotamer distance analysis of trajectory pnas2018b-asyn-a99SBdisp-extended-protein-0007.dcd with labeled residue 87
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 103 = ASN
+INFO:root:Starting rotamer distance analysis of trajectory pnas2018b-asyn-a99SBdisp-extended-protein-0007.dcd with labeled residue 103
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = GLN
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_aSyn.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 42 = SER
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_aSyn.xtc with labeled residue 42
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 62 = GLN
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_aSyn.xtc with labeled residue 62
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 87 = SER
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_aSyn.xtc with labeled residue 87
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 103 = ASN
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_aSyn.xtc with labeled residue 103
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_ICL2.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_ICL2.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_ICL2.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_ICL2.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_ICL2.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_ICL2.xtc with labeled residue 24
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_ICL2.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 42 = LEU
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_ICL2.xtc with labeled residue 42
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 62 = VAL
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_ICL2.xtc with labeled residue 62
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 87 = GLY
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_ICL2.xtc with labeled residue 87
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_ICL2.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_ICL2.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_ICL2.xtc with labeled residue 24
+INFO:root:resid 24 = GLN
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_aSyn.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 42 = SER
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_aSyn.xtc with labeled residue 42
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 62 = GLN
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_aSyn.xtc with labeled residue 62
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 87 = SER
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_aSyn.xtc with labeled residue 87
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 103 = ASN
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_aSyn.xtc with labeled residue 103
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_ICL2.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_ICL2.xtc with labeled residue 24
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_ICL2.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_ICL2.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_ICL2.xtc with labeled residue 24
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_ICL2.xtc with labeled residue 24
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_traj_ICL2.xtc with labeled residue 24
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/AMBER03WS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/CHARMM36M/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/DESAMBER/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/AMBER99SB-DISP/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_03/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_03/AMBER03WS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_03/CHARMM36M/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_03/DESAMBER/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_03/AMBER99SB-DISP/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/AMBER03WS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/CHARMM36M/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/DESAMBER/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/AMBER99SB-DISP/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_03/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_03/AMBER03WS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_03/CHARMM36M/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_03/DESAMBER/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_03/AMBER99SB-DISP/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_02/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_02/AMBER03WS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_02/CHARMM36M/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_02/DESAMBER/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_02/AMBER99SB-DISP/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_04/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_04/AMBER03WS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_04/CHARMM36M/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_04/DESAMBER/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_04/AMBER99SB-DISP/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_01/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_01/AMBER03WS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_01/CHARMM36M/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_01/DESAMBER/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_01/AMBER99SB-DISP/shortened.xtc with labeled residue 24
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/AMBER03WS/shortened.xtc with labeled residue 24
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/AMBER03WS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/CHARMM36M/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/DESAMBER/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/AMBER99SB-DISP/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_03/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_03/AMBER03WS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_03/CHARMM36M/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_03/DESAMBER/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_03/AMBER99SB-DISP/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_02/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_02/AMBER03WS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_02/CHARMM36M/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_02/DESAMBER/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_02/AMBER99SB-DISP/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_04/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_04/AMBER03WS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_04/CHARMM36M/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_04/DESAMBER/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_04/AMBER99SB-DISP/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_01/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_01/AMBER03WS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_01/CHARMM36M/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_01/DESAMBER/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_01/AMBER99SB-DISP/shortened.xtc with labeled residue 24
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/AMBER03WS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/CHARMM36M/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/DESAMBER/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_05/AMBER99SB-DISP/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_03/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_03/AMBER03WS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_03/CHARMM36M/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_03/DESAMBER/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_03/AMBER99SB-DISP/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_02/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_02/AMBER03WS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_02/CHARMM36M/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_02/DESAMBER/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_02/AMBER99SB-DISP/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_04/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_04/AMBER03WS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_04/CHARMM36M/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_04/DESAMBER/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_04/AMBER99SB-DISP/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_01/AMBER99SBWS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_01/AMBER03WS/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_01/CHARMM36M/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_01/DESAMBER/shortened.xtc with labeled residue 24
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:root:resid 24 = CYS
+INFO:root:Starting rotamer distance analysis of trajectory shortened_trajs/replica_01/AMBER99SB-DISP/shortened.xtc with labeled residue 24
+INFO:root:resid 24 = GLN
+INFO:root:resid 24 = CYS
+INFO:MDAnalysis.core.universe:attribute types has been guessed successfully.
+INFO:MDAnalysis.core.universe:attribute masses has been guessed successfully.
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:MDAnalysis.core.universe:attribute types has been guessed successfully.
+INFO:MDAnalysis.core.universe:attribute masses has been guessed successfully.
+INFO:MDAnalysis.core.universe:attribute types has been guessed successfully.
+INFO:MDAnalysis.core.universe:attribute masses has been guessed successfully.
+INFO:root:resid 24 = CYS
+INFO:MDAnalysis.core.universe:attribute types has been guessed successfully.
+INFO:MDAnalysis.core.universe:attribute masses has been guessed successfully.
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:MDAnalysis.core.universe:attribute types has been guessed successfully.
+INFO:MDAnalysis.core.universe:attribute masses has been guessed successfully.
+INFO:MDAnalysis.core.universe:attribute types has been guessed successfully.
+INFO:MDAnalysis.core.universe:attribute masses has been guessed successfully.
+INFO:root:resid 24 = CYS
+INFO:root:resid 24 = CYS
+INFO:MDAnalysis.core.universe:attribute types has been guessed successfully.
+INFO:MDAnalysis.core.universe:attribute masses has been guessed successfully.
+INFO:MDAnalysis.app:Using rotamer library 'MTSSL 175K X1X2' by Yevhen Polyhach, Enrica Bordignon and Gunnar Jeschke
+INFO:MDAnalysis.app:Please cite: DOI 10.1039/C0CP01865A
+INFO:MDAnalysis.core.universe:attribute types has been guessed successfully.
+INFO:MDAnalysis.core.universe:attribute masses has been guessed successfully.
+INFO:MDAnalysis.core.universe:attribute types has been guessed successfully.
+INFO:MDAnalysis.core.universe:attribute masses has been guessed successfully.
+INFO:root:resid 24 = CYS

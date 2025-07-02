@@ -1,6 +1,5 @@
 #!/bin/bash
 
-time_input=2000
 
 
 cd ..
@@ -9,22 +8,9 @@ BASE_DIR=${PWD}
 SCRIPTS=${BASE_DIR}/simulation_scripts/MD_scripts
 analysis_script=${SCRIPTS}/analysis.sh
 
-: '
-your_projects=$(csc-projects | grep -o "project_.*" | awk '{print $1}')
-echo "Select the number of the project you want to use:"
+echo "Input simulation time in ns:"
+read time_input
 
-num=1
-list=()
-
-for i in $your_projects; do
-        list+=($i)
-        echo "("$num")" ${i} 
-        ((num++))
-done
-
-read choice
-project=${list[choice-1]}
-'
 for i in $BASE_DIR/SNARE/
 do
   	cd $i
@@ -34,7 +20,6 @@ do
 	JOB_SCRIPT=${SCRIPTS}/batch_analysis.sh
 	sed -i "s/sim_time=sim_time/sim_time=${time_input}/" "${JOB_SCRIPT}"
 	sed -i "s/num_jobs/${jobs}/" "${JOB_SCRIPT}"
-	#sed -i "s/project/${project}/" "${JOB_SCRIPT}"
 
 	sbatch ${JOB_SCRIPT}
 done

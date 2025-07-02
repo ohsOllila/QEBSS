@@ -1,31 +1,31 @@
-[2025-03-07 14:13:29,901]Starting The Building Process:
-[2025-03-07 14:13:29,901]    input sequence: TDVETTYADFIASGRTGRRNAIHDILVSSASGNSNELALKLAGLDINKTEGEEDAQRSSTEQSGEAQGEAAKSES
-[2025-03-07 14:13:29,901]running in 1 cores with 0 remaining confs
-[2025-03-07 14:13:29,901]Fragment Size And Probabilities Selected:
-[2025-03-07 14:13:29,901]    sizes of: (1, 2, 3, 4, 5)
-[2025-03-07 14:13:29,901]    probs of: (np.float64(0.1), np.float64(0.1), np.float64(0.3), np.float64(0.3), np.float64(0.2))
-[2025-03-07 14:13:30,223]preparing regex xmers
-[2025-03-07 14:13:30,223]    searching database with DSSP regexes: ([E]+)
-[2025-03-07 14:13:34,422]Corrected Fragment Selection Probabilities:
-[2025-03-07 14:13:34,423]    sizes of: (1, 2, 3, 4)
-[2025-03-07 14:13:34,423]    probs of: (np.float64(0.125), np.float64(0.125), np.float64(0.37499999999999994), np.float64(0.37499999999999994))
-[2025-03-07 14:13:41,281]    Lennard-Jones type configured to: 'pairs'
-[2025-03-07 14:13:41,281]prepared lj
-[2025-03-07 14:13:41,281]done preparing energy func
-[2025-03-07 14:13:41,963]    Lennard-Jones type configured to: 'pairs'
-[2025-03-07 14:13:41,963]prepared lj
-[2025-03-07 14:13:41,963]done preparing energy func
-[2025-03-07 14:13:41,983]random seed: 0
-[2025-03-07 14:13:41,983]    configuring sidechain method: faspr
-[2025-03-07 14:13:48,394]seed 0 - finished conf: 1 with energy -585.4133105720666
-[2025-03-07 14:13:48,481]seed 0 - finished conf: 2 with energy -600.8766649084317
-[2025-03-07 14:13:48,580]seed 0 - finished conf: 3 with energy -585.559450856923
-[2025-03-07 14:13:48,670]seed 0 - finished conf: 4 with energy -614.8889706446348
-[2025-03-07 14:13:48,754]seed 0 - finished conf: 5 with energy -600.6948512699073
-[2025-03-07 14:13:48,850]seed 0 - finished conf: 6 with energy -615.585671937085
-[2025-03-07 14:13:48,945]seed 0 - finished conf: 7 with energy -587.4166590773194
-[2025-03-07 14:13:49,048]seed 0 - finished conf: 8 with energy -624.6245715850438
-[2025-03-07 14:13:49,139]seed 0 - finished conf: 9 with energy -577.1762394662007
-[2025-03-07 14:13:49,229]seed 0 - finished conf: 10 with energy -595.1554925399605
-[2025-03-07 14:13:49,262]10 conformers built in 7.299 seconds
-[2025-03-07 14:13:49,263]    finished properly
+[2025-05-13 14:27:50,106]Starting The Building Process:
+[2025-05-13 14:27:50,106]    input sequence: GSSAAAAAAAASGPGGYGPENQGPSGPGGYGPGGP
+[2025-05-13 14:27:50,106]running in 1 cores with 0 remaining confs
+[2025-05-13 14:27:50,106]Fragment Size And Probabilities Selected:
+[2025-05-13 14:27:50,107]    sizes of: (1, 2, 3, 4, 5)
+[2025-05-13 14:27:50,107]    probs of: (np.float64(0.1), np.float64(0.1), np.float64(0.3), np.float64(0.3), np.float64(0.2))
+[2025-05-13 14:27:50,406]preparing regex xmers
+[2025-05-13 14:27:50,406]    searching database with DSSP regexes: ([E]+)
+[2025-05-13 14:27:51,890]Corrected Fragment Selection Probabilities:
+[2025-05-13 14:27:51,891]    sizes of: (1, 2, 3, 4)
+[2025-05-13 14:27:51,891]    probs of: (np.float64(0.125), np.float64(0.125), np.float64(0.37499999999999994), np.float64(0.37499999999999994))
+[2025-05-13 14:27:57,712]    Lennard-Jones type configured to: 'pairs'
+[2025-05-13 14:27:57,712]prepared lj
+[2025-05-13 14:27:57,712]done preparing energy func
+[2025-05-13 14:27:57,873]    Lennard-Jones type configured to: 'pairs'
+[2025-05-13 14:27:57,873]prepared lj
+[2025-05-13 14:27:57,873]done preparing energy func
+[2025-05-13 14:27:57,894]random seed: 0
+[2025-05-13 14:27:57,895]    configuring sidechain method: faspr
+[2025-05-13 14:28:04,392]seed 0 - finished conf: 1 with energy 154.5672900093492
+[2025-05-13 14:28:04,414]seed 0 - finished conf: 2 with energy 154.3213721762146
+[2025-05-13 14:28:04,435]seed 0 - finished conf: 3 with energy 218.7853048994774
+[2025-05-13 14:28:04,460]seed 0 - finished conf: 4 with energy 170.37248768394048
+[2025-05-13 14:28:04,478]seed 0 - finished conf: 5 with energy 174.32314797809744
+[2025-05-13 14:28:04,557]seed 0 - finished conf: 6 with energy 164.319331249002
+[2025-05-13 14:28:04,576]seed 0 - finished conf: 7 with energy 169.34302009916928
+[2025-05-13 14:28:04,595]seed 0 - finished conf: 8 with energy 169.55035190881767
+[2025-05-13 14:28:04,614]seed 0 - finished conf: 9 with energy 123.34825031706968
+[2025-05-13 14:28:04,634]seed 0 - finished conf: 10 with energy 280.09301097766667
+[2025-05-13 14:28:04,664]10 conformers built in 6.791 seconds
+[2025-05-13 14:28:04,665]    finished properly

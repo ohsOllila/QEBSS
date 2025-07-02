@@ -1,6 +1,5 @@
 #!/bin/bash
 
-time_input=2000
 
 
 cd ..
@@ -24,6 +23,9 @@ done
 
 read choice
 project=${list[choice-1]}
+
+echo "Input simulation time in ns:"
+read time_input
 
 
 for i in $BASE_DIR/Unst_prot/

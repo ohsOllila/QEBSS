@@ -1,0 +1,43 @@
+ Created by CRYSOL ...................................... : ATSAS 3.2.1 (r14885)
+ CRYSOL started ......................................... : 10-Dec-2024   17:01:52
+ Atomic coordinates read from ........................... : frame_66000.pdb
+ Model used ............................................. : all
+ Chain(s) used .......................................... : all
+ Account for explicit hydrogens ......................... : yes
+ Shell type ............................................. : directional
+ Number of spherical harmonics .......................... : 20
+ Maximum scattering angle [A^-1] ........................ : 0.5000
+ Number of calculated data points ....................... : 101
+ Energy of incident radiation [eV] ...................... : undefined
+ Solvent density [e/A^3] ................................ : 0.3340
+ Contrast of the solvation shell [e/A^3] ................ : 3.000E-02
+ Number of H atoms ...................................... : 1003
+ Number of C atoms ...................................... : 627
+ Number of N atoms ...................................... : 166
+ Number of O atoms ...................................... : 216
+ Number of S atoms ...................................... : 4
+ Number of unknown atoms ................................ : 0
+ Number of substituted unknown atoms .................... : 0
+ Total number of atoms read ............................. : 2016
+ Number of residues read ................................ : 140
+ Number of dummy residues read .......................... : 0
+ Number of dummy atoms read ............................. : 0
+ Discarded rotamers ..................................... : 0
+ Discarded explicit hydrogens ........................... : 0
+ Discarded waters ....................................... : 0
+ Discarded dummy solvents ............................... : 0
+ Molecular weight [Da] .................................. : 1.4481E+04
+ Excluded Volume [A^3] .................................. : 1.7999E+04
+ Partial specific Volume [ml/g] ......................... : 0.7485
+ Average electron density [e/A^3] ....................... : 0.4289
+ Geometric center ....................................... :   103.074  103.914   48.288
+ Shell Rg [A] ........................................... : 24.37
+ Shell Volume [A^3] ..................................... : 1.3756E+04
+ Envelope Rg [A] ........................................ : 19.86
+ Envelope Volume [A^3] .................................. : 3.0005E+04
+ Envelope Diameter [A] .................................. : 77.28
+ Shape Rg [A] ........................................... : 20.33
+ Electron Rg [A] ........................................ : 20.25
+ Rg (Atoms - Excluded volume + Shell) [A] ............... : 20.90
+ Rg from the slope of net intensity [A] ................. : 20.82
+ CRYSOL finished ........................................ : 10-Dec-2024   17:01:52

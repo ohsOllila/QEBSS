@@ -4,7 +4,7 @@
 #SBATCH --ntasks=1
 #SBATCH --mem-per-cpu=1000
 #SBATCH --array=0-num_jobs
-#SBATCH --account=project_2003809
+#SBATCH --account=project
 
 
 export GMX_MAXBACKUP=-1
@@ -77,7 +77,6 @@ done
 
 module purge
 export PATH="$(cd ../../../env/bin && pwd):$PATH"
-#export PATH="/scratch/project_2003809/cmcajsa/forcefield/env/bin:$PATH"
 
 python3 $contact_plot
 python3 $dist_plot

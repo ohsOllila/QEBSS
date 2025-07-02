@@ -1,4 +1,4 @@
-[2025-03-07 14:13:10,905]cli_sscalc.py:idpconfgen:main:181: Reading Input Paths:
-[2025-03-07 14:13:11,364]cli_sscalc.py:idpconfgen:main:188:     done
-[2025-03-07 14:13:11,365]cli_sscalc.py:idpconfgen:main:190: Preparing Task Execution:
-[2025-03-07 14:13:19,876]cli.py:idpconfgen:maincli:143:     finished properly
+[2025-05-13 14:27:06,564]cli_sscalc.py:idpconfgen:main:181: Reading Input Paths:
+[2025-05-13 14:27:06,968]cli_sscalc.py:idpconfgen:main:188:     done
+[2025-05-13 14:27:06,968]cli_sscalc.py:idpconfgen:main:190: Preparing Task Execution:
+[2025-05-13 14:27:15,408]cli.py:idpconfgen:maincli:143:     finished properly

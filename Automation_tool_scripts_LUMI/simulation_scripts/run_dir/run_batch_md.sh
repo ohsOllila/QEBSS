@@ -1,44 +1,25 @@
 #!/bin/bash
 
-time_input=1
-
 cd ..
 cd ..
 BASE_DIR=$PWD
 
-SIM_DIR=$BASE_DIR/TEST/RUN_DIR
+SIM_DIR=$BASE_DIR/Unst_prot
 
-
-your_projects=$(csc-projects | grep -o "project_.*" | awk '{print $1}')
-echo "Select the number of the project you want to use:"
-
-num=1
-list=()
-
-for i in $your_projects; do
-        list+=($i)
-        echo "("$num")" ${i} 
-        ((num++))
-done
-
-read choice
-project=${list[choice-1]}
 
 echo "Input simulation time in ns:"
 read time_input
 
-NODE_COUNT=5
 
 SCRIPTS=$BASE_DIR/simulation_scripts/MD_scripts
 md_script=${SCRIPTS}/md_standard.sh
 cp ${md_script} ${SCRIPTS}/batch_md.sh
 JOB_SCRIPT=${SCRIPTS}/batch_md.sh
 
-#sed -i "s/sim_time=sim_time/sim_time=${time_input}/" "${JOB_SCRIPT}"
-sed -i "s/project/${project}/" "${JOB_SCRIPT}"
+sed -i "s/sim_time=sim_time/sim_time=${time_input}/" "${JOB_SCRIPT}"
 sed -i "s/nr_nodes/$NODE_COUNT/" "${JOB_SCRIPT}"
 
-for i in $SIM_DIR/*/; do
+for i in $SIM_DIR/*/*/; do
     cd "$i" || continue
     id="${i}"
 
