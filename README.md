@@ -1,9 +1,14 @@
 **Semi-automatic Workflow for the Quality Evaluation-Based Simulation Selection (QEBSS)**
 
-QEBSS is a tool that generates and evaluates a diverse set of molecular dynamics simulations based on various starting structures and force fields. The simulations are evaluated against NMR relaxation times (R1, R2) and heteronuclear NOE (hetNOE). This helps identify the best simulations for intrinsically disordered proteins (IDPs) or partially disordered proteins. The analysis includes contact maps, distance maps, and backbone correlation maps, which could help understand the dynamic nature of different IDPs and their roles in biological processes.
+QEBSS is a protocol that generates and evaluates a diverse set of molecular dynamics simulations based on various starting structures and force fields. The simulations are evaluated against NMR relaxation times (R1, R2) and heteronuclear NOE (hetNOE). This helps identify the best simulations for intrinsically disordered proteins (IDPs) or partially disordered proteins. The analysis includes contact maps, distance maps, and backbone correlation maps, which could help understand the dynamic nature of different IDPs and their roles in biological processes.
 
+This is automized version of the QEBSS protocol to find ensembles in best agreement with NMR spin relaxation data using MD simulations for instrinsically disordered proteins (IDPs). QEBSS is originally introduced in
+> Sandelin, A., Nencini, R., Yasar, E., Fudo, S., Stratoulias, V., Kajander, T., & Ollila, S. (2025). **QEBSS: Quality Evaluation Based Simulation Selection for analysis of conformational ensembles and dynamics of multidomain proteins**. *ChemRxiv* [https://doi.org/10.26434/chemrxiv-2024-h3pmt-v2](https://doi.org/10.26434/chemrxiv-2024-h3pmt-v2)
 
-For running these simulations you need access to a supercomputer like Mahti or Lumi. Depending on the platform you are gonna use download and extract the right recipitory named Automation_tool_scripts_*. 
+The automized version included in this repository is implemented in
+> Malm, C., Girych, M., & Ollila, O. H. S. (2025). **Conformational Rigidity Classification in Intrinsically Disordered Proteins via Integrated NMR and MD Simulations**. *ChemRxiv*, [https://doi.org/10.26434/chemrxiv-2025-m5m0p](https://doi.org/10.26434/chemrxiv-2025-m5m0p)
+
+For running these simulations you need access to a supercomputer like Mahti or Lumi hosted by [CSC – IT Center for Science](https://csc.fi/en/). Depending on the platform that you are using, use the appropriate folder named Automation_tool_scripts_*. 
 
 
 The first step is to generate the initial conformers. Go to https://idpconformergenerator.readthedocs.io/en/latest/installation.html or follow the installation steps below: 
